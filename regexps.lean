@@ -9,7 +9,7 @@ Section \(.*?\)\.				section \1
 Definition 					definition
 Lemma                                           definition
 Theorem                                         definition
-Glocal Instance \([^ ]+\)			definition \1 [instance]
+Global Instance \([^ ]+\)			definition \1 [instance]
  *\n\( *\):=                                     :=\n\1
 fun \(.*?\) ?=>                                 λ\1,
 Proof\.\(\(.\|\n\)*?\)\(Defined\|Qed\)\.        /-begin\1end-/
