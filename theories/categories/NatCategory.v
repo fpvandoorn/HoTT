@@ -1,6 +1,6 @@
-(** * Discrete categories on [n] objects *)
+/- Discrete categories on [n] objects -/
 Require Import Category.Core DiscreteCategory IndiscreteCategory.
-Require Import Types.Unit Trunc Types.Sum Types.Empty.
+Require Import Types.unit Trunc Types.Sum Types.Empty.
 
 Set Universe Polymorphism.
 Set Implicit Arguments.
@@ -8,19 +8,19 @@ Generalizable All Variables.
 Set Asymmetric Patterns.
 
 Module Export Core.
-  (** ** [Fin n] types, or [CardinalityRepresentative] *)
-  (** We use [Empty] for [0] and [Unit] for [1] so that we get nice judgmental behavior with opposites *)
+  /- [Fin n] types, or [CardinalityRepresentative] -/
+  /- We use [Empty] for [0] and [unit] for [1] so that we get nice judgmental behavior with opposites -/
   Fixpoint CardinalityRepresentative (n : nat) : Type1 :=
     match n with
       | 0 => Empty
-      | 1 => Unit
-      | S n' => (CardinalityRepresentative n' + Unit)%type
+      | 1 => unit
+      | S n' => (CardinalityRepresentative n' + unit)%type
     end.
 
   Coercion CardinalityRepresentative : nat >-> Type1.
 
-  (** ** [Fin n] is an hSet *)
-  Global Instance trunc_cardinality_representative (n : nat)
+  /- [Fin n] is an hSet -/
+  definition trunc_cardinality_representative [instance] (n : nat)
   : IsHSet (CardinalityRepresentative n).
   Proof.
     induction n; [ typeclasses eauto |].
@@ -29,8 +29,8 @@ Module Export Core.
       typeclasses eauto.
   Qed.
 
-  (** ** Define the categories [n] *)
-  Definition nat_category (n : nat) :=
+  /- Define the categories [n] -/
+  definition nat_category (n : nat) :=
     match n with
       | 0 => indiscrete_category 0
       | 1 => indiscrete_category 1

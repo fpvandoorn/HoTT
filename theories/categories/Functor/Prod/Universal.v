@@ -1,7 +1,7 @@
-(** * Universal properties of product categories *)
+/- Universal properties of product categories -/
 Require Import Category.Core Functor.Core Category.Prod NaturalTransformation.Core Functor.Composition.Core Functor.Prod.Core.
 Require Import Functor.Paths.
-Require Import Types.Prod HoTT.Tactics Types.Forall Types.Sigma.
+Require Import Types.Prod HoTT.Tactics Types.ΠTypes.Sigma.
 
 Set Universe Polymorphism.
 Set Implicit Arguments.
@@ -16,8 +16,8 @@ Local Notation prod_type := Coq.Init.Datatypes.prod.
 Local Open Scope morphism_scope.
 Local Open Scope functor_scope.
 
-Section universal.
-  Context `{Funext}.
+section universal
+  Context [H : Funext].
 
   Variable A : PreCategory.
   Variable B : PreCategory.
@@ -25,49 +25,49 @@ Section universal.
 
   Local Open Scope functor_scope.
 
-  Section universal.
+  section universal
     Variable a : Functor C A.
     Variable b : Functor C B.
 
-    (** ** [fst ∘ (a * b) = a] *)
-    Lemma compose_fst_prod : fst o (a * b) = a.
-    Proof.
+    /- [fst ∘ (a × b) ≈ a] -/
+    Lemma compose_fst_prod : fst ∘ (a × b) ≈ a.
+    /-begin
       path_functor; trivial.
-    Defined.
+    end-/
 
-    (** ** [snd ∘ (a * b) = b] *)
-    Lemma compose_snd_prod : snd o (a * b) = b.
-    Proof.
+    /- [snd ∘ (a × b) ≈ b] -/
+    Lemma compose_snd_prod : snd ∘ (a × b) ≈ b.
+    /-begin
       path_functor; trivial.
-    Defined.
+    end-/
 
-    Section unique.
-      Variable F : Functor C (A * B).
-      Hypothesis H1 : fst o F = a.
-      Hypothesis H2 : snd o F = b.
+    section unique
+      Variable F : Functor C (A × B).
+      Hypothesis H1 : fst ∘ F ≈ a.
+      Hypothesis H2 : snd ∘ F ≈ b.
 
       Lemma unique_helper c
-      : (a * b) c = F c.
-      Proof.
-        pose proof (ap (fun F => object_of F c) H1).
-        pose proof (ap (fun F => object_of F c) H2).
+      : (a × b) c ≈ F c.
+      /-begin
+        pose proof (ap (λF, object_of F c) H1).
+        pose proof (ap (λF, object_of F c) H2).
         simpl in *.
         path_induction.
         apply eta_prod.
-      Defined.
+      end-/
 
       Lemma unique_helper2
       : transport
-          (fun GO : C -> prod_type A B =>
-             forall s d : C,
+          (λGO : C → prod_type A B,
+             Πs d : C,
                morphism C s d ->
                prod_type (morphism A (fst_type (GO s)) (fst_type (GO d)))
                          (morphism B (snd_type (GO s)) (snd_type (GO d))))
-          (path_forall (a * b) F unique_helper)
-          (fun (s d : C) (m : morphism C s d) => pair_type (a _1 m) (b _1 m)) =
+          (path_Π(a × b) F unique_helper)
+          (λ(s d : C) (m : morphism C s d), pair_type (a _1 m) (b _1 m)) =
         morphism_of F.
-      Proof.
-        repeat (apply path_forall; intro).
+      /-begin
+        repeat ⟨apply path_forall, intro⟩.
         repeat match goal with
                  | _ => reflexivity
                  | _ => progress simpl
@@ -76,7 +76,7 @@ Section universal.
         transport_path_forall_hammer.
         unfold unique_helper.
         repeat match goal with
-                 | [ H : _ = _ |- _ ] => case H; simpl; clear H
+                 | [ H : _ ≈ _ |- _ ] => case H; simpl; clear H
                end.
         repeat match goal with
                  | [ |- context[@morphism_of ?C ?D ?F ?s ?d ?m] ]
@@ -88,27 +88,27 @@ Section universal.
       Qed.
 
       Lemma unique
-      : a * b = F.
+      : a × b ≈ F.
       Proof.
         path_functor.
-        exists (path_forall _ _ unique_helper).
+        exists (path_Π_ _ unique_helper).
         apply unique_helper2.
-      Defined.
+      end-/
     End unique.
 
     Local Open Scope core_scope.
 
-    (** ** Universal property characterizing unique product of functors *)
+    /- Universal property characterizing unique product of functors -/
     Global Instance contr_prod_type
-           `{IsHSet (Functor C A), IsHSet (Functor C B)}
-    : Contr { F : Functor C (A * B)
-            | fst o F = a
-              /\ snd o F = b }
-      := let x := {| center := (a * b;
+           [H : IsHSet (Functor C A), IsHSet (Functor C B)]
+    : is_contr { F : Functor C (A × B)
+            | fst ∘ F ≈ a
+              /\ snd ∘ F ≈ b } :=
+         let x := {| center := (a × b;
                                 (compose_fst_prod,
                                  compose_snd_prod)) |}
          in x.
-    Proof.
+    /-begin
       intro y.
       apply path_sigma_uncurried.
       simpl.
@@ -117,13 +117,13 @@ Section universal.
     Qed.
   End universal.
 
-  (** ** Classification of path space of functors to a product precategory *)
-  Definition path_prod (F G : Functor C (A * B))
-             (H1 : fst o F = fst o G)
-             (H2 : snd o F = snd o G)
-  : F = G.
+  /- Classification of path space of functors to a product precategory -/
+  definition path_prod (F G : Functor C (A × B))
+             (H1 : fst ∘ F ≈ fst ∘ G)
+             (H2 : snd ∘ F ≈ snd ∘ G)
+  : F ≈ G.
   Proof.
     etransitivity; [ symmetry | ];
     apply unique; try eassumption; reflexivity.
-  Defined.
+  end-/
 End universal.

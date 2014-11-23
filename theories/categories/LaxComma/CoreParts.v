@@ -19,7 +19,7 @@ Local Open Scope equiv_scope.
 Local Open Scope morphism_scope.
 Local Open Scope category_scope.
 
-(** Quoting David Spivak:
+/- Quoting David Spivak:
 
     David: ok
        so an object of [FC ⇓ D] is a pair [(X, G)], where [X] is a
@@ -35,7 +35,7 @@ Local Open Scope category_scope.
        [colim : FC ⇓ D --> D]
 
      David: consider for yourself the case where [F : X --> X'] is
-       identity ([X = X']) and (separately) the case where
+       identity ([X ≈ X']) and (separately) the case where
        [α : G --> G ∘ F] is identity.
        the point is, you've already done the work to get this colim
        functor.
@@ -43,18 +43,18 @@ Local Open Scope category_scope.
        of two maps, one where the [F]-part is identity and one where
        the [α]-part is identity.
        and you've worked both of those cases out already.
-       *)
+       -/
 
 Module Import LaxCommaCategoryParts.
-  Section lax_comma_category_parts.
-    Context `{Funext}.
+  section lax_comma_category_parts
+    Context [H : Funext].
     Variable A : PreCategory.
     Variable B : PreCategory.
 
     Variable S : Pseudofunctor A.
     Variable T : Pseudofunctor B.
 
-    Context `{forall a b, IsHSet (Functor (S a) (T b))}.
+    Context [H : Πa b, IsHSet (Functor (S a) (T b))].
 
     Record object :=
       {
@@ -69,53 +69,53 @@ Module Import LaxCommaCategoryParts.
          | Functor (S a) (T b) }}).
 
     Lemma issig_object
-    : object_sig_T <~> object.
-    Proof.
+    : object_sig_T ≃ object.
+    /-begin
       issig (@Build_object)
             (@a)
             (@b)
             (@f).
-    Defined.
+    end-/
 
-    Global Instance trunc_object `{IsTrunc n A, IsTrunc n B}
-           `{forall s d, IsTrunc n (Functor (S s) (T d))}
-    : IsTrunc n object.
-    Proof.
+    definition trunc_object [instance] [H : is_trunc n A, is_trunc n B]
+           [H : Πs d, is_trunc n (Functor (S s) (T d))]
+    : is_trunc n object.
+    /-begin
       eapply trunc_equiv';
       [ exact issig_object | ].
       typeclasses eauto.
     Qed.
 
     Lemma path_object (x y : object)
-    : forall (Ha : x.(a) = y.(a))
-             (Hb : x.(b) = y.(b)),
-        match Ha in _ = X, Hb in _ = Y return Functor (S X) (T Y) with
+    : Π(Ha : x.(a) ≈ y.(a))
+             (Hb : x.(b) ≈ y.(b)),
+        match Ha in _ ≈ X, Hb in _ ≈ Y return Functor (S X) (T Y) with
           | idpath, idpath => x.(f)
-        end = y.(f)
-        -> x = y.
+        end ≈ y.(f)
+        → x ≈ y.
     Proof.
       destruct x, y; simpl.
       intros; path_induction; reflexivity.
-    Defined.
+    end-/
 
-    Definition path_object_uncurried x y
-               (H : { HaHb : (x.(a) = y.(a)) * (x.(b) = y.(b))
-                    | match fst HaHb in _ = X, snd HaHb in _ = Y return Functor (S X) (T Y) with
+    definition path_object_uncurried x y
+               (H : { HaHb : (x.(a) ≈ y.(a)) × (x.(b) ≈ y.(b))
+                    | match fst HaHb in _ ≈ X, snd HaHb in _ ≈ Y return Functor (S X) (T Y) with
                         | idpath, idpath => x.(f)
-                      end = y.(f) })
-    : x = y
-      := @path_object x y (fst H.1) (snd H.1) H.2.
+                      end ≈ y.(f) })
+    : x ≈ y :=
+         @path_object x y (fst H.1) (snd H.1) H.2.
 
     Lemma ap_a_path_object x y Ha Hb Hf
-    : ap (@a) (@path_object x y Ha Hb Hf) = Ha.
-    Proof.
+    : ap (@a) (@path_object x y Ha Hb Hf) ≈ Ha.
+    /-begin
       destruct x, y; simpl in *.
       destruct Ha, Hb, Hf; simpl in *.
       reflexivity.
     Qed.
 
     Lemma ap_b_path_object x y Ha Hb Hf
-    : ap (@b) (@path_object x y Ha Hb Hf) = Hb.
+    : ap (@b) (@path_object x y Ha Hb Hf) ≈ Hb.
     Proof.
       destruct x, y; simpl in *.
       destruct Ha, Hb, Hf; simpl in *.
@@ -128,35 +128,35 @@ Module Import LaxCommaCategoryParts.
       {
         g : Category.Core.morphism A (abf.(a)) (a'b'f'.(a));
         h : Category.Core.morphism B (abf.(b)) (a'b'f'.(b));
-        p : NaturalTransformation (p_morphism_of T h o abf.(f))
-                                  (a'b'f'.(f) o p_morphism_of S g)
+        p : NaturalTransformation (p_morphism_of T h ∘ abf.(f))
+                                  (a'b'f'.(f) ∘ p_morphism_of S g)
       }.
 
     Local Notation morphism_sig_T abf a'b'f' :=
       ({ g : Category.Core.morphism A (abf.(a)) (a'b'f'.(a))
        | { h : Category.Core.morphism B (abf.(b)) (a'b'f'.(b))
-         | NaturalTransformation (p_morphism_of T h o abf.(f))
-                                 (a'b'f'.(f) o p_morphism_of S g) }}).
+         | NaturalTransformation (p_morphism_of T h ∘ abf.(f))
+                                 (a'b'f'.(f) ∘ p_morphism_of S g) }}).
 
     Lemma issig_morphism abf a'b'f'
     : (morphism_sig_T abf a'b'f')
-        <~> morphism abf a'b'f'.
+        ≃ morphism abf a'b'f'.
     Proof.
       issig (@Build_morphism abf a'b'f')
             (@g abf a'b'f')
             (@h abf a'b'f')
             (@p abf a'b'f').
-    Defined.
+    end-/
 
-    Global Instance trunc_morphism abf a'b'f'
-           `{IsTrunc n (Category.Core.morphism A (abf.(a)) (a'b'f'.(a)))}
-           `{IsTrunc n (Category.Core.morphism B (abf.(b)) (a'b'f'.(b)))}
-           `{forall m1 m2,
-               IsTrunc n (NaturalTransformation
-                            (p_morphism_of T m2 o abf.(f))
-                            (a'b'f'.(f) o p_morphism_of S m1))}
-    : IsTrunc n (morphism abf a'b'f').
-    Proof.
+    definition trunc_morphism [instance] abf a'b'f'
+           [H : is_trunc n (Category.Core.morphism A (abf.(a)) (a'b'f'.(a)))]
+           [H : is_trunc n (Category.Core.morphism B (abf.(b)) (a'b'f'.(b)))]
+           [H : Πm1 m2,
+               is_trunc n (NaturalTransformation
+                            (p_morphism_of T m2 ∘ abf.(f))
+                            (a'b'f'.(f) ∘ p_morphism_of S m1))]
+    : is_trunc n (morphism abf a'b'f').
+    /-begin
       eapply trunc_equiv';
       [ exact (issig_morphism _ _) | ].
       typeclasses eauto.
@@ -165,16 +165,16 @@ Module Import LaxCommaCategoryParts.
     Lemma path_morphism abf a'b'f'
           (gh g'h' : morphism abf a'b'f')
     : forall
-        (Hg : gh.(g) = g'h'.(g))
-        (Hh : gh.(h) = g'h'.(h)),
-        match Hg in _ = g, Hh in _ = h
+        (Hg : gh.(g) ≈ g'h'.(g))
+        (Hh : gh.(h) ≈ g'h'.(h)),
+        match Hg in _ ≈ g, Hh in _ ≈ h
               return NaturalTransformation
-                       (p_morphism_of T h o abf.(f))
-                       (a'b'f'.(f) o p_morphism_of S g)
+                       (p_morphism_of T h ∘ abf.(f))
+                       (a'b'f'.(f) ∘ p_morphism_of S g)
         with
           | idpath, idpath => gh.(p)
-        end = g'h'.(p)
-         -> gh = g'h'.
+        end ≈ g'h'.(p)
+         → gh ≈ g'h'.
     Proof.
       intros Hg Hh Hp.
       destruct gh, g'h'; simpl in *.
@@ -182,34 +182,34 @@ Module Import LaxCommaCategoryParts.
       reflexivity.
     Qed.
 
-    Definition path_morphism_uncurried abf a'b'f' gh g'h'
-               (H : { HgHh : (gh.(g) = g'h'.(g)) * (gh.(h) = g'h'.(h))
-                    | match fst HgHh in _ = g, snd HgHh in _ = h
+    definition path_morphism_uncurried abf a'b'f' gh g'h'
+               (H : { HgHh : (gh.(g) ≈ g'h'.(g)) × (gh.(h) ≈ g'h'.(h))
+                    | match fst HgHh in _ ≈ g, snd HgHh in _ ≈ h
                             return NaturalTransformation
-                                     (p_morphism_of T h o abf.(f))
-                                     (a'b'f'.(f) o p_morphism_of S g)
+                                     (p_morphism_of T h ∘ abf.(f))
+                                     (a'b'f'.(f) ∘ p_morphism_of S g)
                       with
                         | idpath, idpath => gh.(p)
-                      end = g'h'.(p) })
-    : gh = g'h'
-      := @path_morphism abf a'b'f' gh g'h' (fst H.1) (snd H.1) H.2.
+                      end ≈ g'h'.(p) })
+    : gh ≈ g'h' :=
+         @path_morphism abf a'b'f' gh g'h' (fst H.1) (snd H.1) H.2.
 
     Lemma path_morphism'_helper abf a'b'f'
           (gh g'h' : morphism abf a'b'f')
     : forall
-        (Hg : gh.(g) = g'h'.(g))
-        (Hh : gh.(h) = g'h'.(h)),
-        ((_ oL (Category.Morphisms.idtoiso (_ -> _) (ap (@p_morphism_of _ _ S _ _) Hg) : Category.Core.morphism _ _ _))
-           o (gh.(p))
-           o ((Category.Morphisms.idtoiso (_ -> _) (ap (@p_morphism_of _ _ T _ _) Hh) : Category.Core.morphism _ _ _)^-1 oR _)
-         = g'h'.(p))%natural_transformation
-        -> match Hg in _ = g, Hh in _ = h
+        (Hg : gh.(g) ≈ g'h'.(g))
+        (Hh : gh.(h) ≈ g'h'.(h)),
+        ((_ oL (Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ S _ _) Hg) : Category.Core.morphism _ _ _))
+           ∘ (gh.(p))
+           ∘ ((Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ T _ _) Hh) : Category.Core.morphism _ _ _)⁻¹ oR _)
+         ≈ g'h'.(p))%natural_transformation
+        → match Hg in _ ≈ g, Hh in _ ≈ h
                  return NaturalTransformation
-                          (p_morphism_of T h o abf.(f))
-                          (a'b'f'.(f) o p_morphism_of S g)
+                          (p_morphism_of T h ∘ abf.(f))
+                          (a'b'f'.(f) ∘ p_morphism_of S g)
            with
              | idpath, idpath => gh.(p)
-           end = g'h'.(p).
+           end ≈ g'h'.(p).
     Proof.
       simpl; intros Hg Hh Hp.
       destruct g'h'; simpl in *.
@@ -219,53 +219,53 @@ Module Import LaxCommaCategoryParts.
       reflexivity.
     Qed.
 
-    Definition path_morphism' abf a'b'f'
+    definition path_morphism' abf a'b'f'
                (gh g'h' : morphism abf a'b'f')
-               (Hg : gh.(g) = g'h'.(g))
-               (Hh : gh.(h) = g'h'.(h))
-               (Hp : ((_ oL (Category.Morphisms.idtoiso (_ -> _) (ap (@p_morphism_of _ _ S _ _) Hg) : Category.Core.morphism _ _ _))
-                        o (gh.(p))
-                        o ((Category.Morphisms.idtoiso (_ -> _) (ap (@p_morphism_of _ _ T _ _) Hh) : Category.Core.morphism _ _ _)^-1 oR _)
-                      = g'h'.(p))%natural_transformation)
-    : gh = g'h'
-      := @path_morphism abf a'b'f' gh g'h' Hg Hh
+               (Hg : gh.(g) ≈ g'h'.(g))
+               (Hh : gh.(h) ≈ g'h'.(h))
+               (Hp : ((_ oL (Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ S _ _) Hg) : Category.Core.morphism _ _ _))
+                        ∘ (gh.(p))
+                        ∘ ((Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ T _ _) Hh) : Category.Core.morphism _ _ _)⁻¹ oR _)
+                      ≈ g'h'.(p))%natural_transformation)
+    : gh ≈ g'h' :=
+         @path_morphism abf a'b'f' gh g'h' Hg Hh
                         (@path_morphism'_helper abf a'b'f' gh g'h' Hg Hh Hp).
 
-    Definition path_morphism'_uncurried abf a'b'f' gh g'h'
-               (H : { HgHh : (gh.(g) = g'h'.(g)) * (gh.(h) = g'h'.(h))
-                    | ((_ oL (Category.Morphisms.idtoiso (_ -> _) (ap (@p_morphism_of _ _ S _ _) (fst HgHh)) : Category.Core.morphism _ _ _))
-                         o (gh.(p))
-                         o ((Category.Morphisms.idtoiso (_ -> _) (ap (@p_morphism_of _ _ T _ _) (snd HgHh)) : Category.Core.morphism _ _ _)^-1 oR _)
-                       = g'h'.(p))%natural_transformation })
-    : gh = g'h'
-      := @path_morphism' abf a'b'f' gh g'h' (fst H.1) (snd H.1) H.2.
+    definition path_morphism'_uncurried abf a'b'f' gh g'h'
+               (H : { HgHh : (gh.(g) ≈ g'h'.(g)) × (gh.(h) ≈ g'h'.(h))
+                    | ((_ oL (Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ S _ _) (fst HgHh)) : Category.Core.morphism _ _ _))
+                         ∘ (gh.(p))
+                         ∘ ((Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ T _ _) (snd HgHh)) : Category.Core.morphism _ _ _)⁻¹ oR _)
+                       ≈ g'h'.(p))%natural_transformation })
+    : gh ≈ g'h' :=
+         @path_morphism' abf a'b'f' gh g'h' (fst H.1) (snd H.1) H.2.
 
-    Definition compose s d d'
+    definition compose s d d'
                (gh : morphism d d') (g'h' : morphism s d)
     : morphism s d'.
     Proof.
-      exists (gh.(g) o g'h'.(g)) (gh.(h) o g'h'.(h)).
-      exact ((_ oL (p_composition_of S _ _ _ _ _)^-1)
-               o (associator_1 _ _ _)
-               o (gh.(p) oR _)
-               o (associator_2 _ _ _)
-               o (_ oL g'h'.(p))
-               o (associator_1 _ _ _)
-               o ((p_composition_of T _ _ _ _ _ : Category.Core.morphism _ _ _)
+      exists (gh.(g) ∘ g'h'.(g)) (gh.(h) ∘ g'h'.(h)).
+      exact ((_ oL (p_composition_of S _ _ _ _ _)⁻¹)
+               ∘ (associator_1 _ _ _)
+               ∘ (gh.(p) oR _)
+               ∘ (associator_2 _ _ _)
+               ∘ (_ oL g'h'.(p))
+               ∘ (associator_1 _ _ _)
+               ∘ ((p_composition_of T _ _ _ _ _ : Category.Core.morphism _ _ _)
                     oR _))%natural_transformation.
-    Defined.
+    end-/
 
     Global Arguments compose _ _ _ _ _ / .
 
-    Definition identity x : morphism x x.
-    Proof.
+    definition identity x : morphism x x.
+    /-begin
       exists (identity (x.(a))) (identity (x.(b))).
-      exact ((_ oL (p_identity_of S _ : Category.Core.morphism _ _ _)^-1)
-               o (right_identity_natural_transformation_2 _)
-               o (left_identity_natural_transformation_1 _)
-               o ((p_identity_of T _ : Category.Core.morphism _ _ _)
+      exact ((_ oL (p_identity_of S _ : Category.Core.morphism _ _ _)⁻¹)
+               ∘ (right_identity_natural_transformation_2 _)
+               ∘ (left_identity_natural_transformation_1 _)
+               ∘ ((p_identity_of T _ : Category.Core.morphism _ _ _)
                     oR _))%natural_transformation.
-    Defined.
+    end-/
 
     Global Arguments identity _ / .
   End lax_comma_category_parts.

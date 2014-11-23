@@ -1,4 +1,4 @@
-(** * Adjunctions *)
+/- Adjunctions -/
 Require Import Adjoint.UnitCounit.
 
 Notation Adjunction := AdjunctionUnitCounit.

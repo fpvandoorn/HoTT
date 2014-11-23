@@ -1,11 +1,11 @@
-(** * Profunctors *)
+/- Profunctors -/
 Require Export Profunctor.Notations.
 
-(** ** Definition *)
+/- definition -/
 Require Profunctor.Core.
-(** ** Identity Profunctor *)
+/- Identity Profunctor -/
 Require Profunctor.Identity.
-(** ** Representable Profunctors *)
+/- Representable Profunctors -/
 Require Profunctor.Representable.
 
 Include Profunctor.Core.

@@ -1,71 +1,71 @@
-(** * Category Theory *)
-(** To get all of the category theory library in scope with the proper qualified names, you should [Require Import categories.] or [Require Import HoTT.categories.] *)
+/- Category Theory -/
+/- To get all of the category theory library in scope with the proper qualified names, you should [Require Import categories.] or [Require Import HoTT.categories.] -/
 
-(** First we give modules to all of the kinds of category theory constructions (corresponding to directories), so that we can refer to them as [Category.foo] or [Functor.foo] after [Require Import categories.] *)
-(** ** Categories *)
+/- First we give modules to all of the kinds of category theory constructions (corresponding to directories), so that we can refer to them as [Category.foo] or [Functor.foo] after [Require Import categories.] -/
+/- Categories -/
 Require Category.
-(** ** Functors *)
+/- Functors -/
 Require Functor.
-(** ** Natural Transformations *)
+/- Natural Transformations -/
 Require NaturalTransformation.
-(** ** Functor Categories *)
+/- Functor Categories -/
 Require FunctorCategory.
-(** ** Groupoids *)
+/- Groupoids -/
 Require GroupoidCategory.
-(** ** Precategory of Groupoids *)
+/- Precategory of Groupoids -/
 Require CategoryOfGroupoids.
-(** ** Discrete Categories *)
+/- Discrete Categories -/
 Require DiscreteCategory.
-(** ** Indiscrete Categories *)
+/- Indiscrete Categories -/
 Require IndiscreteCategory.
-(** ** Finite Discrete Categories (natural numbers as categories) *)
+/- Finite Discrete Categories (natural numbers as categories) -/
 Require NatCategory.
-(** ** Initial and Terminal Categories *)
+/- Initial and Terminal Categories -/
 Require InitialTerminalCategory.
-(** ** The Category of Sets *)
+/- The Category of Sets -/
 Require SetCategory.
-(** ** The Hom Functor *)
+/- The Hom Functor -/
 Require HomFunctor.
-(** ** Profunctors *)
+/- Profunctors -/
 Require Profunctor.
-(** ** The Category of Categories *)
+/- The Category of Categories -/
 Require Cat.
-(** ** Laws about Functor Categories *)
+/- Laws about Functor Categories -/
 Require ExponentialLaws.
-(** ** Laws about Product Categories *)
+/- Laws about Product Categories -/
 Require ProductLaws.
-(** ** Comma Categories *)
+/- Comma Categories -/
 Require Comma.
-(** ** Universal Properties and Universal Morphisms *)
+/- Universal Properties and Universal Morphisms -/
 Require UniversalProperties.
-(** ** Kan Extensions *)
+/- Kan Extensions -/
 Require KanExtensions.
-(** ** Adjunctions *)
+/- Adjunctions -/
 Require Adjoint.
-(** ** Limits *)
+/- Limits -/
 Require Limits.
-(** ** Pseudofunctors *)
+/- Pseudofunctors -/
 Require Pseudofunctor.
-(** ** Pseudonatural Transformations *)
+/- Pseudonatural Transformations -/
 Require PseudonaturalTransformation.
-(** ** Duality as a Functor *)
+/- Duality as a Functor -/
 Require DualFunctor.
-(** ** The Grothendieck Construction *)
+/- The Grothendieck Construction -/
 Require Grothendieck.
-(** ** The Category of Sections of a Functor *)
+/- The Category of Sections of a Functor -/
 Require CategoryOfSections.
-(** ** The Dependent Product *)
+/- The Dependent Product -/
 Require DependentProduct.
-(** ** The Yoneda Lemma *)
+/- The Yoneda Lemma -/
 Require Yoneda.
-(** ** The Structure Identity Principle *)
+/- The Structure Identity Principle -/
 Require Structure.
-(** ** Fundamental Pregroupoids *)
+/- Fundamental Pregroupoids -/
 Require FundamentalPreGroupoidCategory.
-(** ** Homotopy PreCategory *)
+/- Homotopy PreCategory -/
 Require HomotopyPreCategory.
 
-(* We bind the record structures for [PreCategory], [IsCategory], [IsStrictCategory], [Functor], and eventually [NaturalTransformation] at top level. *)
+/- We bind the record structures for [PreCategory], [IsCategory], [IsStrictCategory], [Functor], and eventually [NaturalTransformation] at top level. -/
 Include Category.Core.
 Include Category.Strict.
 Include Category.Univalent.
@@ -99,7 +99,7 @@ Include HomotopyPreCategory.
 
 Require Export categories.Notations.
 
-(** Some checks that should pass, if all of the importing went correctly. *)
+/- Some checks that should pass, if all of the importing went correctly. -/
 (*Check PreCategory.
 Check IsStrictCategory _.
 Check Category.compose.
@@ -107,5 +107,5 @@ Check Category.sum.
 Check Category.Sum.sum_compose.
 Check Functor.sum.
 Check Functor.Prod.Core.unique.
-Check (_ o _)%morphism.
-Check (_ o _)%functor.*)
+Check (_ ∘ _)%morphism.
+Check (_ ∘ _)%functor.*)

@@ -1,4 +1,4 @@
-(** * Functors involving product categories *)
+/- Functors involving product categories -/
 Require Import Category.Core Functor.Core Category.Prod Functor.Composition.Core.
 Require Import Functor.Paths.
 Require Import Types.Prod.
@@ -15,47 +15,47 @@ Local Notation pair_type := pair.
 Local Open Scope morphism_scope.
 Local Open Scope functor_scope.
 
-(** ** First and second projections from a product precategory *)
-Section proj.
+/- First and second projections from a product precategory -/
+section proj
   Context {C : PreCategory}.
   Context {D : PreCategory}.
 
-  Definition fst : Functor (C * D) C
-    := Build_Functor (C * D) C
+  definition fst : Functor (C × D) C :=
+       Build_Functor (C × D) C
                      (@fst _ _)
-                     (fun _ _ => @fst _ _)
-                     (fun _ _ _ _ _ => idpath)
-                     (fun _ => idpath).
+                     (λ_ _, @fst _ _)
+                     (λ_ _ _ _ _, idpath)
+                     (λ_, idpath).
 
-  Definition snd : Functor (C * D) D
-    := Build_Functor (C * D) D
+  definition snd : Functor (C × D) D :=
+       Build_Functor (C × D) D
                      (@snd _ _)
-                     (fun _ _ => @snd _ _)
-                     (fun _ _ _ _ _ => idpath)
-                     (fun _ => idpath).
+                     (λ_ _, @snd _ _)
+                     (λ_ _ _ _ _, idpath)
+                     (λ_, idpath).
 End proj.
 
-(** ** Product of two functors from the same domain *)
-Section prod.
+/- Product of two functors from the same domain -/
+section prod
   Variable C : PreCategory.
   Variable D : PreCategory.
   Variable D' : PreCategory.
 
-  Definition prod (F : Functor C D) (F' : Functor C D')
-  : Functor C (D * D')
-    := Build_Functor
-         C (D * D')
-         (fun c => (F c, F' c))
-         (fun s d m => (F _1 m, F' _1 m))
-         (fun _ _ _ _ _ => path_prod' (composition_of F _ _ _ _ _)
+  definition prod (F : Functor C D) (F' : Functor C D')
+  : Functor C (D × D') :=
+       Build_Functor
+         C (D × D')
+         (λc, (F c, F' c))
+         (λs d m, (F _1 m, F' _1 m))
+         (λ_ _ _ _ _, path_prod' (composition_of F _ _ _ _ _)
                                       (composition_of F' _ _ _ _ _))
-         (fun _ => path_prod' (identity_of F _) (identity_of F' _)).
+         (λ_, path_prod' (identity_of F _) (identity_of F' _)).
 End prod.
 
 Local Infix "*" := prod : functor_scope.
 
-(** ** Pairing of two functors *)
-Section pair.
+/- Pairing of two functors -/
+section pair
   Variable C : PreCategory.
   Variable D : PreCategory.
   Variable C' : PreCategory.
@@ -65,19 +65,19 @@ Section pair.
 
   Local Open Scope functor_scope.
 
-  Definition pair : Functor (C * C') (D * D')
-    := (F o fst) * (F' o snd).
+  definition pair : Functor (C × C') (D × D') :=
+       (F ∘ fst) × (F' ∘ snd).
 End pair.
 
 Local Notation "( x , y , .. , z )" := (pair .. (pair x y) .. z) : functor_scope.
 
-(** ** Partially applied functors out of a product precategory *)
-Section induced.
+/- Partially applied functors out of a product precategory -/
+section induced
   Variable C : PreCategory.
   Variable D : PreCategory.
   Variable E : PreCategory.
 
-  Variable F : Functor (C * D) E.
+  Variable F : Functor (C × D) E.
 
   Local Open Scope core_scope.
 
@@ -86,29 +86,29 @@ Section induced.
     repeat (rewrite <- ?composition_of, <- ?identity_of, ?left_identity, ?right_identity; simpl);
     trivial.
 
-  (** Note: This is just the currying exponential law. *)
-  (** TODO: Come up with a better name for this? *)
-  Definition induced_fst (d : D) : Functor C E.
-  Proof.
+  /- Note: This is just the currying exponential law. -/
+  /- TODO: Come up with a better name for this? -/
+  definition induced_fst (d : D) : Functor C E.
+  /-begin
     refine (Build_Functor
               C E
-              (fun c => F (c, d))
-              (fun _ _ m => @morphism_of _ _ F (_, _) (_, _) (m, identity d))
+              (λc, F (c, d))
+              (λ_ _ m, @morphism_of _ _ F (_, _) (_, _) (m, identity d))
               _
               _);
     abstract t.
-  Defined.
+  end-/
 
-  Definition induced_snd (c : C) : Functor D E.
-  Proof.
+  definition induced_snd (c : C) : Functor D E.
+  /-begin
     refine (Build_Functor
               D E
-              (fun d => F (c, d))
-              (fun _ _ m => @morphism_of _ _ F (_, _) (_, _) (identity c, m))
+              (λd, F (c, d))
+              (λ_ _ m, @morphism_of _ _ F (_, _) (_, _) (identity c, m))
               _
               _);
     abstract t.
-  Defined.
+  end-/
 End induced.
 
 Module Export FunctorProdCoreNotations.

@@ -1,4 +1,4 @@
-(** * Definition of a univalent/saturated precategory, or just "category" *)
+/- definition of a univalent/saturated precategory, or just "category" -/
 Require Import Category.Core Category.Morphisms.
 Require Import HoTT.Tactics Trunc.
 
@@ -9,15 +9,15 @@ Set Asymmetric Patterns.
 
 Local Open Scope morphism_scope.
 
-(** A category is a precategory for which [idtoiso] is an equivalence. *)
+/- A category is a precategory for which [idtoiso] is an equivalence. -/
 
-Notation IsCategory C := (forall s d : object C, IsEquiv (@idtoiso C s d)).
+Notation IsCategory C := (Πs d : object C, IsEquiv (@idtoiso C s d)).
 
 Notation isotoid C s d := (@equiv_inv _ _ (@idtoiso C s d) _).
 
-(** *** The objects of a category are a 1-type *)
+/- The objects of a category are a 1-type -/
 
-Global Instance trunc_category `{IsCategory C} : IsTrunc 1 C | 10000.
+definition trunc_category [instance] [H : IsCategory C] : is_trunc 1 C | 10000.
 Proof.
   intros ? ?.
   eapply trunc_equiv';

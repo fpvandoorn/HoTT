@@ -1,4 +1,4 @@
-(** * Notations for profunctors *)
+/- Notations for profunctors -/
 Require Profunctor.Core.
 Require Profunctor.Identity.
 

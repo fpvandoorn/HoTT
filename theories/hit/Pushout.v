@@ -1,80 +1,80 @@
-(* -*- mode: coq; mode: visual-line -*- *)
+/- -*- mode: coq; mode: visual-line -*- -/
 Require Import HoTT.Basics.
-Require Import Types.Paths Types.Forall Types.Sigma Types.Arrow Types.Universe Types.Unit Types.Sum.
+Require Import Types.Paths Types.ΠTypes.Sigma Types.Arrow Types.Universe Types.unit Types.Sum.
 Require Import HSet TruncType.
 Require Import hit.Truncations.
 Local Open Scope path_scope.
 Local Open Scope equiv_scope.
 
-(** * Homotopy Pushouts *)
+/- Homotopy Pushouts -/
 
 (*
 Record Span :=
   { A : Type; B : Type; C : Type;
-    f : C -> A;
-    g : C -> B }.
+    f : C → A;
+    g : C → B }.
 
 Record Cocone (S : Span) (D : Type) :=
-  { i : A S -> D;
-    j : B S -> D;
-    h : forall c, i (f S c) = j (g S c) }.
+  { i : A S → D;
+    j : B S → D;
+    h : Πc, i (f S c) ≈ j (g S c) }.
 *)
 
 Module Export Pushout.
 
-Private Inductive pushout {A B C : Type} (f : A -> B) (g : A -> C) : Type :=
-| push : B + C -> pushout f g.
+Private Inductive pushout {A B C : Type} (f : A → B) (g : A → C) : Type :=
+| push : B + C → pushout f g.
 
 Arguments push {A B C f g} a.
 
-Definition pushl {A B C} {f : A -> B} {g : A -> C} (a : A) : pushout f g := push (inl (f a)).
-Definition pushr {A B C} {f : A -> B} {g : A -> C} (a : A) : pushout f g := push (inr (g a)).
+definition pushl {A B C} {f : A → B} {g : A → C} (a : A) : pushout f g := push (inl (f a)).
+definition pushr {A B C} {f : A → B} {g : A → C} (a : A) : pushout f g := push (inr (g a)).
 
-Axiom pp : forall {A B C f g} (a:A), @pushl A B C f g a = pushr a.
+Axiom pp : Π{A B C f g} (a:A), @pushl A B C f g a ≈ pushr a.
 
-Definition pushout_ind {A B C} (f : A -> B) (g : A -> C) (P : pushout f g -> Type)
-  (push' : forall a : B + C, P (push a))
-  (pp' : forall a : A, (@pp A B C f g a) # (push' (inl (f a))) = push' (inr (g a)))
-  : forall w, P w
-  := fun w => match w with push a => fun _ => push' a end pp'.
+definition pushout_ind {A B C} (f : A → B) (g : A → C) (P : pushout f g → Type)
+  (push' : Πa : B + C, P (push a))
+  (pp' : Πa : A, (@pp A B C f g a) ▹ (push' (inl (f a))) ≈ push' (inr (g a)))
+  : Πw, P w :=
+     λw, match w with push a => λ_, push' a end pp'.
 
 Axiom pushout_ind_beta_pp
-  : forall {A B C f g} (P : @pushout A B C f g -> Type)
-  (push' : forall a : B + C, P (push a))
-  (pp' : forall a : A, (@pp A B C f g a) # (push' (inl (f a))) = push' (inr (g a)))
+  : Π{A B C f g} (P : @pushout A B C f g → Type)
+  (push' : Πa : B + C, P (push a))
+  (pp' : Πa : A, (@pp A B C f g a) ▹ (push' (inl (f a))) ≈ push' (inr (g a)))
   (a : A),
-  apD (pushout_ind f g P push' pp') (pp a) = pp' a.
+  apD (pushout_ind f g P push' pp') (pp a) ≈ pp' a.
 
 End Pushout.
 
-(** ** The non-dependent eliminator *)
+/- The non-dependent eliminator -/
 
-Definition pushout_rec {A B C} {f : A -> B} {g : A -> C} (P : Type)
-  (push' : B + C -> P)
-  (pp' : forall a : A, push' (inl (f a)) = push' (inr (g a)))
-  : @pushout A B C f g -> P
-  := pushout_ind f g (fun _ => P) push' (fun a => transport_const _ _ @ pp' a).
+definition pushout_rec {A B C} {f : A → B} {g : A → C} (P : Type)
+  (push' : B + C → P)
+  (pp' : Πa : A, push' (inl (f a)) ≈ push' (inr (g a)))
+  : @pushout A B C f g → P :=
+     pushout_ind f g (λ_, P) push' (λa, transport_const _ _ ⬝ pp' a).
 
-Definition pushout_rec_beta_pp {A B C f g} (P : Type)
-  (push' : B + C -> P)
-  (pp' : forall a : A, push' (inl (f a)) = push' (inr (g a)))
+definition pushout_rec_beta_pp {A B C f g} (P : Type)
+  (push' : B + C → P)
+  (pp' : Πa : A, push' (inl (f a)) ≈ push' (inr (g a)))
   (a : A)
-  : ap (pushout_rec P push' pp') (pp a) = pp' a.
-Proof.
+  : ap (pushout_rec P push' pp') (pp a) ≈ pp' a.
+/-begin
   unfold pushout_rec.
   eapply (cancelL (transport_const (pp a) _)).
-  refine ((apD_const (@pushout_ind A B C f g (fun _ => P) push' _) (pp a))^ @ _).
-  refine (pushout_ind_beta_pp (fun _ => P) _ _ _).
-Defined.
+  refine ((apD_const (@pushout_ind A B C f g (λ_, P) push' _) (pp a))⁻¹ ⬝ _).
+  refine (pushout_ind_beta_pp (λ_, P) _ _ _).
+end-/
 
-(** ** Cones of hsets *)
+/- Cones of hsets -/
 
-Section SetCone.
-  Context {A B : hSet} (f : A -> B).
+section SetCone
+  Context {A B : hSet} (f : A → B).
 
-  Definition setcone := Trunc 0 (pushout f (const tt)).
+  definition setcone := Trunc 0 (pushout f (const star)).
 
-  Global Instance istrunc_setcone : IsHSet setcone := _.
+  definition istrunc_setcone [instance] : IsHSet setcone := _.
 
-  Definition setcone_point : setcone := tr (push (inr tt)).
+  definition setcone_point : setcone := tr (push (inr star)).
 End SetCone.

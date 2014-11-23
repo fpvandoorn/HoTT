@@ -1,4 +1,4 @@
-(** * Dependent Product; oplax limit of a functor to Cat *)
+/- Dependent Product; oplax limit of a functor to Cat -/
 Require Import Category.Core Functor.Core.
 Require Import Cat.Core.
 Require Grothendieck.ToCat.
@@ -11,18 +11,18 @@ Set Asymmetric Patterns.
 
 Local Open Scope functor_scope.
 
-Section dependent_product.
-  Context `{Funext}.
+section dependent_product
+  Context [H : Funext].
   Variable C : PreCategory.
-  Variable P : PreCategory -> Type.
-  (*Context `{forall C, IsHProp (P C)}.*)
-  Context `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}.
+  Variable P : PreCategory → Type.
+  (*Context [H : ΠC, is_hprop (P C)].*)
+  Context {HF : ΠC D, P C → P D → IsHSet (Functor C D)}.
 
   Local Notation cat := (@sub_pre_cat _ P HF).
 
   Variable F : Functor C cat.
 
-  (** Quoting http://mathoverflow.net/questions/137689/explicit-description-of-the-oplax-limit-of-a-functor-to-cat:
+  /- Quoting http://mathoverflow.net/questions/137689/explicit-description-of-the-oplax-limit-of-a-functor-to-cat:
 
       The oplax limit is the category of sections for the functor from
       the Grothendieck construction to the base category.
@@ -39,10 +39,10 @@ Section dependent_product.
       construction by [Gr F].
 
       There is a canonical functor [π : Gr F → X]. Sections of this
-      functor are functors [s : X → Gr F] such that [s ∘ π = id]. *)
+      functor are functors [s : X → Gr F] such that [s ∘ π ≈ id]. -/
 
-  Definition dependent_product : PreCategory
-    := category_of_sections (Grothendieck.ToCat.pr1 F).
+  definition dependent_product : PreCategory :=
+       category_of_sections (Grothendieck.ToCat.dpr1 F).
 End dependent_product.
 
 Notation Pi := dependent_product.

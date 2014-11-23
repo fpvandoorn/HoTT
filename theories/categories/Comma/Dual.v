@@ -1,4 +1,4 @@
-(** * Opposite comma categories *)
+/- Opposite comma categories -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Category.Dual Functor.Dual NaturalTransformation.Dual.
 Require Import Functor.Composition.Core Functor.Identity Functor.Paths.
@@ -14,9 +14,9 @@ Local Open Scope morphism_scope.
 Local Open Scope category_scope.
 Local Open Scope functor_scope.
 
-(** ** The dual functors [(S / T) ↔ ((Tᵒᵖ / Sᵒᵖ)ᵒᵖ)] *)
-Section opposite.
-  Section op.
+/- The dual functors [(S / T) ↔ ((Tᵒᵖ / Sᵒᵖ)ᵒᵖ)] -/
+section opposite
+  section op
     Variable A : PreCategory.
     Variable B : PreCategory.
     Variable C : PreCategory.
@@ -24,30 +24,30 @@ Section opposite.
     Variable S : Functor A C.
     Variable T : Functor B C.
 
-    Local Notation obj_of x
-      := (CommaCategory.Build_object (T^op) (S^op) _ _ (CommaCategory.f x)
-          : object ((T^op / S^op)^op)).
+    Local Notation obj_of x :=
+         (CommaCategory.Build_object (T⁻¹op) (S⁻¹op) _ _ (CommaCategory.f x)
+          : object ((T⁻¹op / S⁻¹op)⁻¹op)).
 
-    Local Notation mor_of s d m
-      := (CommaCategory.Build_morphism'
+    Local Notation mor_of s d m :=
+         (CommaCategory.Build_morphism'
             (obj_of d) (obj_of s)
             (CommaCategory.h m%morphism)
             (CommaCategory.g m%morphism)
             (CommaCategory.p_sym m%morphism)
             (CommaCategory.p m%morphism)
-          : morphism ((T^op / S^op)^op) (obj_of s) (obj_of d)).
+          : morphism ((T⁻¹op / S⁻¹op)⁻¹op) (obj_of s) (obj_of d)).
 
-    Definition dual_functor : Functor (S / T) ((T^op / S^op)^op)
-      := Build_Functor
-           (S / T) ((T^op / S^op)^op)
-           (fun x => obj_of x)
-           (fun s d m => mor_of s d m)
-           (fun _ _ _ _ _ => 1%path)
-           (fun _ => 1%path).
+    definition dual_functor : Functor (S / T) ((T⁻¹op / S⁻¹op)⁻¹op) :=
+         Build_Functor
+           (S / T) ((T⁻¹op / S⁻¹op)⁻¹op)
+           (λx, obj_of x)
+           (λs d m, mor_of s d m)
+           (λ_ _ _ _ _, 1%path)
+           (λ_, 1%path).
   End op.
 
-  Definition dual_functor_involutive A B C (S : Functor A C) (T : Functor B C)
-  : dual_functor S T o (dual_functor T^op S^op)^op = 1
-    /\ (dual_functor T^op S^op)^op o dual_functor S T = 1
-    := (idpath, idpath)%core.
+  definition dual_functor_involutive A B C (S : Functor A C) (T : Functor B C)
+  : dual_functor S T ∘ (dual_functor T⁻¹op S⁻¹op)⁻¹op ≈ 1
+    /\ (dual_functor T⁻¹op S⁻¹op)⁻¹op ∘ dual_functor S T ≈ 1 :=
+       (idpath, idpath)%core.
 End opposite.

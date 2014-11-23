@@ -1,4 +1,4 @@
-(** * Laws about composition of functors *)
+/- Laws about composition of functors -/
 Require Import Category.Core Functor.Core Functor.Identity Functor.Composition.Core NaturalTransformation.Core NaturalTransformation.Identity NaturalTransformation.Composition.Core NaturalTransformation.Paths.
 
 Set Universe Polymorphism.
@@ -9,40 +9,40 @@ Set Asymmetric Patterns.
 Local Open Scope morphism_scope.
 Local Open Scope natural_transformation_scope.
 
-Section natural_transformation_identity.
-  Context `{Funext}.
+section natural_transformation_identity
+  Context [H : Funext].
 
   Variable C : PreCategory.
   Variable D : PreCategory.
 
-  (** ** left identity : [1 ∘ T = T] *)
+  /- left identity : [1 ∘ T ≈ T] -/
   Lemma left_identity (F F' : Functor C D)
         (T : NaturalTransformation F F')
-  : 1 o T = T.
+  : 1 ∘ T ≈ T.
   Proof.
     path_natural_transformation; auto with morphism.
   Qed.
 
-  (** ** right identity : [T ∘ 1 = T] *)
+  /- right identity : [T ∘ 1 ≈ T] -/
   Lemma right_identity (F F' : Functor C D)
         (T : NaturalTransformation F F')
-  : T o 1 = T.
+  : T ∘ 1 ≈ T.
   Proof.
     path_natural_transformation; auto with morphism.
   Qed.
 
-  (** ** right whisker left identity : [1 ∘ᴿ F = 1] *)
-  Definition whisker_r_left_identity E
+  /- right whisker left identity : [1 ∘ᴿ F ≈ 1] -/
+  definition whisker_r_left_identity E
              (G : Functor D E) (F : Functor C D)
-  : identity G oR F = 1.
+  : identity G oR F ≈ 1.
   Proof.
     path_natural_transformation; auto with morphism.
   Qed.
 
-  (** ** left whisker right identity : [G ∘ᴸ 1 = 1] *)
-  Definition whisker_l_right_identity E
+  /- left whisker right identity : [G ∘ᴸ 1 ≈ 1] -/
+  definition whisker_l_right_identity E
              (G : Functor D E) (F : Functor C D)
-  : G oL identity F = 1.
+  : G oL identity F ≈ 1.
   Proof.
     path_natural_transformation; auto with functor.
   Qed.
@@ -51,11 +51,11 @@ End natural_transformation_identity.
 Hint Rewrite @left_identity @right_identity : category.
 Hint Rewrite @left_identity @right_identity : natural_transformation.
 
-Section whisker.
-  Context `{fs : Funext}.
+section whisker
+  Context {fs : Funext}.
 
-  (** ** whisker exchange law : [(G' ∘ᴸ T) ∘ (T' ∘ᴿ F) = (T' ∘ᴿ F') ∘ (G ∘ᴸ T)] *)
-  Section exch.
+  /- whisker exchange law : [(G' ∘ᴸ T) ∘ (T' ∘ᴿ F) ≈ (T' ∘ᴿ F') ∘ (G ∘ᴸ T)] -/
+  section exch
     Variable C : PreCategory.
     Variable D : PreCategory.
     Variable E : PreCategory.
@@ -65,7 +65,7 @@ Section whisker.
     Variable T : NaturalTransformation F F'.
 
     Lemma exchange_whisker
-    : (G' oL T) o (T' oR F) = (T' oR F') o (G oL T).
+    : (G' oL T) ∘ (T' oR F) ≈ (T' oR F') ∘ (G oL T).
     Proof.
       path_natural_transformation; simpl.
       symmetry.
@@ -73,32 +73,32 @@ Section whisker.
     Qed.
   End exch.
 
-  Section whisker.
+  section whisker
     Variable C : PreCategory.
     Variable D : PreCategory.
     Variables F G H : Functor C D.
     Variable T : NaturalTransformation G H.
     Variable T' : NaturalTransformation F G.
 
-    (** ** left whisker composition : [F ∘ᴸ (T ∘ T') = (F ∘ᴸ T) ∘ (F ∘ᴸ T')] *)
+    /- left whisker composition : [F ∘ᴸ (T ∘ T') ≈ (F ∘ᴸ T) ∘ (F ∘ᴸ T')] -/
     Lemma composition_of_whisker_l E (I : Functor D E)
-    : I oL (T o T') = (I oL T) o (I oL T').
+    : I oL (T ∘ T') ≈ (I oL T) ∘ (I oL T').
     Proof.
       path_natural_transformation; apply composition_of.
     Qed.
 
-    (** ** right whisker composition : [(T ∘ T') ∘ᴿ F = (T ∘ᴿ F) ∘ (T' ∘ᴿ F)] *)
+    /- right whisker composition : [(T ∘ T') ∘ᴿ F ≈ (T ∘ᴿ F) ∘ (T' ∘ᴿ F)] -/
     Lemma composition_of_whisker_r B (I : Functor B C)
-    : (T o T') oR I = (T oR I) o (T' oR I).
+    : (T ∘ T') oR I ≈ (T oR I) ∘ (T' oR I).
     Proof.
       path_natural_transformation; apply idpath.
     Qed.
   End whisker.
 End whisker.
 
-Section associativity.
-  (** ** associators - natural transformations between [F ∘ (G ∘ H)] and [(F ∘ G) ∘ H] *)
-  Section functors.
+section associativity
+  /- associators - natural transformations between [F ∘ (G ∘ H)] and [(F ∘ G) ∘ H] -/
+  section functors
     Variable B : PreCategory.
     Variable C : PreCategory.
     Variable D : PreCategory.
@@ -107,30 +107,30 @@ Section associativity.
     Variable G : Functor C D.
     Variable H : Functor B C.
 
-    Local Notation F0 := ((F o G) o H)%functor.
-    Local Notation F1 := (F o (G o H))%functor.
+    Local Notation F0 := ((F ∘ G) ∘ H)%functor.
+    Local Notation F1 := (F ∘ (G ∘ H))%functor.
 
-    Definition associator_1 : NaturalTransformation F0 F1
-      := Eval simpl in
+    definition associator_1 : NaturalTransformation F0 F1 :=
+         Eval simpl in
           generalized_identity F0 F1 idpath idpath.
 
-    Definition associator_2 : NaturalTransformation F1 F0
-      := Eval simpl in
+    definition associator_2 : NaturalTransformation F1 F0 :=
+         Eval simpl in
           generalized_identity F1 F0 idpath idpath.
   End functors.
 
-  (** ** associativity : [(T ∘ U) ∘ V = T ∘ (U ∘ V)] *)
-  Section nt.
-    Context `{fs : Funext}.
+  /- associativity : [(T ∘ U) ∘ V ≈ T ∘ (U ∘ V)] -/
+  section nt
+    Context {fs : Funext}.
 
     Local Open Scope natural_transformation_scope.
 
-    Definition associativity
+    definition associativity
                C D F G H I
                (V : @NaturalTransformation C D F G)
                (U : @NaturalTransformation C D G H)
                (T : @NaturalTransformation C D H I)
-    : (T o U) o V = T o (U o V).
+    : (T ∘ U) ∘ V ≈ T ∘ (U ∘ V).
     Proof.
       path_natural_transformation.
       apply associativity.
@@ -138,8 +138,8 @@ Section associativity.
   End nt.
 End associativity.
 
-Section functor_identity.
-  Context `{Funext}.
+section functor_identity
+  Context [H : Funext].
 
   Variable C : PreCategory.
   Variable D : PreCategory.
@@ -147,44 +147,44 @@ Section functor_identity.
   Local Ltac nt_id_t := split; path_natural_transformation;
                         autorewrite with morphism; reflexivity.
 
-  (** ** left unitors : natural transformations between [1 ∘ F] and [F] *)
-  Section left.
+  /- left unitors : natural transformations between [1 ∘ F] and [F] -/
+  section left
     Variable F : Functor D C.
 
-    Definition left_identity_natural_transformation_1
-    : NaturalTransformation (1 o F) F
-      := Eval simpl in generalized_identity (1 o F) F idpath idpath.
-    Definition left_identity_natural_transformation_2
-    : NaturalTransformation F (1 o F)
-      := Eval simpl in generalized_identity F (1 o F) idpath idpath.
+    definition left_identity_natural_transformation_1
+    : NaturalTransformation (1 ∘ F) F :=
+         Eval simpl in generalized_identity (1 ∘ F) F idpath idpath.
+    definition left_identity_natural_transformation_2
+    : NaturalTransformation F (1 ∘ F) :=
+         Eval simpl in generalized_identity F (1 ∘ F) idpath idpath.
 
     Theorem left_identity_isomorphism
-    : left_identity_natural_transformation_1 o left_identity_natural_transformation_2 = 1
-      /\ left_identity_natural_transformation_2 o left_identity_natural_transformation_1 = 1.
+    : left_identity_natural_transformation_1 ∘ left_identity_natural_transformation_2 ≈ 1
+      /\ left_identity_natural_transformation_2 ∘ left_identity_natural_transformation_1 ≈ 1.
     Proof.
       nt_id_t.
     Qed.
   End left.
 
-  (** ** right unitors : natural transformations between [F ∘ 1] and [F] *)
-  Section right.
+  /- right unitors : natural transformations between [F ∘ 1] and [F] -/
+  section right
     Variable F : Functor C D.
 
-    Definition right_identity_natural_transformation_1 : NaturalTransformation (F o 1) F
-      := Eval simpl in generalized_identity (F o 1) F idpath idpath.
-    Definition right_identity_natural_transformation_2 : NaturalTransformation F (F o 1)
-      := Eval simpl in generalized_identity F (F o 1) idpath idpath.
+    definition right_identity_natural_transformation_1 : NaturalTransformation (F ∘ 1) F :=
+         Eval simpl in generalized_identity (F ∘ 1) F idpath idpath.
+    definition right_identity_natural_transformation_2 : NaturalTransformation F (F ∘ 1) :=
+         Eval simpl in generalized_identity F (F ∘ 1) idpath idpath.
 
     Theorem right_identity_isomorphism
-    : right_identity_natural_transformation_1 o right_identity_natural_transformation_2 = 1
-      /\ right_identity_natural_transformation_2 o right_identity_natural_transformation_1 = 1.
+    : right_identity_natural_transformation_1 ∘ right_identity_natural_transformation_2 ≈ 1
+      /\ right_identity_natural_transformation_2 ∘ right_identity_natural_transformation_1 ≈ 1.
     Proof.
       nt_id_t.
     Qed.
   End right.
 End functor_identity.
 
-(** ** Tactics for inserting appropriate associators, whiskers, and unitors *)
+/- Tactics for inserting appropriate associators, whiskers, and unitors -/
 Ltac nt_solve_associator' :=
   repeat match goal with
            | _ => exact (associator_1 _ _ _)
@@ -193,9 +193,9 @@ Ltac nt_solve_associator' :=
            | _ => exact (left_identity_natural_transformation_2 _)
            | _ => exact (right_identity_natural_transformation_1 _)
            | _ => exact (right_identity_natural_transformation_2 _)
-           | [ |- NaturalTransformation (?F o _) (?F o _) ] =>
+           | [ |- NaturalTransformation (?F ∘ _) (?F ∘ _) ] =>
              refine (whisker_l F _)
-           | [ |- NaturalTransformation (_ o ?F) (_ o ?F) ] =>
+           | [ |- NaturalTransformation (_ ∘ ?F) (_ ∘ ?F) ] =>
              refine (whisker_r _ F)
          end.
 Ltac nt_solve_associator :=

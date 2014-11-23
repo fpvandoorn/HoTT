@@ -1,4 +1,4 @@
-(** * Dependent Product Category *)
+/- Dependent Product Category -/
 Require Import Category.Core Category.Strict.
 Require Import Types.Forall.
 
@@ -10,18 +10,18 @@ Set Asymmetric Patterns.
 Local Open Scope category_scope.
 Local Open Scope morphism_scope.
 
-(** ** Definition of [∀], or [∏], for categories *)
-Section pi.
-  Context `{Funext}.
+/- definition of [∀], or [∏], for categories -/
+section pi
+  Context [H : Funext].
   Variable A : Type.
-  Variable P : A -> PreCategory.
+  Variable P : A → PreCategory.
 
-  Definition pi : PreCategory.
+  definition pi : PreCategory.
     refine (@Build_PreCategory
-              (forall a : A, P a)
-              (fun s d => forall a : A, morphism (P a) (s a) (d a))
-              (fun x => fun a => identity (x a))
-              (fun s d d' m2 m1 => fun a => m2 a o m1 a)
+              (Πa : A, P a)
+              (λs d, Πa : A, morphism (P a) (s a) (d a))
+              (λx, λa, identity (x a))
+              (λs d d' m2 m1, λa, m2 a ∘ m1 a)
               _
               _
               _
@@ -33,27 +33,27 @@ Section pi.
   Defined.
 End pi.
 
-Local Notation "'forall'  x .. y , P" := (forall x, .. (forall y, P) ..)
+Local Notation "'forall'  x .. y , P" := (Πx, .. (Πy, P) ..)
   (at level 200, x binder, y binder, right associativity).
-Local Notation "'forall'  x .. y , P" := (forall x, .. (forall y, P) ..)
+Local Notation "'forall'  x .. y , P" := (Πx, .. (Πy, P) ..)
   (at level 200, x binder, y binder, right associativity) : type_scope.
-Local Notation "'forall'  x .. y , P" := (pi (fun x => .. (pi (fun y => P)) .. ))
+Local Notation "'forall'  x .. y , P" := (pi (λx, .. (pi (λy, P)) .. ))
   (at level 200, x binder, y binder, right associativity) : category_scope.
 
-(** ** The product of strict categories is strict *)
+/- The product of strict categories is strict -/
 Global Instance isstrict_category_pi
-       `{Funext}
-       `{forall a : A, IsStrictCategory (P a)}
-: IsStrictCategory (forall a, P a).
+       [H : Funext]
+       {Πa : A, IsStrictCategory (P a)}
+: IsStrictCategory (Πa, P a).
 Proof.
   typeclasses eauto.
 Qed.
 
 Module Export CategoryPiNotations.
-  Notation "'forall'  x .. y , P" := (forall x, .. (forall y, P) ..)
+  Notation "'forall'  x .. y , P" := (Πx, .. (Πy, P) ..)
                                        (at level 200, x binder, y binder, right associativity).
-  Notation "'forall'  x .. y , P" := (forall x, .. (forall y, P) ..)
+  Notation "'forall'  x .. y , P" := (Πx, .. (Πy, P) ..)
                                        (at level 200, x binder, y binder, right associativity) : type_scope.
-  Notation "'forall'  x .. y , P" := (pi (fun x => .. (pi (fun y => P)) .. ))
+  Notation "'forall'  x .. y , P" := (pi (λx, .. (pi (λy, P)) .. ))
                                        (at level 200, x binder, y binder, right associativity) : category_scope.
 End CategoryPiNotations.

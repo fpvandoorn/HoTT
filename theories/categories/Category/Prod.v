@@ -1,4 +1,4 @@
-(** * Product Category *)
+/- Product Category -/
 Require Import Category.Core Category.Strict.
 Require Import Types.Prod.
 
@@ -10,18 +10,18 @@ Set Asymmetric Patterns.
 Local Open Scope category_scope.
 Local Open Scope morphism_scope.
 
-(** ** Definition of [*] for categories *)
-Section prod.
+/- definition of [*] for categories -/
+section prod
   Variable C : PreCategory.
   Variable D : PreCategory.
 
-  Definition prod : PreCategory.
+  definition prod : PreCategory.
     refine (@Build_PreCategory
-              (C * D)%type
-              (fun s d => (morphism C (fst s) (fst d)
-                           * morphism D (snd s) (snd d))%type)
-              (fun x => (identity (fst x), identity (snd x)))
-              (fun s d d' m2 m1 => (fst m2 o fst m1, snd m2 o snd m1))
+              (C × D)%type
+              (λs d, (morphism C (fst s) (fst d)
+                           × morphism D (snd s) (snd d))%type)
+              (λx, (identity (fst x), identity (snd x)))
+              (λs d d' m2 m1, (fst m2 ∘ fst m1, snd m2 ∘ snd m1))
               _
               _
               _
@@ -35,10 +35,10 @@ End prod.
 
 Local Infix "*" := prod : category_scope.
 
-(** ** The product of strict categories is strict *)
+/- The product of strict categories is strict -/
 Global Instance isstrict_category_product
-       `{IsStrictCategory C, IsStrictCategory D}
-: IsStrictCategory (C * D).
+       [H : IsStrictCategory C, IsStrictCategory D]
+: IsStrictCategory (C × D).
 Proof.
   typeclasses eauto.
 Qed.

@@ -1,5 +1,5 @@
-(** * The law that exponentiation distributes over product *)
-(** ** [(y × z)ⁿ ≅ yⁿ × zⁿ] *)
+/- The law that exponentiation distributes over product -/
+/- [(y × z)ⁿ ≅ yⁿ × zⁿ] -/
 Require ExponentialLaws.Law3.Functors.
 Require ExponentialLaws.Law3.Law.
 

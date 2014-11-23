@@ -1,4 +1,4 @@
-(** * Unicode notations for categories *)
+/- Unicode notations for categories -/
 Require Import Category.Core Category.Morphisms Category.Dual Category.Prod Category.Sum Category.Pi.
 Require Export Category.Notations.
 
@@ -10,13 +10,13 @@ Notation "x ↠ y" := (Epimorphism x y)
 Notation "x ↪ y" := (Monomorphism x y)
                       (at level 99, right associativity, y at level 200).
 
-(** It would be nice to put [, format "C 'ᵒᵖ'"] here, but that makes
-    this notation unparseable. *)
+/- It would be nice to put [, format "C 'ᵒᵖ'"] here, but that makes
+    this notation unparseable. -/
 Notation "C 'ᵒᵖ'" := (opposite C) (at level 3) : category_scope.
 
-Notation "∀  x .. y , P" := (forall x, .. (forall y, P) ..)
+Notation "∀  x .. y , P" := (Πx, .. (Πy, P) ..)
                               (at level 200, x binder, y binder, right associativity).
-Notation "∀  x .. y , P" := (forall x, .. (forall y, P) ..)
+Notation "∀  x .. y , P" := (Πx, .. (Πy, P) ..)
                               (at level 200, x binder, y binder, right associativity) : type_scope.
-Notation "∀  x .. y , P" := (pi (fun x => .. (pi (fun y => P)) .. ))
+Notation "∀  x .. y , P" := (pi (λx, .. (pi (λy, P)) .. ))
                               (at level 200, x binder, y binder, right associativity) : category_scope.

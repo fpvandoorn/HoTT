@@ -1,9 +1,9 @@
-(** * Functors involving product categories, and their properties *)
-(** ** Definitions of various functors *)
+/- Functors involving product categories, and their properties -/
+/- Definitions of various functors -/
 Require Functor.Prod.Core.
-(** ** Universal property *)
+/- Universal property -/
 Require Functor.Prod.Universal.
-(** ** Functoriality *)
+/- Functoriality -/
 Require Functor.Prod.Functorial.
 
 Include Functor.Prod.Core.

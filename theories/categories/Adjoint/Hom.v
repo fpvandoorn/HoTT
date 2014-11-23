@@ -1,4 +1,4 @@
-(** * Hom-Set Adjunctions *)
+/- Hom-Set Adjunctions -/
 Require Import Category.Core Functor.Core.
 Require Import Adjoint.Core Adjoint.UnitCounit.
 Require Import FunctorCategory.Core Category.Morphisms.
@@ -20,8 +20,8 @@ Local Open Scope category_scope.
 Local Open Scope functor_scope.
 Local Open Scope natural_transformation_scope.
 
-Section Adjunction.
-  Context `{Funext}.
+section Adjunction
+  Context [H : Funext].
   Variable C : PreCategory.
   Variable D : PreCategory.
   Variable F : Functor C D.
@@ -51,14 +51,14 @@ Section Adjunction.
 >>
      *)
 
-  (** We want to [simpl] out the notation machinery *)
+  /- We want to [simpl] out the notation machinery -/
   Local Opaque NaturalIsomorphism.
 
-  Let Adjunction_Type := Eval simpl in hom_functor D o (F^op, 1) <~=~> hom_functor C o (1, G).
+  Let Adjunction_Type := Eval simpl in hom_functor D ∘ (F⁻¹op, 1) <~=~> hom_functor C ∘ (1, G).
   (*Let Adjunction_Type := Eval simpl in HomFunctor D ⟨ F ⟨ 1 ⟩ , 1 ⟩ ≅ HomFunctor C ⟨ 1 , G ⟨ 1 ⟩ ⟩.*)
   (*Set Printing All.
   Print Adjunction_Type.*)
-  (** Just putting in [Adjunction_Type] breaks [AMateOf] *)
+  /- Just putting in [Adjunction_Type] breaks [AMateOf] -/
 
   Record AdjunctionHom :=
     {

@@ -1,7 +1,7 @@
-(** A convenience file that loads most of the HoTT library.
+/- A convenience file that loads most of the HoTT library.
     You can use it with "Require Import HoTT" in your files.
     But please do not use it in the HoTT library itself, or
-    you are likely going to create a dependency loop. *)
+    you are likely going to create a dependency loop. -/
 
 Require Export HoTT.Basics.
 
@@ -41,4 +41,4 @@ Require Export hit.Nullification.
 
 Require Export HoTT.Tactics.
 
-(** We do _not_ export [UnivalenceAxiom], [FunextAxiom], [UnivalenceImpliesFunext], or [hit.IntervalImpliesFunext] from this file; thus importing it does not prevent you from tracking usage of [Univalence] and [Funext] theorem-by-theorem in the same way that the library does.  If you want any of those files, you should import them separately. *)
+/- We do _not_ export [UnivalenceAxiom], [FunextAxiom], [UnivalenceImpliesFunext], or [hit.IntervalImpliesFunext] from this file; thus importing it does not prevent you from tracking usage of [Univalence] and [Funext] theorem-by-theorem in the same way that the library does.  If you want any of those files, you should import them separately. -/

@@ -1,116 +1,116 @@
-(* -*- mode: coq; mode: visual-line -*- *)
-(** * Theorems about the unit type *)
+/- -*- mode: coq; mode: visual-line -*- -/
+/- Theorems about the unit type -/
 
 Require Import HoTT.Basics.
 Local Open Scope path_scope.
 Local Open Scope equiv_scope.
 Generalizable Variables A.
 
-(** ** Eta conversion *)
+/- Eta conversion -/
 
-Definition eta_unit (z : Unit) : tt = z
-  := match z with tt => 1 end.
+definition eta_unit (z : unit) : star ≈ z :=
+     match z with star => 1 end.
 
-(** ** Paths *)
+/- Paths -/
 
-(* This is all kind of ridiculous, but it fits the pattern. *)
+/- This is all kind of ridiculous, but it fits the pattern. -/
 
-Definition path_unit_uncurried (z z' : Unit) : Unit -> z = z'
-  := fun _ => match z, z' with tt, tt => 1 end.
+definition path_unit_uncurried (z z' : unit) : unit → z ≈ z' :=
+     λ_, match z, z' with star, star => 1 end.
 
-Definition path_unit (z z' : Unit) : z = z'
-  := path_unit_uncurried z z' tt.
+definition path_unit (z z' : unit) : z ≈ z' :=
+     path_unit_uncurried z z' star.
 
-Definition eta_path_unit {z z' : Unit} (p : z = z') :
-  path_unit z z' = p.
-Proof.
+definition eta_path_unit {z z' : unit} (p : z ≈ z') :
+  path_unit z z' ≈ p.
+/-begin
   destruct p. destruct z. reflexivity.
-Defined.
+end-/
 
-Global Instance isequiv_path_unit (z z' : Unit) : IsEquiv (path_unit_uncurried z z') | 0.
-  refine (BuildIsEquiv _ _ (path_unit_uncurried z z') (fun _ => tt)
-    (fun p:z=z' =>
-      match p in (_ = z') return (path_unit_uncurried z z' tt = p) with
-        | idpath => match z as z return (path_unit_uncurried z z tt = 1) with
-                    | tt => 1
+definition isequiv_path_unit [instance] (z z' : unit) : IsEquiv (path_unit_uncurried z z') | 0.
+  refine (BuildIsEquiv _ _ (path_unit_uncurried z z') (λ_, star)
+    (λp:z=z',
+      match p in (_ ≈ z') return (path_unit_uncurried z z' star ≈ p) with
+        | idpath => match z as z return (path_unit_uncurried z z star ≈ 1) with
+                    | star => 1
                   end
       end)
-    (fun x => match x with tt => 1 end) _).
+    (λx, match x with star => 1 end) _).
   intros []; destruct z, z'; reflexivity.
 Defined.
 
-Definition equiv_path_unit (z z' : Unit) : Unit <~> (z = z')
-  := BuildEquiv _ _ (path_unit_uncurried z z') _.
+definition equiv_path_unit (z z' : unit) : unit ≃ (z ≈ z') :=
+     BuildEquiv _ _ (path_unit_uncurried z z') _.
 
-(** ** Transport *)
+/- Transport -/
 
-(** Is a special case of transporting in a constant fibration. *)
+/- Is a special case of transporting in a constant fibration. -/
 
-(** ** Universal mapping properties *)
+/- Universal mapping properties -/
 
-(* The positive universal property *)
+/- The positive universal property -/
 Arguments Unit_ind [A] a u : rename.
 
-Global Instance isequiv_unit_ind `{Funext} (A : Type) : IsEquiv (@Unit_ind (fun _ => A)) | 0
-  := isequiv_adjointify _
-  (fun f : Unit -> A => f tt)
-  (fun f : Unit -> A => path_forall (@Unit_ind (fun _ => A) (f tt)) f
-                                    (fun x => match x with tt => 1 end))
-  (fun _ => 1).
+definition isequiv_unit_ind [instance] [H : Funext] (A : Type) : IsEquiv (@Unit_ind (λ_, A)) | 0 :=
+     isequiv_adjointify _
+  (λf : unit → A, f star)
+  (λf : unit → A, path_Π(@Unit_ind (λ_, A) (f star)) f
+                                    (λx, match x with star => 1 end))
+  (λ_, 1).
 
-(* For various reasons, it is typically more convenient to define functions out of the unit as constant maps, rather than [Unit_ind]. *)
-Notation unit_name x := (fun (_ : Unit) => x).
+/- For various reasons, it is typically more convenient to define functions out of the unit as constant maps, rather than [Unit_ind]. -/
+Notation unit_name x := (λ(_ : unit), x).
 
-Global Instance isequiv_unit_name `{Funext} (A : Type)
-: IsEquiv (fun (a:A) => unit_name a).
-Proof.
-  refine (isequiv_adjointify _ (fun f => f tt) _ _).
+definition isequiv_unit_name [instance] [H : Funext] (A : Type)
+: IsEquiv (λ(a:A), unit_name a).
+/-begin
+  refine (isequiv_adjointify _ (λf, f star) _ _).
   - intros f; apply path_forall; intros x.
     apply ap, path_unit.
   - intros a; reflexivity.
-Defined.
+end-/
 
-(* The negative universal property *)
-Definition unit_coind {A : Type} : Unit -> (A -> Unit)
-  := fun _ _ => tt.
+/- The negative universal property -/
+definition unit_coind {A : Type} : unit → (A → unit) :=
+     λ_ _, star.
 
-Global Instance isequiv_unit_coind `{Funext} (A : Type) : IsEquiv (@unit_coind A) | 0
-  := isequiv_adjointify _
-  (fun f => tt)
+definition isequiv_unit_coind [instance] [H : Funext] (A : Type) : IsEquiv (@unit_coind A) | 0 :=
+     isequiv_adjointify _
+  (λf, star)
   _ _.
-Proof.
+/-begin
   - intro f. apply path_forall; intros x; apply path_unit.
   - intro x; destruct x; reflexivity.
-Defined.
+end-/
 
-Definition equiv_unit_coind `{Funext} (A : Type)
-  : Unit <~> (A -> Unit)
-  := BuildEquiv _ _ (@unit_coind A) _.
+definition equiv_unit_coind [H : Funext] (A : Type)
+  : unit ≃ (A → unit) :=
+     BuildEquiv _ _ (@unit_coind A) _.
 
-(** ** Truncation *)
+/- Truncation -/
 
-(* The Unit type is contractible *)
-(** Because [Contr] is a notation, and [Contr_internal] is the record, we need to iota expand to fool Coq's typeclass machinery into accepting supposedly "mismatched" contexts. *)
-Global Instance contr_unit : Contr Unit | 0 := let x := {|
-  center := tt;
-  contr := fun t : Unit => match t with tt => 1 end
+/- The unit type is contractible -/
+/- Because [Contr] is a notation, and [Contr_internal] is the record, we need to iota expand to fool Coq's typeclass machinery into accepting supposedly "mismatched" contexts. -/
+definition contr_unit [instance] : is_contr unit | 0 := let x := {|
+  center := star;
+  contr := λt : unit, match t with star => 1 end
 |} in x.
 
-(** ** Equivalences *)
+/- Equivalences -/
 
-(** A contractible type is equivalent to [Unit]. *)
-Definition equiv_contr_unit `{Contr A} : A <~> Unit.
-Proof.
+/- A contractible type is equivalent to [unit]. -/
+definition equiv_contr_unit [H : is_contr A] : A ≃ unit.
+/-begin
   refine (BuildEquiv _ _
-    (fun (_ : A) => tt)
+    (λ(_ : A), star)
     (BuildIsEquiv _ _ _
-      (fun (_ : Unit) => center A)
-      (fun t : Unit => match t with tt => 1 end)
-      (fun x : A => contr x) _)).
+      (λ(_ : unit), center A)
+      (λt : unit, match t with star => 1 end)
+      (λx : A, contr x) _)).
   intro x. symmetry; apply ap_const.
-Defined.
+end-/
 
-(* Conversely, a type equivalent to [Unit] is contractible. *)
-Global Instance contr_equiv_unit (A : Type) (f : A <~> Unit) : Contr A | 10000
-  := BuildContr A (f^-1 tt)
-  (fun a => ap f^-1 (contr (f a)) @ eissect f a).
+/- Conversely, a type equivalent to [unit] is contractible. -/
+definition contr_equiv_unit [instance] (A : Type) (f : A ≃ unit) : is_contr A | 10000 :=
+     BuildContr A (f⁻¹ star)
+  (λa, ap f⁻¹ (contr (f a)) ⬝ eissect f a).

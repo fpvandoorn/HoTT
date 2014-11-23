@@ -1,4 +1,4 @@
-(** * Definition of a strict category *)
+/- definition of a strict category -/
 Require Export Category.Core.
 
 Set Universe Polymorphism.
@@ -8,9 +8,9 @@ Set Asymmetric Patterns.
 
 Local Open Scope morphism_scope.
 
-(** Quoting the HoTT Book: *)
-(** Definition. A _strict category_ is a precategory whose type of
-    objects is a set. *)
+/- Quoting the HoTT Book: -/
+/- Definition. A _strict category_ is a precategory whose type of
+    objects is a set. -/
 
 Notation IsStrictCategory C := (IsHSet (object C)).
 

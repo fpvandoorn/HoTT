@@ -1,4 +1,4 @@
-(** * Coercions between hom-set adjunctions and unit+counit adjunctions *)
+/- Coercions between hom-set adjunctions and unit+counit adjunctions -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Adjoint.Core Adjoint.UnitCounit Adjoint.UnitCounitCoercions Adjoint.Dual Adjoint.Hom.
 Require Import FunctorCategory.Core Category.Morphisms.
@@ -23,9 +23,9 @@ Local Open Scope category_scope.
 Local Open Scope functor_scope.
 Local Open Scope natural_transformation_scope.
 
-(** ** unit+UMP from hom-set adjunction *)
-Section AdjunctionEquivalences.
-  Context `{Funext}.
+/- unit+UMP from hom-set adjunction -/
+section AdjunctionEquivalences
+  Context [H : Funext].
   Variable C : PreCategory.
   Variable D : PreCategory.
   Variable F : Functor C D.
@@ -35,39 +35,39 @@ Section AdjunctionEquivalences.
 
   Local Open Scope morphism_scope.
 
-  (** We need to jump through some hoops with [simpl] for speed *)
-  Section adjunction_naturality.
+  /- We need to jump through some hoops with [simpl] for speed -/
+  section adjunction_naturality
     Variable A : AdjunctionHom F G.
 
-    Section nat1.
+    section nat1
       Context c d d'
               (f : morphism D (F c) d)
               (g : morphism D d d').
 
-      Let adjunction_naturalityT
-        := Eval simpl in
-            G _1 g o A (c, d) f = A (c, d') (g o f).
+      Let adjunction_naturalityT :=
+           Eval simpl in
+            G _1 g ∘ A (c, d) f ≈ A (c, d') (g ∘ f).
 
       Lemma adjunction_naturality : adjunction_naturalityT.
-      Proof.
-        pose proof (ap10 (commutes A (c, d) (c, d') (1, g))^ f) as H'; simpl in *.
+      /-begin
+        pose proof (ap10 (commutes A (c, d) (c, d') (1, g))⁻¹ f) as H'; simpl in *.
         rewrite ?identity_of, ?left_identity, ?right_identity in H'.
         exact H'.
       Qed.
     End nat1.
 
-    Section nat2.
+    section nat2
       Context c c' d
               (f : morphism D (F c') d)
               (g : morphism C c c').
 
-      Let adjunction_naturalityT'
-        := Eval simpl in
-            A (c', d) f o g = A (c, d) (f o F _1 g).
+      Let adjunction_naturalityT' :=
+           Eval simpl in
+            A (c', d) f ∘ g ≈ A (c, d) (f ∘ F _1 g).
 
       Lemma adjunction_naturality' : adjunction_naturalityT'.
       Proof.
-        pose proof (ap10 (commutes A (c', d) (c, d) (g, 1))^ f) as H'; simpl in *.
+        pose proof (ap10 (commutes A (c', d) (c, d) (g, 1))⁻¹ f) as H'; simpl in *.
         rewrite ?identity_of, ?left_identity, ?right_identity in H'.
         exact H'.
       Qed.
@@ -90,8 +90,8 @@ Section AdjunctionEquivalences.
 
         that has the UMP of the unit:
 
-        For any [c : C], [d : D] and [f : c -> G d] there exists a
-        unique [g : F c → d] such that [f = G g ∘ η c].
+        For any [c : C], [d : D] and [f : c → G d] there exists a
+        unique [g : F c → d] such that [f ≈ G g ∘ η c].
 
      2. For any [c : C] and [d : D] there is an isomorphism,
 
@@ -101,21 +101,21 @@ Section AdjunctionEquivalences.
 
      Moreover, the two conditions are related by the formulas
 
-     [ϕ g = G g ∘ η c]
+     [ϕ g ≈ G g ∘ η c]
 
-     [η c = ϕ(1_{F c})]
+     [η c ≈ ϕ(1_{F c})]
      *)
 
   Lemma adjunction_unit__of__adjunction_hom_helper (A : AdjunctionHom F G)
         (c : C) (d : D) (f : morphism C c (G d))
-  : IsHProp {g : morphism D (F c) d & G _1 g o A (c, F c) 1 = f}.
+  : is_hprop Σg : morphism D (F c) d, G _1 g ∘ A (c, F c) 1 ≈ f.
   Proof.
     apply hprop_allpath.
     intros [g0 H0] [g1 H1]; apply path_sigma_hprop; simpl.
     destruct H1.
     rewrite !adjunction_naturality in H0.
     rewrite !right_identity in H0.
-    change (idmap g0 = idmap g1).
+    change (idmap g0 ≈ idmap g1).
     rewrite <- (ap10 (@left_inverse _ _ _ (A (c, d)) _)).
     simpl rewrite H0.
     simpl rewrite (ap10 (@left_inverse _ _ _ (A (c, d)) _)).
@@ -124,33 +124,33 @@ Section AdjunctionEquivalences.
 
   Lemma adjunction_unit__of__adjunction_hom__mate_of__commutes
         (A : AdjunctionHom F G) (s d : C) (m : morphism C s d)
-  : A (d, F d) 1 o m = G _1 (F _1 m) o A (s, F s) 1.
+  : A (d, F d) 1 ∘ m ≈ G _1 (F _1 m) ∘ A (s, F s) 1.
   Proof.
     simpl; rewrite adjunction_naturality', adjunction_naturality.
     rewrite ?left_identity, ?right_identity.
     reflexivity.
   Qed.
 
-  Definition adjunction_unit__of__adjunction_hom (A : AdjunctionHom F G)
+  definition adjunction_unit__of__adjunction_hom (A : AdjunctionHom F G)
   : AdjunctionUnit F G.
   Proof.
     exists (Build_NaturalTransformation
-              1 (G o F)
-              (fun c => A (c, F c) 1)
+              1 (G ∘ F)
+              (λc, A (c, F c) 1)
               (adjunction_unit__of__adjunction_hom__mate_of__commutes A)).
     simpl in *.
     intros c d f.
     apply contr_inhabited_hprop.
     - apply adjunction_unit__of__adjunction_hom_helper.
-    - exact ((A (c, d))^-1%morphism f;
+    - exact ((A (c, d))⁻¹%morphism f;
              ((adjunction_naturality A _ _ _ _ _)
-                @ (ap (A (c, d)) (right_identity _ _ _ _))
-                @ (ap10 (@right_inverse _ _ _ (A (c, d)) _) f))%path).
-  Defined.
+                ⬝ (ap (A (c, d)) (right_identity _ _ _ _))
+                ⬝ (ap10 (@right_inverse _ _ _ (A (c, d)) _) f))%path).
+  end-/
 End AdjunctionEquivalences.
 
-Section isequiv.
-  (** We want to be able to use this without needing [Funext].  So, first, we prove that the types of hom-sets are equivalent. *)
+section isequiv
+  /- We want to be able to use this without needing [Funext].  So, first, we prove that the types of hom-sets are equivalent. -/
   Variable C : PreCategory.
   Variable D : PreCategory.
   Variable F : Functor C D.
@@ -164,29 +164,29 @@ Section isequiv.
 
   Lemma equiv_hom_set_adjunction
         (c : C) (d : D)
-  : morphism C c (G d) <~> morphism D (F c) d.
-  Proof.
+  : morphism C c (G d) ≃ morphism D (F c) d.
+  /-begin
     refine (equiv_adjointify
-              (fun f => (@center _ (T.2 _ _ f)).1)
-              (fun g => G _1 g o T.1 c)
+              (λf, (@center _ (T.2 _ _ f)).1)
+              (λg, G _1 g ∘ T.1 c)
               _ _);
     intro.
     - match goal with
-        | [ |- @pr1 ?A ?P ?x = ?y ]
-          => change (x.1 = (existT P y idpath).1)
+        | [ |- @dpr1 ?A ?P ?x ≈ ?y ]
+          => change (x.1 ≈ (existT P y idpath).1)
       end.
-      apply (ap pr1).
+      apply (ap dpr1).
       apply contr.
     - match goal with
         | [ |- context[?x.1] ]
           => apply x.2
       end.
-  Defined.
+  end-/
 End isequiv.
 
-(** ** hom-set adjunction from unit+ump adjunction *)
-Section AdjunctionEquivalences'.
-  Context `{Funext}.
+/- hom-set adjunction from unit+ump adjunction -/
+section AdjunctionEquivalences'
+  Context [H : Funext].
   Variable C : PreCategory.
   Variable D : PreCategory.
   Variable F : Functor C D.
@@ -200,23 +200,23 @@ Section AdjunctionEquivalences'.
         (T : AdjunctionUnit F G)
         sc sd dc dd
         (mc : morphism C dc sc) (md : morphism D sd dd)
-  : (fun x : morphism D (F sc) sd => G _1 (md o x o F _1 mc) o T .1 dc) =
-    (fun x : morphism D (F sc) sd => G _1 md o (G _1 x o T .1 sc) o mc).
-  Proof.
+  : (λx : morphism D (F sc) sd, G _1 (md ∘ x ∘ F _1 mc) ∘ T .1 dc) =
+    (λx : morphism D (F sc) sd, G _1 md ∘ (G _1 x ∘ T .1 sc) ∘ mc).
+  /-begin
     apply path_forall; intro.
     rewrite !composition_of, !associativity.
     simpl rewrite (commutes T.1).
     reflexivity.
   Qed.
 
-  Definition adjunction_hom__of__adjunction_unit
+  definition adjunction_hom__of__adjunction_unit
              (T : AdjunctionUnit F G)
   : AdjunctionHom F G.
   Proof.
     constructor.
     (eexists (Build_NaturalTransformation _ _ _ _)).
     apply (@isisomorphism_natural_transformation _); simpl.
-    exact (fun cd =>
+    exact (λcd,
              @isiso_isequiv
                _ _ _ _
                (equiv_isequiv
@@ -225,30 +225,30 @@ Section AdjunctionEquivalences'.
     simpl.
     intros.
     exact (adjunction_hom__of__adjunction_unit__commutes T _ _ _ _ _ _).
-  Defined.
+  end-/
 End AdjunctionEquivalences'.
 
 Coercion adjunction_unit__of__adjunction_hom : AdjunctionHom >-> AdjunctionUnit.
 
-Definition AdjunctionUnitWithFunext `{Funext} C D F G := @AdjunctionUnit C D F G.
-Definition AdjunctionCounitWithFunext `{Funext} C D F G := @AdjunctionCounit C D F G.
-Definition AdjunctionUnitCounitWithFunext `{Funext} C D F G := @AdjunctionUnitCounit C D F G.
+definition AdjunctionUnitWithFunext [H : Funext] C D F G := @AdjunctionUnit C D F G.
+definition AdjunctionCounitWithFunext [H : Funext] C D F G := @AdjunctionCounit C D F G.
+definition AdjunctionUnitCounitWithFunext [H : Funext] C D F G := @AdjunctionUnitCounit C D F G.
 Identity Coercion AdjunctionUnit_Funext : AdjunctionUnitWithFunext >-> AdjunctionUnit.
 Identity Coercion AdjunctionCounit_Funext : AdjunctionCounitWithFunext >-> AdjunctionCounit.
 Identity Coercion AdjunctionUnitCounit_Funext : AdjunctionUnitCounitWithFunext >-> AdjunctionUnitCounit.
 
-Definition adjunction_hom__of__adjunction_unit_Funext `{Funext} C D F G
+definition adjunction_hom__of__adjunction_unit_Funext [H : Funext] C D F G
            (A : AdjunctionUnitWithFunext _ _)
-: AdjunctionHom _ _
-  := @adjunction_hom__of__adjunction_unit _ C D F G A.
-Definition AdjunctionHomOfAdjunctionCounit_Funext `{Funext} C D F G
+: AdjunctionHom _ _ :=
+     @adjunction_hom__of__adjunction_unit _ C D F G A.
+definition AdjunctionHomOfAdjunctionCounit_Funext [H : Funext] C D F G
            (A : AdjunctionCounitWithFunext _ _)
-: AdjunctionHom _ _
-  := @adjunction_hom__of__adjunction_unit _ C D F G A.
-Definition adjunction_hom__of__adjunction_unitCounit_Funext `{Funext} C D F G
+: AdjunctionHom _ _ :=
+     @adjunction_hom__of__adjunction_unit _ C D F G A.
+definition adjunction_hom__of__adjunction_unitCounit_Funext [H : Funext] C D F G
            (A : AdjunctionUnitCounitWithFunext _ _)
-: AdjunctionHom _ _
-  := @adjunction_hom__of__adjunction_unit _ C D F G A.
+: AdjunctionHom _ _ :=
+     @adjunction_hom__of__adjunction_unit _ C D F G A.
 
 Coercion adjunction_hom__of__adjunction_unit_Funext
 : AdjunctionUnitWithFunext >-> AdjunctionHom.

@@ -1,4 +1,4 @@
-(** * Composition of natural transformations *)
+/- Composition of natural transformations -/
 Require Import Category.Core Functor.Core Functor.Composition.Core NaturalTransformation.Core.
 
 Set Universe Polymorphism.
@@ -10,8 +10,8 @@ Local Open Scope path_scope.
 Local Open Scope morphism_scope.
 Local Open Scope natural_transformation_scope.
 
-(** ** Vertical composition *)
-Section composition.
+/- Vertical composition -/
+section composition
   (**
      We have the diagram
 <<
@@ -51,7 +51,7 @@ Section composition.
 >>
   *)
 
-  Section compose.
+  section compose
     Variable C : PreCategory.
     Variable D : PreCategory.
     Variables F F' F'' : Functor C D.
@@ -59,37 +59,37 @@ Section composition.
     Variable T' : NaturalTransformation F' F''.
     Variable T : NaturalTransformation F F'.
 
-    Local Notation CO c := (T' c o T c).
+    Local Notation CO c := (T' c ∘ T c).
 
-    Definition compose_commutes s d (m : morphism C s d)
-    : CO d o morphism_of F m = morphism_of F'' m o CO s
-      := (associativity _ _ _ _ _ _ _ _)
-           @ ap (fun x => _ o x) (commutes T _ _ m)
-           @ (associativity_sym _ _ _ _ _ _ _ _)
-           @ ap (fun x => x o _) (commutes T' _ _ m)
-           @ (associativity _ _ _ _ _ _ _ _).
+    definition compose_commutes s d (m : morphism C s d)
+    : CO d ∘ morphism_of F m ≈ morphism_of F'' m ∘ CO s :=
+         (associativity _ _ _ _ _ _ _ _)
+           ⬝ ap (λx, _ ∘ x) (commutes T _ _ m)
+           ⬝ (associativity_sym _ _ _ _ _ _ _ _)
+           ⬝ ap (λx, x ∘ _) (commutes T' _ _ m)
+           ⬝ (associativity _ _ _ _ _ _ _ _).
 
-    (** We define the symmetrized version separately so that we can get more unification in the functor [(C → D)ᵒᵖ → (Cᵒᵖ → Dᵒᵖ)] *)
-    Definition compose_commutes_sym s d (m : morphism C s d)
-    : morphism_of F'' m o CO s = CO d o morphism_of F m
-      := (associativity_sym _ _ _ _ _ _ _ _)
-           @ ap (fun x => x o _) (commutes_sym T' _ _ m)
-           @ (associativity _ _ _ _ _ _ _ _)
-           @ ap (fun x => _ o x) (commutes_sym T _ _ m)
-           @ (associativity_sym _ _ _ _ _ _ _ _).
+    /- We define the symmetrized version separately so that we can get more unification in the functor [(C → D)ᵒᵖ → (Cᵒᵖ → Dᵒᵖ)] -/
+    definition compose_commutes_sym s d (m : morphism C s d)
+    : morphism_of F'' m ∘ CO s ≈ CO d ∘ morphism_of F m :=
+         (associativity_sym _ _ _ _ _ _ _ _)
+           ⬝ ap (λx, x ∘ _) (commutes_sym T' _ _ m)
+           ⬝ (associativity _ _ _ _ _ _ _ _)
+           ⬝ ap (λx, _ ∘ x) (commutes_sym T _ _ m)
+           ⬝ (associativity_sym _ _ _ _ _ _ _ _).
 
     Global Arguments compose_commutes : simpl never.
     Global Arguments compose_commutes_sym : simpl never.
 
-    Definition compose
-    : NaturalTransformation F F''
-      := Build_NaturalTransformation' F F''
-                                      (fun c => CO c)
+    definition compose
+    : NaturalTransformation F F'' :=
+         Build_NaturalTransformation' F F''
+                                      (λc, CO c)
                                       compose_commutes
                                       compose_commutes_sym.
   End compose.
 
-  (** ** Whiskering *)
+  /- Whiskering -/
   Local Ltac whisker_t :=
     simpl;
     repeat first [ apply commutes
@@ -97,52 +97,52 @@ Section composition.
                  | progress (etransitivity; try apply composition_of); []
                  | progress (etransitivity; try (symmetry; apply composition_of)); [] ].
 
-  Section whisker.
+  section whisker
     Variable C : PreCategory.
     Variable D : PreCategory.
     Variable E : PreCategory.
 
-    Section L.
+    section L
       Variable F : Functor D E.
       Variables G G' : Functor C D.
       Variable T : NaturalTransformation G G'.
 
       Local Notation CO c := (morphism_of F (T c)).
 
-      Definition whisker_l_commutes s d (m : morphism C s d)
-      : F _1 (T d) o (F o G) _1 m = (F o G') _1 m o F _1 (T s).
-      Proof.
+      definition whisker_l_commutes s d (m : morphism C s d)
+      : F _1 (T d) ∘ (F ∘ G) _1 m ≈ (F ∘ G') _1 m ∘ F _1 (T s).
+      /-begin
         whisker_t.
-      Defined.
+      end-/
 
       Global Arguments whisker_l_commutes : simpl never.
 
-      Definition whisker_l
-        := Build_NaturalTransformation
-             (F o G) (F o G')
-             (fun c => CO c)
+      definition whisker_l :=
+           Build_NaturalTransformation
+             (F ∘ G) (F ∘ G')
+             (λc, CO c)
              whisker_l_commutes.
     End L.
 
-    Section R.
+    section R
       Variables F F' : Functor D E.
       Variable T : NaturalTransformation F F'.
       Variable G : Functor C D.
 
       Local Notation CO c := (T (G c)).
 
-      Definition whisker_r_commutes s d (m : morphism C s d)
-      : T (G d) o (F o G) _1 m = (F' o G) _1 m o T (G s).
-      Proof.
+      definition whisker_r_commutes s d (m : morphism C s d)
+      : T (G d) ∘ (F ∘ G) _1 m ≈ (F' ∘ G) _1 m ∘ T (G s).
+      /-begin
         whisker_t.
-      Defined.
+      end-/
 
       Global Arguments whisker_r_commutes : simpl never.
 
-      Definition whisker_r
-        := Build_NaturalTransformation
-             (F o G) (F' o G)
-             (fun c => CO c)
+      definition whisker_r :=
+           Build_NaturalTransformation
+             (F ∘ G) (F' ∘ G)
+             (λc, CO c)
              whisker_r_commutes.
     End R.
   End whisker.

@@ -1,4 +1,4 @@
-(** * Attributes of Functoriality of functor composition *)
+/- Attributes of Functoriality of functor composition -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Functor.Composition.Core Functor.Composition.Functorial.Core.
 Require Import NaturalTransformation.Composition.Core NaturalTransformation.Composition.Functorial.
@@ -23,22 +23,22 @@ Local Open Scope category_scope.
 Local Open Scope natural_transformation_scope.
 Local Open Scope morphism_scope.
 
-(** ** Precomposition with an essentially surjective functor is faithful *)
-Section faithfull_precomposition_essential_surjective.
-  (** Quoting the HoTT Book:
+/- Precomposition with an essentially surjective functor is faithful -/
+section faithfull_precomposition_essential_surjective
+  /- Quoting the HoTT Book:
 
   Lemma. If [A], [B], [C] are precategories and [H : A → B] is an
   essentially surjective functor, then [(– ∘ H) : (B → C) → (A → C)]
-  is faithful. *)
+  is faithful. -/
 
-  Context `{fs : Funext}.
+  Context {fs : Funext}.
   Variable A : PreCategory.
   Variable B : PreCategory.
   Variable C : PreCategory.
 
   Variable H : Functor A B.
 
-  Context `{H_is_essentially_surjective : IsEssentiallySurjective A B H}.
+  Context {H_is_essentially_surjective : IsEssentiallySurjective A B H}.
 
   Local Arguments Overture.compose / .
 
@@ -47,8 +47,8 @@ Section faithfull_precomposition_essential_surjective.
         (T U : NaturalTransformation F G)
         (a : A) (b : B)
         (f : H a <~=~> b)
-        (H' : T oR H = U oR H)
-  : T b = U b.
+        (H' : T oR H ≈ U oR H)
+  : T b ≈ U b.
   Proof.
     apply (ap components_of) in H'.
     apply apD10 in H'; hnf in H'; simpl in H'.
@@ -58,7 +58,7 @@ Section faithfull_precomposition_essential_surjective.
   Qed.
 
   Global Instance isfaithful_precomposition_essentially_surjective
-  : @IsFaithful _ (B -> C) (A -> C) (compose_functor _ _ _ H).
+  : @IsFaithful _ (B → C) (A → C) (compose_functor _ _ _ H).
   Proof.
     repeat match goal with
              | _ => eapply isfaithful_precomposition_essentially_surjective_helper;

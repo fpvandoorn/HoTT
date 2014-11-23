@@ -1,4 +1,4 @@
-(** * Grothendieck Construction of a pseudofunctor to Cat *)
+/- Grothendieck Construction of a pseudofunctor to Cat -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Pseudofunctor.Core Pseudofunctor.RewriteLaws.
 Require Import Category.Morphisms NaturalTransformation.Isomorphisms Cat.Morphisms.
@@ -14,8 +14,8 @@ Set Asymmetric Patterns.
 
 Local Open Scope morphism_scope.
 
-Section Grothendieck.
-  Context `{Funext}.
+section Grothendieck
+  Context [H : Funext].
 
   Variable C : PreCategory.
   Variable F : Pseudofunctor C.
@@ -30,21 +30,21 @@ Section Grothendieck.
     { f : morphism C s.(c) d.(c)
     | morphism _ (p_morphism_of F f s.(x)) d.(x) }.
 
-  Definition compose s d d'
+  definition compose s d d'
              (m1 : morphism d d')
              (m2 : morphism s d)
   : morphism s d'.
-  Proof.
-    exists (m1.1 o m2.1).
-    refine (m1.2 o ((p_morphism_of F m1.1) _1 m2.2 o _)).
+  /-begin
+    exists (m1.1 ∘ m2.1).
+    refine (m1.2 ∘ ((p_morphism_of F m1.1) _1 m2.2 ∘ _)).
     apply (p_composition_of F).
-  Defined.
+  end-/
 
-  Definition identity s : morphism s s.
-  Proof.
+  definition identity s : morphism s s.
+  /-begin
     exists 1.
     apply (p_identity_of F).
-  Defined.
+  end-/
 
   Global Arguments identity _ / .
   Global Arguments compose _ _ _ _ _ / .
@@ -67,14 +67,14 @@ Section Grothendieck.
     repeat match goal with
              | _ => reflexivity
              | _ => progress rewrite ?Category.Core.left_identity, ?Category.Core.right_identity
-             | [ |- context[components_of ?T ?x o components_of ?T^-1 ?x] ]
+             | [ |- context[components_of ?T ?x ∘ components_of ?T⁻¹ ?x] ]
                => simpl rewrite (@iso_compose_pV _ _ _ (T x) _)
              | _ => try_associativity_quick
                       first [ f_ap; []
                             | apply concat_left_identity
                             | apply concat_right_identity ]
              | _ => rewrite <- ?identity_of, <- ?composition_of;
-                   progress repeat (f_ap; []);
+                   progress repeat ⟨f_ap, []⟩;
                    rewrite ?identity_of, ?composition_of
              | _ => try_associativity_quick rewrite compose4associativity_helper
            end.
@@ -85,7 +85,7 @@ Section Grothendieck.
     apply path_sigma_uncurried;
     simpl in *;
     let ex_hyp := match goal with
-                    | [ H : ?A = ?B |- @sigT (?B = ?A) _ ] => constr:(H)
+                    | [ H : ?A ≈ ?B |- @sigT (?B ≈ ?A) _ ] => constr:(H)
                   end in
     (exists (inverse ex_hyp));
       simpl;
@@ -100,18 +100,18 @@ Section Grothendieck.
         before_commutes_tac;
         repeat first [ reflexivity
                      | progress rewrite ?Category.Core.left_identity, ?Category.Core.right_identity
-                     | try_associativity_quick (f_ap; []) ];
+                     | try_associativity_quick ⟨f_ap, []⟩ ];
         match goal with
           | _ => reflexivity
-          | [ |- context[morphism_of ?F ?m o components_of ?T ?x] ]
+          | [ |- context[morphism_of ?F ?m ∘ components_of ?T ?x] ]
             => simpl rewrite <- (commutes T _ _ m);
               try reflexivity
-          | [ |- context[components_of ?T ?x o morphism_of ?F ?m] ]
+          | [ |- context[components_of ?T ?x ∘ morphism_of ?F ?m] ]
             => simpl rewrite (commutes T _ _ m);
               try reflexivity
         end.
 
-  (* The goal for, e.g., the following associativity helper was made
+  /- The goal for, e.g., the following associativity helper was made
   with the following code:
 <<
 intros a b c d [f f'] [g g'] [h h']; simpl.
@@ -177,82 +177,82 @@ intros a b c d [f f'] [g g'] [h h']; simpl.
 
     intro H.
     intro C.
->> *)
+>> -/
 
   Lemma pseudofunctor_to_cat_assoc_helper
-  : forall {x x0 : C} {x2 : Category.Core.morphism C x x0} {x1 : C}
+  : Π{x x0 : C} {x2 : Category.Core.morphism C x x0} {x1 : C}
            {x5 : Category.Core.morphism C x0 x1} {x4 : C} {x7 : Category.Core.morphism C x1 x4}
-           {p p0 : PreCategory} {f : Category.Core.morphism C x x4 -> Functor p0 p}
+           {p p0 : PreCategory} {f : Category.Core.morphism C x x4 → Functor p0 p}
            {p1 p2 : PreCategory} {f0 : Functor p2 p} {f1 : Functor p1 p2}
            {f2 : Functor p0 p2} {f3 : Functor p0 p1} {f4 : Functor p1 p}
-           {x16 : Category.Core.morphism (_ -> _) (f (x7 o x5 o x2)) (f4 o f3)%functor}
-           {x15 : Category.Core.morphism (_ -> _) f2 (f1 o f3)%functor} {H2 : IsIsomorphism x15}
-           {x11 : Category.Core.morphism (_ -> _) (f (x7 o (x5 o x2))) (f0 o f2)%functor}
-           {H1 : IsIsomorphism x11} {x9 : Category.Core.morphism (_ -> _) f4 (f0 o f1)%functor}
-           {fst_hyp : x7 o x5 o x2 = x7 o (x5 o x2)}
-           (rew_hyp : forall x3 : p0,
-                        (idtoiso (p0 -> p) (ap f fst_hyp) : Category.Core.morphism _ _ _) x3 =
-                        x11^-1 x3 o (f0 _1 (x15^-1 x3) o (1 o (x9 (f3 x3) o x16 x3))))
+           {x16 : Category.Core.morphism (_ → _) (f (x7 ∘ x5 ∘ x2)) (f4 ∘ f3)%functor}
+           {x15 : Category.Core.morphism (_ → _) f2 (f1 ∘ f3)%functor} {H2 : IsIsomorphism x15}
+           {x11 : Category.Core.morphism (_ → _) (f (x7 ∘ (x5 ∘ x2))) (f0 ∘ f2)%functor}
+           {H1 : IsIsomorphism x11} {x9 : Category.Core.morphism (_ → _) f4 (f0 ∘ f1)%functor}
+           {fst_hyp : x7 ∘ x5 ∘ x2 ≈ x7 ∘ (x5 ∘ x2)}
+           (rew_hyp : Πx3 : p0,
+                        (idtoiso (p0 → p) (ap f fst_hyp) : Category.Core.morphism _ _ _) x3 =
+                        x11⁻¹ x3 ∘ (f0 _1 (x15⁻¹ x3) ∘ (1 ∘ (x9 (f3 x3) ∘ x16 x3))))
            {H0' : IsIsomorphism x16}
            {H1' : IsIsomorphism x9}
            {x13 : p} {x3 : p0} {x6 : p1} {x10 : p2}
            {x14 : Category.Core.morphism p (f0 x10) x13} {x12 : Category.Core.morphism p2 (f1 x6) x10}
            {x8 : Category.Core.morphism p1 (f3 x3) x6},
-      existT (fun f5 : Category.Core.morphism C x x4 => Category.Core.morphism p ((f f5) x3) x13)
-             (x7 o x5 o x2)
-             (x14 o (f0 _1 x12 o x9 x6) o (f4 _1 x8 o x16 x3)) =
-      (x7 o (x5 o x2); x14 o (f0 _1 (x12 o (f1 _1 x8 o x15 x3)) o x11 x3)).
-  Proof.
+      existT (λf5 : Category.Core.morphism C x x4, Category.Core.morphism p ((f f5) x3) x13)
+             (x7 ∘ x5 ∘ x2)
+             (x14 ∘ (f0 _1 x12 ∘ x9 x6) ∘ (f4 _1 x8 ∘ x16 x3)) =
+      (x7 ∘ (x5 ∘ x2); x14 ∘ (f0 _1 (x12 ∘ (f1 _1 x8 ∘ x15 x3)) ∘ x11 x3)).
+  /-begin
     helper_t assoc_before_commutes_tac.
     assoc_fin_tac.
   Qed.
 
   Lemma pseudofunctor_to_cat_left_identity_helper
-  : forall {x1 x2 : C} {f : Category.Core.morphism C x2 x1} {p p0 : PreCategory}
-           {f0 : Category.Core.morphism C x2 x1 -> Functor p0 p} {f1 : Functor p p}
-           {x0 : Category.Core.morphism (_ -> _) (f0 (1 o f)) (f1 o f0 f)%functor}
-           {x : Category.Core.morphism (_ -> _) f1 1%functor}
-           {fst_hyp : 1 o f = f}
-           (rewrite_hyp : forall x3 : p0,
-                            (idtoiso (p0 -> p) (ap f0 fst_hyp) : Category.Core.morphism _ _ _) x3
-                            = 1 o (x ((f0 f) x3) o x0 x3))
+  : Π{x1 x2 : C} {f : Category.Core.morphism C x2 x1} {p p0 : PreCategory}
+           {f0 : Category.Core.morphism C x2 x1 → Functor p0 p} {f1 : Functor p p}
+           {x0 : Category.Core.morphism (_ → _) (f0 (1 ∘ f)) (f1 ∘ f0 f)%functor}
+           {x : Category.Core.morphism (_ → _) f1 1%functor}
+           {fst_hyp : 1 ∘ f ≈ f}
+           (rewrite_hyp : Πx3 : p0,
+                            (idtoiso (p0 → p) (ap f0 fst_hyp) : Category.Core.morphism _ _ _) x3
+                            ≈ 1 ∘ (x ((f0 f) x3) ∘ x0 x3))
            {H0' : IsIsomorphism x0}
            {H1' : IsIsomorphism x}
            {x3 : p} {x4 : p0} {f' : Category.Core.morphism p ((f0 f) x4) x3},
-      existT (fun f2 : Category.Core.morphism C x2 x1 => Category.Core.morphism p ((f0 f2) x4) x3)
-             (1 o f)
-             (x x3 o (f1 _1 f' o x0 x4))
-      = (f; f').
+      existT (λf2 : Category.Core.morphism C x2 x1, Category.Core.morphism p ((f0 f2) x4) x3)
+             (1 ∘ f)
+             (x x3 ∘ (f1 _1 f' ∘ x0 x4))
+      ≈ ⟨f, f'⟩.
   Proof.
     helper_t idtac.
   Qed.
 
   Lemma pseudofunctor_to_cat_right_identity_helper
-  : forall {x1 x2 : C} {f : Category.Core.morphism C x2 x1} {p p0 : PreCategory}
-           {f0 : Category.Core.morphism C x2 x1 -> Functor p0 p} {f1 : Functor p0 p0}
-           {x0 : Category.Core.morphism (_ -> _) (f0 (f o 1)) (f0 f o f1)%functor}
+  : Π{x1 x2 : C} {f : Category.Core.morphism C x2 x1} {p p0 : PreCategory}
+           {f0 : Category.Core.morphism C x2 x1 → Functor p0 p} {f1 : Functor p0 p0}
+           {x0 : Category.Core.morphism (_ → _) (f0 (f ∘ 1)) (f0 f ∘ f1)%functor}
            {H0' : IsIsomorphism x0}
-           {x : Category.Core.morphism (_ -> _) f1 1%functor}
+           {x : Category.Core.morphism (_ → _) f1 1%functor}
            {H1' : IsIsomorphism x}
-           {fst_hyp : f o 1 = f}
-           (rew_hyp : forall x3 : p0,
-                        (idtoiso (p0 -> p) (ap f0 fst_hyp) : Category.Core.morphism _ _ _) x3
-                        = 1 o ((f0 f) _1 (x x3) o x0 x3))
+           {fst_hyp : f ∘ 1 ≈ f}
+           (rew_hyp : Πx3 : p0,
+                        (idtoiso (p0 → p) (ap f0 fst_hyp) : Category.Core.morphism _ _ _) x3
+                        ≈ 1 ∘ ((f0 f) _1 (x x3) ∘ x0 x3))
            {x3 : p} {x4 : p0} {f' : Category.Core.morphism p ((f0 f) x4) x3},
-        existT (fun f2 : Category.Core.morphism C x2 x1 => Category.Core.morphism p ((f0 f2) x4) x3)
-               (f o 1)
-               (f' o ((f0 f) _1 (x x4) o x0 x4))
-        = (f; f').
+        existT (λf2 : Category.Core.morphism C x2 x1, Category.Core.morphism p ((f0 f2) x4) x3)
+               (f ∘ 1)
+               (f' ∘ ((f0 f) _1 (x x4) ∘ x0 x4))
+        ≈ ⟨f, f'⟩.
   Proof.
     helper_t idtac.
   Qed.
 
-  (** ** Category of elements *)
-  Definition category : PreCategory.
+  /- Category of elements -/
+  definition category : PreCategory.
   Proof.
     refine (@Build_PreCategory
               Pair
-              (fun s d => morphism s d)
+              (λs d, morphism s d)
               identity
               compose
               _
@@ -280,13 +280,13 @@ intros a b c d [f f'] [g g'] [h h']; simpl.
                       (ap components_of
                           (p_right_identity_of_coherent_for_rewrite F _ _ f))))
     ) ].
-  Defined.
+  end-/
 
-  (** ** First projection functor *)
-  Definition pr1 : Functor category C
-    := Build_Functor category C
+  /- First projection functor -/
+  definition dpr1 : Functor category C :=
+       Build_Functor category C
                      c
-                     (fun s d => @pr1 _ _)
-                     (fun _ _ _ _ _ => idpath)
-                     (fun _ => idpath).
+                     (λs d, @dpr1 _ _)
+                     (λ_ _ _ _ _, idpath)
+                     (λ_, idpath).
 End Grothendieck.

@@ -1,45 +1,45 @@
-(* -*- mode: coq; mode: visual-line -*- *)
-(** * Theorems about the empty type *)
+/- -*- mode: coq; mode: visual-line -*- -/
+/- Theorems about the empty type -/
 
 Require Import HoTT.Basics.
 Local Open Scope path_scope.
 
-(** ** Unpacking *)
-(** ** Eta conversion *)
-(** ** Paths *)
-(** ** Transport *)
-(** ** Functorial action *)
-(** ** Equivalences *)
-(** ** Universal mapping properties *)
+/- Unpacking -/
+/- Eta conversion -/
+/- Paths -/
+/- Transport -/
+/- Functorial action -/
+/- Equivalences -/
+/- Universal mapping properties -/
 
-Global Instance contr_from_Empty {_ : Funext} (A : Type) :
-  Contr (Empty -> A) :=
+definition contr_from_Empty [instance] {_ : Funext} (A : Type) :
+  is_contr (Empty → A) :=
   BuildContr _
-             (Empty_ind (fun _ => A))
-             (fun f => path_forall _ f (fun x => Empty_ind _ x)).
+             (Empty_ind (λ_, A))
+             (λf, path_Π_ f (λx, Empty_ind _ x)).
 
-(** ** Behavior with respect to truncation *)
+/- Behavior with respect to truncation -/
 
-Global Instance hprop_Empty : IsHProp Empty.
-Proof. intro x. destruct x. Defined.
+definition hprop_Empty [instance] : is_hprop Empty.
+/-begin intro x. destruct x. end-/
 
 Lemma Empty_rec {T : Type} (falso: Empty) : T.
-Proof. case falso. Defined.
+/-begin case falso. end-/
 
-Global Instance all_to_empty_isequiv (T : Type) (f : T -> Empty) : IsEquiv f.
-Proof.
+definition all_to_empty_isequiv [instance] (T : Type) (f : T → Empty) : IsEquiv f.
+/-begin
   refine (BuildIsEquiv _ _ _ 
-    (Empty_ind (fun _ => T))                (* := equiv_inf *)
-    (fun fals:Empty => match fals with end) (* : Sect equiv_inf f *)
-    (fun t:T => match (f t) with end)       (* : Sect f equiv_inf *)
-    (_)                                     (* adjointify part *)  ).
+    (Empty_ind (λ_, T))                /- := equiv_inf -/
+    (λfals:Empty, match fals with end) /- : Sect equiv_inf f -/
+    (λt:T, match (f t) with end)       /- : Sect f equiv_inf -/
+    (_)                                     /- adjointify part -/  ).
   intro t. 
   exact (Empty_rec (f t)).
-Defined.
+end-/
 
-(** ** Paths *)
+/- Paths -/
 
-(** We could probably prove some theorems about non-existing paths in
+/- We could probably prove some theorems about non-existing paths in
    [Empty], but this is really quite useless. As soon as an element
    of [Empty] is hypothesized, we can prove whatever we like with
-   a simple elimination. *)
+   a simple elimination. -/

@@ -1,6 +1,6 @@
-(** * Functor category [D → C] (also [Cᴰ] and [[D, C]]) *)
+/- Functor category [D → C] (also [Cᴰ] and [[D, C]]) -/
 Require Import Category.Core Category.Strict Functor.Core NaturalTransformation.Core Functor.Paths.
-(** These must come last, so that [identity], [compose], etc., refer to natural transformations. *)
+/- These must come last, so that [identity], [compose], etc., refer to natural transformations. -/
 Require Import NaturalTransformation.Composition.Core NaturalTransformation.Identity NaturalTransformation.Composition.Laws.
 
 Set Universe Polymorphism.
@@ -8,16 +8,16 @@ Set Implicit Arguments.
 Generalizable All Variables.
 Set Asymmetric Patterns.
 
-(** ** Definition of [C → D] *)
-Section functor_category.
-  Context `{Funext}.
+/- definition of [C → D] -/
+section functor_category
+  Context [H : Funext].
 
   Variable C : PreCategory.
   Variable D : PreCategory.
 
-  (** There is a category Fun(C, D) of functors from [C] to [D]. *)
-  Definition functor_category : PreCategory
-    := @Build_PreCategory (Functor C D)
+  /- There is a category Fun(C, D) of functors from [C] to [D]. -/
+  definition functor_category : PreCategory :=
+       @Build_PreCategory (Functor C D)
                           (@NaturalTransformation C D)
                           (@identity C D)
                           (@compose C D)
@@ -27,17 +27,17 @@ Section functor_category.
                           _.
 End functor_category.
 
-Local Notation "C -> D" := (functor_category C D) : category_scope.
+Local Notation "C → D" := (functor_category C D) : category_scope.
 
-(** ** [C → D] is a strict category if [D] is *)
-Lemma isstrict_functor_category `{Funext} C `{IsStrictCategory D}
-: IsStrictCategory (C -> D).
-Proof.
+/- [C → D] is a strict category if [D] is -/
+Lemma isstrict_functor_category [H : Funext] C [H : IsStrictCategory D]
+: IsStrictCategory (C → D).
+/-begin
   typeclasses eauto.
-Defined.
+end-/
 
 Module Export FunctorCategoryCoreNotations.
-  (*Notation "C ^ D" := (functor_category D C) : category_scope.
+  (*Notation "C ⁻¹ D" := (functor_category D C) : category_scope.
   Notation "[ C , D ]" := (functor_category C D) : category_scope.*)
-  Notation "C -> D" := (functor_category C D) : category_scope.
+  Notation "C → D" := (functor_category C D) : category_scope.
 End FunctorCategoryCoreNotations.

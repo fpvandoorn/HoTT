@@ -1,5 +1,5 @@
-(* -*- mode: coq; mode: visual-line -*- *)
-(** * Theorems about the natural numbers *)
+/- -*- mode: coq; mode: visual-line -*- -/
+/- Theorems about the natural numbers -/
 
 Require Import HoTT.Basics.
 

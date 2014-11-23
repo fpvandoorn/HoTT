@@ -1,4 +1,4 @@
-(** * Homotopy PreCategory of Types *)
+/- Homotopy PreCategory of Types -/
 Require Import Category.Core Category.Morphisms.
 Require Import hit.Truncations HSet.
 
@@ -11,39 +11,39 @@ Local Open Scope path_scope.
 Local Open Scope equiv_scope.
 Local Open Scope category_scope.
 
-(** Quoting the HoTT Book:
+/- Quoting the HoTT Book:
 
     Example. There is a precategory whose type of objects is [U] and
     with [hom(X,Y) : ∥X → Y∥₀], and composition defined by induction
     on truncation from ordinary composition [(Y → Z) → (X → Y) → (X →
-    Z)]. We call this the homotopy precategory of types. *)
+    Z)]. We call this the homotopy precategory of types. -/
 
-(** We don't want access to all of the internals of this category at top level. *)
+/- We don't want access to all of the internals of this category at top level. -/
 Module HomotopyPreCategoryInternals.
-  Section homotopy_precategory.
+  section homotopy_precategory
     Local Notation object := Type (only parsing).
-    Local Notation morphism s d := (Trunc 0 (s -> d)) (only parsing).
+    Local Notation morphism s d := (Trunc 0 (s → d)) (only parsing).
 
-    Definition compose s d d' (m : morphism d d') (m' : morphism s d)
+    definition compose s d d' (m : morphism d d') (m' : morphism s d)
     : morphism s d'.
-    Proof.
+    /-begin
       revert m'; apply Trunc_rec; intro m'.
       revert m; apply Trunc_rec; intro m.
       apply tr.
-      exact (m o m')%core.
-    Defined.
+      exact (m ∘ m')%core.
+    end-/
 
-    Definition identity x : morphism x x
-      := tr idmap.
+    definition identity x : morphism x x :=
+         tr idmap.
 
     Global Arguments compose [s d d'] m m' / .
     Global Arguments identity x / .
   End homotopy_precategory.
 End HomotopyPreCategoryInternals.
 
-(** ** The Homotopy PreCategory of Types *)
-Definition homotopy_precategory : PreCategory.
-Proof.
+/- The Homotopy PreCategory of Types -/
+definition homotopy_precategory : PreCategory.
+/-begin
   refine (@Build_PreCategory
             Type
             _
@@ -60,10 +60,10 @@ Proof.
                apply Trunc_ind;
                [ intro;
                  match goal with
-                   | [ |- IsHSet (?a = ?b :> ?T) ]
+                   | [ |- IsHSet (?a ≈ ?b :> ?T) ]
                      => generalize a b; intros;
                         let H := fresh in
-                        assert (H : forall x y : T, IsHProp (x = y))
+                        assert (H : Πx y : T, is_hprop (x ≈ y))
                  end;
                  typeclasses eauto
                | intro ]
@@ -71,4 +71,4 @@ Proof.
   simpl;
   apply ap;
   exact idpath.
-Defined.
+end-/

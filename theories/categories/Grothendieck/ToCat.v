@@ -1,4 +1,4 @@
-(** * Grothendieck Construction of a functor to Cat *)
+/- Grothendieck Construction of a functor to Cat -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Pseudofunctor.Core Pseudofunctor.FromFunctor.
 Require Import Cat.Core.
@@ -11,23 +11,23 @@ Set Asymmetric Patterns.
 
 Local Open Scope morphism_scope.
 
-Section Grothendieck.
-  Context `{Funext}.
+section Grothendieck
+  Context [H : Funext].
 
-  Variable P : PreCategory -> Type.
-  (*Context `{forall C, IsHProp (P C)}.*)
-  Context `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}.
+  Variable P : PreCategory → Type.
+  (*Context [H : ΠC, is_hprop (P C)].*)
+  Context {HF : ΠC D, P C → P D → IsHSet (Functor C D)}.
 
   Local Notation cat := (@sub_pre_cat _ P HF).
 
   Variable C : PreCategory.
   Variable F : Functor C cat.
 
-  (** ** Category of elements *)
-  Definition category : PreCategory
-    := category (F : FunctorToCat).
+  /- Category of elements -/
+  definition category : PreCategory :=
+       category (F : FunctorToCat).
 
-  (** ** First projection functor *)
-  Definition pr1 : Functor category C
-    := pr1 (F : FunctorToCat).
+  /- First projection functor -/
+  definition dpr1 : Functor category C :=
+       dpr1 (F : FunctorToCat).
 End Grothendieck.

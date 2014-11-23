@@ -1,4 +1,4 @@
-(** * Kan Extensions *)
+/- Kan Extensions -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import ExponentialLaws.Law4.Functors FunctorCategory.Core.
 Require Import Functor.Composition.Functorial.Core.
@@ -11,7 +11,7 @@ Set Asymmetric Patterns.
 
 Local Open Scope category_scope.
 
-(** Quoting nCatLab on Kan Exensions:
+/- Quoting nCatLab on Kan Exensions:
 
     ** Idea
 
@@ -108,12 +108,12 @@ Local Open Scope category_scope.
     Some authors (such as Kelly) assert that only pointwise Kan
     extensions deserve the name “Kan extension,” and use the term as
     “weak Kan extension” for a functor equipped with a universal
-    natural transformation. It is certainly true that most Kan
+    natural transformation. It is certainly tt that most Kan
     extensions which arise in practice are pointwise. This distinction
-    is even more important in enriched category theory. *)
+    is even more important in enriched category theory. -/
 
-Section kan_extensions.
-  (** ** Ordinary or weak Kan extensions
+section kan_extensions
+  /- Ordinary or weak Kan extensions
 
       *** Global Kan extensions
 
@@ -125,52 +125,52 @@ Section kan_extensions.
                 p      h
       p* h : C --> C' --> D
 >>
-   *)
+   -/
 
 
-  (** *** Pullback-along functor *)
-  Context `{Funext}.
+  /- Pullback-along functor -/
+  Context [H : Funext].
   Variable C  : PreCategory.
   Variable C' : PreCategory.
   Variable D  : PreCategory.
 
-  Section pullback_along.
-    Definition pullback_along_functor
-    : object ((C -> C') -> (C' -> D) -> (C -> D))
-      := Functor.Composition.Functorial.Core.compose_functor _ _ _.
+  section pullback_along
+    definition pullback_along_functor
+    : object ((C → C') → (C' → D) → (C → D)) :=
+         Functor.Composition.Functorial.Core.compose_functor _ _ _.
 
-    Definition pullback_along (p : Functor C C')
-    : object ((C' -> D) -> (C -> D))
-      := Eval hnf in pullback_along_functor p.
+    definition pullback_along (p : Functor C C')
+    : object ((C' → D) → (C → D)) :=
+         Eval hnf in pullback_along_functor p.
   End pullback_along.
 
-  (** Definition. If [p*] has a left adjoint, typically denoted [p_! :
+  /- Definition. If [p*] has a left adjoint, typically denoted [p_! :
       (C → D) → (C' → D)] or [Lan_p : (C → D) → (C' → D)] then this
       left adjoint is called the (ordinary or weak) left Kan extension
-      operation along [p]. For [h ∈ (C -> D)] we call [p_! h] the left
+      operation along [p]. For [h ∈ (C → D)] we call [p_! h] the left
       Kan extension of [h] along [p].
 
       Similarly, if [p*] has a right adjoint, this right adjoint is
       called the right Kan extension operation along [p]. It is
-      typically denoted [p_* : (C → D) → (C' → D)] or [Ran = Ran_p :
+      typically denoted [p_* : (C → D) → (C' → D)] or [Ran ≈ Ran_p :
       (C → D) → (C' → D)].
 
       The analogous definition clearly makes sense as stated in other
       contexts, such as in enriched category theory.
 
-      Observation. If [C' = 1] is the terminal category, then
+      Observation. If [C' ≈ 1] is the terminal category, then
 
       - the left Kan extension operation forms the colimit of a functor;
 
-      - the right Kan extension operation forms the limit of a functor. *)
+      - the right Kan extension operation forms the limit of a functor. -/
 
-  (** *** Left Kan extensions *)
-  (** Colimits are initial morphisms. *)
-  Definition IsLeftKanExtensionAlong (p : Functor C C') (h : Functor C D)
-    := @IsInitialMorphism (_ -> _) _ h (pullback_along p).
+  /- Left Kan extensions -/
+  /- Colimits are initial morphisms. -/
+  definition IsLeftKanExtensionAlong (p : Functor C C') (h : Functor C D) :=
+       @IsInitialMorphism (_ → _) _ h (pullback_along p).
 
-  (** *** Right Kan extensions *)
-  (** Limits are terminal morphisms *)
-  Definition IsRightKanExtensionAlong (p : Functor C C') (h : Functor C D)
-    := @IsTerminalMorphism _ (_ -> _) (pullback_along p) h.
+  /- Right Kan extensions -/
+  /- Limits are terminal morphisms -/
+  definition IsRightKanExtensionAlong (p : Functor C C') (h : Functor C D) :=
+       @IsTerminalMorphism _ (_ → _) (pullback_along p) h.
 End kan_extensions.

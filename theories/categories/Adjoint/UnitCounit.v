@@ -1,4 +1,4 @@
-(** * Adjunctions by units and counits *)
+/- Adjunctions by units and counits -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Category.Dual Functor.Dual NaturalTransformation.Dual.
 Require Import Functor.Composition.Core Functor.Identity.
@@ -11,9 +11,9 @@ Set Asymmetric Patterns.
 Local Open Scope category_scope.
 Local Open Scope morphism_scope.
 
-Section Adjunction.
-  (** ** Unit + UMP definition of adjunction *)
-  (** Quoting from Awody's "Category Theory":
+section Adjunction
+  /- unit + UMP definition of adjunction -/
+  /- Quoting from Awody's "Category Theory":
 
       An adjunction between categories [C] and [D] consists of
       functors
@@ -22,12 +22,12 @@ Section Adjunction.
 
       and a natural transformation
 
-      [T : 1_C -> G ∘ F]
+      [T : 1_C → G ∘ F]
 
       with the property:
 
-      (o) For any [c : C], [d : D], and [f : c -> G d], there exists a
-          unique [g : F c -> d] such that [f = (G g) ∘ (T c)] as
+      (o) For any [c : C], [d : D], and [f : c → G d], there exists a
+          unique [g : F c → d] such that [f ≈ (G g) ∘ (T c)] as
           indicated in
 
 <<
@@ -36,7 +36,7 @@ Section Adjunction.
 
                  G g
      G (F c) --------------> G d
-       ^                    _
+       ⁻¹                    _
        |                    /|
        |                  /
        |                /
@@ -67,22 +67,22 @@ Section Adjunction.
      the relation between special functors. That is to say, it is not
      the relation on categories ``there exists an adjunction,'' but
      rather ``this functor has an adjoint'' that we are concerned
-     with. *)
+     with. -/
 
-  Section unit.
+  section unit
     Variable C : PreCategory.
     Variable D : PreCategory.
     Variable F : Functor C D.
     Variable G : Functor D C.
 
-    Definition AdjunctionUnit :=
-      { T : NaturalTransformation 1 (G o F)
-      | forall (c : C) (d : D) (f : morphism C c (G d)),
-          Contr { g : morphism D (F c) d | G _1 g o T c = f }
+    definition AdjunctionUnit :=
+      { T : NaturalTransformation 1 (G ∘ F)
+      | Π(c : C) (d : D) (f : morphism C c (G d)),
+          is_contr { g : morphism D (F c) d | G _1 g ∘ T c ≈ f }
       }.
   End unit.
 
-  (** ** Counit + UMP definition of adjunction *)
+  /- Counit + UMP definition of adjunction -/
   (**
      Paraphrasing and quoting from Awody's "Category Theory":
 
@@ -92,12 +92,12 @@ Section Adjunction.
 
      and a natural transformation
 
-     [U : F ∘ G -> 1_D]
+     [U : F ∘ G → 1_D]
 
      with the property:
 
-     (o) For any [c : C], [d : D], and [g : F c -> d], there exists a
-         unique [f : c -> G d] such that [g = (U d) ∘ (F f)] as
+     (o) For any [c : C], [d : D], and [g : F c → d], there exists a
+         unique [f : c → G d] such that [g ≈ (U d) ∘ (F f)] as
          indicated in the diagram
 
 <<
@@ -123,71 +123,71 @@ Section Adjunction.
 
     - The statement (o) is the UMP of the counit [U].
     *)
-  Section counit.
+  section counit
     Variable C : PreCategory.
     Variable D : PreCategory.
     Variable F : Functor C D.
     Variable G : Functor D C.
 
-    Definition AdjunctionCounit :=
-      { U : NaturalTransformation (F o G) 1
-      | forall (c : C) (d : D) (g : morphism D (F c) d),
-          Contr { f : morphism C c (G d) | U d o F _1 f = g }
+    definition AdjunctionCounit :=
+      { U : NaturalTransformation (F ∘ G) 1
+      | Π(c : C) (d : D) (g : morphism D (F c) d),
+          is_contr { f : morphism C c (G d) | U d ∘ F _1 f ≈ g }
       }.
   End counit.
 
-  (** The counit is just the dual of the unit.  We formalize this here
-      so that we can use it to make coercions easier. *)
+  /- The counit is just the dual of the unit.  We formalize this here
+      so that we can use it to make coercions easier. -/
 
-  Section unit_counit_op.
+  section unit_counit_op
     Variable C : PreCategory.
     Variable D : PreCategory.
     Variable F : Functor C D.
     Variable G : Functor D C.
 
-    Definition adjunction_counit__op__adjunction_unit (A : AdjunctionUnit G^op F^op)
-    : AdjunctionCounit F G
-      := existT
-           (fun U : NaturalTransformation (F o G) 1 =>
-              forall (c : C) (d : D) (g : morphism D (F c) d),
-                Contr {f : morphism C c (G d)
-                      | U d o F _1 f = g })
-           (A.1^op)%natural_transformation
-           (fun c d g => A.2 d c g).
+    definition adjunction_counit__op__adjunction_unit (A : AdjunctionUnit G⁻¹op F⁻¹op)
+    : AdjunctionCounit F G :=
+         existT
+           (λU : NaturalTransformation (F ∘ G) 1,
+              Π(c : C) (d : D) (g : morphism D (F c) d),
+                is_contr {f : morphism C c (G d)
+                      | U d ∘ F _1 f ≈ g })
+           (A.1⁻¹op)%natural_transformation
+           (λc d g, A.2 d c g).
 
-    Definition adjunction_counit__op__adjunction_unit__inv (A : AdjunctionUnit G F)
-    : AdjunctionCounit F^op G^op
-      := existT
-           (fun U : NaturalTransformation (F^op o G^op) 1
-            => forall (c : C^op) (d : D^op) (g : morphism D^op ((F^op)%functor c) d),
-                 Contr {f : morphism C^op c ((G^op)%functor d)
-                       | U d o F^op _1 f = g })
-           (A.1^op)%natural_transformation
-           (fun c d g => A.2 d c g).
+    definition adjunction_counit__op__adjunction_unit__inv (A : AdjunctionUnit G F)
+    : AdjunctionCounit F⁻¹op G⁻¹op :=
+         existT
+           (fun U : NaturalTransformation (F⁻¹op ∘ G⁻¹op) 1
+            => Π(c : C⁻¹op) (d : D⁻¹op) (g : morphism D⁻¹op ((F⁻¹op)%functor c) d),
+                 is_contr {f : morphism C⁻¹op c ((G⁻¹op)%functor d)
+                       | U d ∘ F⁻¹op _1 f ≈ g })
+           (A.1⁻¹op)%natural_transformation
+           (λc d g, A.2 d c g).
 
-    Definition adjunction_unit__op__adjunction_counit (A : AdjunctionCounit G^op F^op)
-    : AdjunctionUnit F G
-      := existT
-           (fun T : NaturalTransformation 1 (G o F) =>
-              forall (c : C) (d : D) (f : morphism C c (G d)),
-                Contr { g : morphism D (F c) d
-                      | G _1 g o T c = f })
-           (A.1^op)%natural_transformation
-           (fun c d g => A.2 d c g).
+    definition adjunction_unit__op__adjunction_counit (A : AdjunctionCounit G⁻¹op F⁻¹op)
+    : AdjunctionUnit F G :=
+         existT
+           (λT : NaturalTransformation 1 (G ∘ F),
+              Π(c : C) (d : D) (f : morphism C c (G d)),
+                is_contr { g : morphism D (F c) d
+                      | G _1 g ∘ T c ≈ f })
+           (A.1⁻¹op)%natural_transformation
+           (λc d g, A.2 d c g).
 
-    Definition adjunction_unit__op__adjunction_counit__inv (A : AdjunctionCounit G F)
-    : AdjunctionUnit F^op G^op
-      := existT
-           (fun T : NaturalTransformation 1 (G^op o F^op)
-            => forall (c : C^op) (d : D^op) (f : morphism C^op c ((G^op)%functor d)),
-                 Contr {g : morphism D^op ((F^op)%functor c) d
-                       | G^op _1 g o T c = f })
-           (A.1^op)%natural_transformation
-           (fun c d g => A.2 d c g).
+    definition adjunction_unit__op__adjunction_counit__inv (A : AdjunctionCounit G F)
+    : AdjunctionUnit F⁻¹op G⁻¹op :=
+         existT
+           (fun T : NaturalTransformation 1 (G⁻¹op ∘ F⁻¹op)
+            => Π(c : C⁻¹op) (d : D⁻¹op) (f : morphism C⁻¹op c ((G⁻¹op)%functor d)),
+                 is_contr {g : morphism D⁻¹op ((F⁻¹op)%functor c) d
+                       | G⁻¹op _1 g ∘ T c ≈ f })
+           (A.1⁻¹op)%natural_transformation
+           (λc d g, A.2 d c g).
   End unit_counit_op.
 
-  (** ** Unit + Counit + Zig + Zag definition of adjunction *)
-  (** Quoting Wikipedia on Adjoint Functors:
+  /- unit + Counit + Zig + Zag definition of adjunction -/
+  /- Quoting Wikipedia on Adjoint Functors:
 
       A counit-unit adjunction between two categories [C] and [D]
       consists of two functors [F : C ← D] and [G : C → D] and two
@@ -220,22 +220,22 @@ Section Adjunction.
       counit-unit equations
 
 <<
-      1_F = ε F ∘ F η
-      1_G = G ε ∘ η G
+      1_F ≈ ε F ∘ F η
+      1_G ≈ G ε ∘ η G
 >>
 
       which mean that for each [X] in [C] and each [Y] in [D],
 
 <<
-      1_{FY} = ε_{FY} ∘ F(η_Y)
-      1_{GX} = G(ε_X) ∘ η_{GX}
+      1_{FY} ≈ ε_{FY} ∘ F(η_Y)
+      1_{GX} ≈ G(ε_X) ∘ η_{GX}
 >>
 
       These equations are useful in reducing proofs about adjoint
       functors to algebraic manipulations.  They are sometimes called
       the ``zig-zag equations'' because of the appearance of the
       corresponding string diagrams.  A way to remember them is to
-      first write down the nonsensical equation [1 = ε ∘ η] and then
+      first write down the nonsensical equation [1 ≈ ε ∘ η] and then
       fill in either [F] or [G] in one of the two simple ways which
       make the compositions defined.
 
@@ -244,9 +244,9 @@ Section Adjunction.
       a colimit satisfies an initial property whereas the counit
       morphisms will satisfy terminal properties, and dually.  The
       term unit here is borrowed from the theory of monads where it
-      looks like the insertion of the identity 1 into a monoid.  *)
+      looks like the insertion of the identity 1 into a monoid.  -/
 
-  Section unit_counit.
+  section unit_counit
     Variable C : PreCategory.
     Variable D : PreCategory.
     Variable F : Functor C D.
@@ -255,27 +255,27 @@ Section Adjunction.
     (*Local Reserved Notation "'ε'".
     Local Reserved Notation "'η'".*)
 
-    (** Use the per-object version of the equations, so that we don't
+    /- Use the per-object version of the equations, so that we don't
         need the associator in the middle.  Also, explicitly simplify
-        some of the types so that [rewrite] works better. *)
+        some of the types so that [rewrite] works better. -/
     Record AdjunctionUnitCounit :=
       {
-        unit : NaturalTransformation (identity C) (G o F)
+        unit : NaturalTransformation (identity C) (G ∘ F)
         (*where "'η'" := unit*);
-        counit : NaturalTransformation (F o G) (identity D)
+        counit : NaturalTransformation (F ∘ G) (identity D)
         (*where "'ε'" := counit*);
         unit_counit_equation_1
-        : forall Y : C, (*ε (F Y) ∘ F ₁ (η Y) = identity (F Y);*)
+        : ΠY : C, (*ε (F Y) ∘ F ₁ (η Y) ≈ identity (F Y);*)
             Category.Core.compose (C := D) (s := F Y) (d := F (G (F Y))) (d' := F Y)
                                   (counit (F Y))
                                   (morphism_of F (s := Y) (d := G (F Y)) (unit Y))
-            = 1;
+            ≈ 1;
         unit_counit_equation_2
-        : forall X : D, (* G ₁ (ε X) ∘ η (G X) = identity (G X) *)
+        : ΠX : D, /- G ₁ (ε X) ∘ η (G X) ≈ identity (G X) -/
             Category.Core.compose (C := C) (s := G X) (d := G (F (G X))) (d' := G X)
                                   (morphism_of G (s := F (G X)) (d := X) (counit X))
                                   (unit (G X))
-            = 1
+            ≈ 1
       }.
   End unit_counit.
 End Adjunction.

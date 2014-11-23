@@ -1,4 +1,4 @@
-Require Export Types.Unit.
+Require Export Types.unit.
 Require Export Types.Empty.
 Require Export Types.Paths.
 Require Export Types.Prod.
@@ -8,6 +8,6 @@ Require Export Types.Sigma.
 Require Export Types.Record.
 Require Export Types.Equiv.
 Require Export Types.Universe.
-Require Export Types.Bool.
+Require Export Types.bool.
 Require Export Types.Sum.
 Require Export Types.Nat.

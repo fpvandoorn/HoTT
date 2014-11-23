@@ -1,5 +1,5 @@
-(** * Currying *)
-(** ** [(yⁿ)ᵐ ≅ yⁿᵐ] *)
+/- Currying -/
+/- [(yⁿ)ᵐ ≅ yⁿᵐ] -/
 Require ExponentialLaws.Law4.Functors.
 Require ExponentialLaws.Law4.Law.
 

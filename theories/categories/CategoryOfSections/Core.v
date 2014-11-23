@@ -1,4 +1,4 @@
-(** * Category of sections *)
+/- Category of sections -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Category.Strict.
 Require Import Functor.Identity NaturalTransformation.Identity.
@@ -14,54 +14,54 @@ Set Asymmetric Patterns.
 Local Open Scope equiv_scope.
 Local Open Scope functor_scope.
 
-Section FunctorSectionCategory.
-  Context `{Funext}.
+section FunctorSectionCategory
+  Context [H : Funext].
 
   Variable C : PreCategory.
   Variable D : PreCategory.
   Variable R : Functor C D.
 
-  (** There is a category [Sect(R)] of sections of [R]. *)
+  /- There is a category [Sect(R)] of sections of [R]. -/
 
-  (** ** Section of a functor *)
+  /- Section of a functor -/
   Record SectionOfFunctor :=
     {
       section_of_functor_morphism :> Functor D C;
-      section_of_functor_issect : R o section_of_functor_morphism = 1
+      section_of_functor_issect : R ∘ section_of_functor_morphism ≈ 1
     }.
 
   Local Notation section_of_functor_sigT :=
     { section_of_functor_morphism : Functor D C
-    | R o section_of_functor_morphism = 1 }.
+    | R ∘ section_of_functor_morphism ≈ 1 }.
 
   Lemma section_of_functor_sig
-  : section_of_functor_sigT <~> SectionOfFunctor.
-  Proof.
+  : section_of_functor_sigT ≃ SectionOfFunctor.
+  /-begin
     issig Build_SectionOfFunctor
           section_of_functor_morphism
           section_of_functor_issect.
-  Defined.
+  end-/
 
   Local Open Scope natural_transformation_scope.
 
-  (** ** Definition of category of sections of a functor *)
-  Definition category_of_sections : PreCategory.
-  Proof.
+  /- definition of category of sections of a functor -/
+  definition category_of_sections : PreCategory.
+  /-begin
     refine (@Build_PreCategory
               SectionOfFunctor
-              (fun F G => NaturalTransformation F G)
-              (fun F => 1)
-              (fun _ _ _ T U => T o U)
+              (λF G, NaturalTransformation F G)
+              (λF, 1)
+              (λ_ _ _ T U, T ∘ U)
               _
               _
               _
               _);
     abstract (path_natural_transformation; auto with morphism).
-  Defined.
+  end-/
 End FunctorSectionCategory.
 
-Global Instance isstrict_category_of_sections `{Funext}
-      `{IsStrictCategory C, IsStrictCategory D}
+definition isstrict_category_of_sections [instance] [H : Funext]
+      [H : IsStrictCategory C, IsStrictCategory D]
       (F : Functor C D)
 : IsStrictCategory (category_of_sections F) | 20.
 Proof.

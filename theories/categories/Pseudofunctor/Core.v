@@ -1,4 +1,4 @@
-(** * Pseudofunctors *)
+/- Pseudofunctors -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import FunctorCategory.Core.
 Require Import Category.Morphisms FunctorCategory.Morphisms.
@@ -15,13 +15,13 @@ Set Asymmetric Patterns.
 
 Local Open Scope morphism_scope.
 
-Section pseudofunctor.
+section pseudofunctor
   Local Open Scope natural_transformation_scope.
-  Context `{Funext}.
+  Context [H : Funext].
 
   Variable C : PreCategory.
 
-  (** Quoting from nCatLab (http://ncatlab.org/nlab/show/pseudofunctor):
+  /- Quoting from nCatLab (http://ncatlab.org/nlab/show/pseudofunctor):
 
       Given bicategories [C] and [D], a pseudofunctor (or weak 2-functor,
       or just functor) [P : C → D] consists of:
@@ -36,7 +36,7 @@ Section pseudofunctor.
 
       - for each triple [x],[y],[z] of [C]-objects, a isomorphism
         (natural in [f : x → y] and [g : y → z]) [P_{x,y,z}(f,g) :
-        P_{x,y}(f);P_{y,z}(g) ⇒ P_{x,z}(f;g)];
+        P_{x,y}(f);P_{y,z}(g) ⇒ P_{x,z}⟨f,g⟩];
 
       - for each hom-category [C(x,y)],
 <<
@@ -52,7 +52,7 @@ Section pseudofunctor.
                 P_{x,x,y}(idₓ, f)  \\                     // P_{x,y}(λ_f)
                                      \\                 //
                                        ⇘              //
-                                        P_{x,y}(idₓ ; f)
+                                        P_{x,y}⟨idₓ , f⟩
 >>
 
         and
@@ -70,7 +70,7 @@ Section pseudofunctor.
                 P_{x,y,y}(f, id_y) \\                     // P_{x,y}(ρ_f)
                                      \\                 //
                                        ⇘              //
-                                       P_{x,y}(f ; id_y)
+                                       P_{x,y}⟨f , id_y⟩
 >>
         commute; and
 
@@ -83,26 +83,26 @@ Section pseudofunctor.
         P_{w,x,y}(f,g) ; id_{P_{y,z}(h)} ∥                                                   ∥ id_{P_{w,x}(f)} ; P_{x,y,z}(g, h)
                                          ∥                                                   ∥
                                          ⇓                                                   ⇓
-                   P_{w,y}(f ; g) ; P_{y,z}(h)                                           P_{w,x}(f) ; P_{x,z}(g ; h)
+                   P_{w,y}⟨f , g⟩ ; P_{y,z}(h)                                           P_{w,x}(f) ; P_{x,z}⟨g , h⟩
                                          ∥                                                   ∥
                                          ∥                                                   ∥
                      P_{w,y,z}(f ; g, h) ∥                                                   ∥ P_{w,x,z}(f, g ; h)
                                          ∥                                                   ∥
                                          ⇓                                                   ⇓
-                          P_{w,z}((f ; g) ; h) ========================================⇒ P_{w,z}(f ; (g ; h))
+                          P_{w,z}(⟨f , g⟩ ; h) ========================================⇒ P_{w,z}(f ; ⟨g , h⟩)
                                                           P_{w,z}(α_{f,g,h})
 >>
         commutes.
-*)
+-/
 
-  (* To obtain the [p_composition_of_coherent] type, I ran
+  /- To obtain the [p_composition_of_coherent] type, I ran
 <<
   Unset Implicit Arguments.
   Variable F : Pseudofunctor.
-  Goal forall (w x y z : C) (f : morphism C w x) (g : morphism C x y) (h : morphism C y z), Type.
+  Goal Π(w x y z : C) (f : morphism C w x) (g : morphism C x y) (h : morphism C y z), Type.
   Proof.
     intros.
-    pose ((idtoiso (_ -> _) (ap (p_morphism_of F w z) (associativity C _ _ _ _ f g h))) : morphism _ _ _).
+    pose ((idtoiso (_ → _) (ap (p_morphism_of F w z) (associativity C _ _ _ _ f g h))) : morphism _ _ _).
     pose ((p_composition_of F w y z h (g ∘ f)) : NaturalTransformation _ _).
     pose (p_morphism_of F y z h ∘ p_composition_of F w x y g f).
 
@@ -114,80 +114,80 @@ Section pseudofunctor.
              | [ H : _, H' : _ |- _ ] => unique_pose_with_body (NTComposeT H H'); subst H H'
            end.
     match goal with
-      | [ H := _, H' := _ |- _ ] => assert (H = H'); subst H H'
+      | [ H := _, H' := _ |- _ ] => assert (H ≈ H'); subst H H'
     end.
 >>
 
 <<
   Unset Implicit Arguments.
   Variable F : Pseudofunctor.
-  Goal forall (x y : C) (f : morphism C x y), Type.
+  Goal Π(x y : C) (f : morphism C x y), Type.
   Proof.
     intros.
     pose (p_identity_of F y ∘ p_morphism_of F x y f).
     pose (p_composition_of F x y y (Identity y) f : NaturalTransformation _ _).
-    pose (idtoiso (_ -> _) (ap (p_morphism_of F x y) (left_identity _ _ _ f)) : morphism _ _ _).
+    pose (idtoiso (_ → _) (ap (p_morphism_of F x y) (left_identity _ _ _ f)) : morphism _ _ _).
     pose (left_identity_natural_transformation_2 (p_morphism_of F x y f)).
     simpl in *.
     repeat match goal with
              | [ H : _, H' : _ |- _ ] => unique_pose_with_body (NTComposeT H H'); subst H H'
            end.
     match goal with
-      | [ H := _, H' := _ |- _ ] => assert (H = H'); subst H H'
+      | [ H := _, H' := _ |- _ ] => assert (H ≈ H'); subst H H'
     end.
 >>
 
 <<
   Unset Implicit Arguments.
   Variable F : Pseudofunctor.
-  Goal forall (x y : C) (f : morphism C x y), Type.
+  Goal Π(x y : C) (f : morphism C x y), Type.
   Proof.
     intros.
     pose (p_morphism_of F x y f ∘ p_identity_of F x).
     pose (p_composition_of F x x y f (Identity x) : NaturalTransformation _ _).
-    pose (idtoiso (_ -> _) (ap (p_morphism_of F x y) (right_identity _ _ _ f)) : morphism _ _ _).
+    pose (idtoiso (_ → _) (ap (p_morphism_of F x y) (right_identity _ _ _ f)) : morphism _ _ _).
     pose (right_identity_natural_transformation_2 (p_morphism_of F x y f)).
     simpl in *.
     repeat match goal with
              | [ H : _, H' : _ |- _ ] => unique_pose_with_body (NTComposeT H H'); subst H H'
            end.
     match goal with
-      | [ H := _, H' := _ |- _ ] => assert (H = H'); subst H H'
+      | [ H := _, H' := _ |- _ ] => assert (H ≈ H'); subst H H'
     end.
 >>
- *)
+ -/
 
   Record Pseudofunctor :=
     {
-      p_object_of :> C -> PreCategory;
-      p_morphism_of : forall s d, morphism C s d
-                                  -> Functor (p_object_of s) (p_object_of d);
-      p_composition_of : forall s d d'
+      p_object_of :> C → PreCategory;
+      p_morphism_of : Πs d, morphism C s d
+                                  → Functor (p_object_of s) (p_object_of d);
+      p_composition_of : Πs d d'
                                 (m1 : morphism C d d') (m2 : morphism C s d),
-                           (p_morphism_of _ _ (m1 o m2))
-                             <~=~> (p_morphism_of _ _ m1 o p_morphism_of _ _ m2)%functor;
-      p_identity_of : forall x, p_morphism_of x x 1 <~=~> 1%functor;
+                           (p_morphism_of _ _ (m1 ∘ m2))
+                             <~=~> (p_morphism_of _ _ m1 ∘ p_morphism_of _ _ m2)%functor;
+      p_identity_of : Πx, p_morphism_of x x 1 <~=~> 1%functor;
       p_composition_of_coherent
-      : forall w x y z
+      : Πw x y z
                (f : morphism C w x) (g : morphism C x y) (h : morphism C y z),
           ((associator_1 (p_morphism_of y z h) (p_morphism_of x y g) (p_morphism_of w x f))
-             o ((p_composition_of x y z h g oR p_morphism_of w x f)
-                  o (p_composition_of w x z (h o g) f)))
-          = ((p_morphism_of y z h oL p_composition_of w x y g f)
-               o ((p_composition_of w y z h (g o f))
-                    o (Category.Morphisms.idtoiso (_ -> _) (ap (p_morphism_of w z) (Category.Core.associativity C w x y z f g h)) : morphism _ _ _)));
+             ∘ ((p_composition_of x y z h g oR p_morphism_of w x f)
+                  ∘ (p_composition_of w x z (h ∘ g) f)))
+          ≈ ((p_morphism_of y z h oL p_composition_of w x y g f)
+               ∘ ((p_composition_of w y z h (g ∘ f))
+                    ∘ (Category.Morphisms.idtoiso (_ → _) (ap (p_morphism_of w z) (Category.Core.associativity C w x y z f g h)) : morphism _ _ _)));
       p_left_identity_of_coherent
-      : forall x y (f : morphism C x y),
+      : Πx y (f : morphism C x y),
           ((p_identity_of y oR p_morphism_of x y f)
-             o p_composition_of x y y 1 f)
-          = ((left_identity_natural_transformation_2 (p_morphism_of x y f))
-               o (Category.Morphisms.idtoiso (_ -> _) (ap (p_morphism_of x y) (Category.Core.left_identity C x y f)) : morphism _ _ _));
+             ∘ p_composition_of x y y 1 f)
+          ≈ ((left_identity_natural_transformation_2 (p_morphism_of x y f))
+               ∘ (Category.Morphisms.idtoiso (_ → _) (ap (p_morphism_of x y) (Category.Core.left_identity C x y f)) : morphism _ _ _));
       p_right_identity_of_coherent
-      : forall x y (f : morphism C x y),
+      : Πx y (f : morphism C x y),
           ((p_morphism_of x y f oL p_identity_of x)
-             o p_composition_of x x y f 1)
-          = ((right_identity_natural_transformation_2 (p_morphism_of x y f))
-               o (Category.Morphisms.idtoiso (_ -> _) (ap (p_morphism_of x y) (Category.Core.right_identity C x y f)) : morphism _ _ _))
+             ∘ p_composition_of x x y f 1)
+          ≈ ((right_identity_natural_transformation_2 (p_morphism_of x y f))
+               ∘ (Category.Morphisms.idtoiso (_ → _) (ap (p_morphism_of x y) (Category.Core.right_identity C x y f)) : morphism _ _ _))
     }.
 End pseudofunctor.
 

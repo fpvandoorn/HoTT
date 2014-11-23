@@ -1,4 +1,4 @@
-(** * Lax Comma Category *)
+/- Lax Comma Category -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Category.Dual.
 Require Import InitialTerminalCategory.Core InitialTerminalCategory.Pseudofunctors.
@@ -28,7 +28,7 @@ Local Open Scope equiv_scope.
 Local Open Scope morphism_scope.
 Local Open Scope category_scope.
 
-(** Quoting David Spivak:
+/- Quoting David Spivak:
 
     David: ok
        so an object of [FC ⇓ D] is a pair [(X, G)], where [X] is a
@@ -44,7 +44,7 @@ Local Open Scope category_scope.
        [colim : FC ⇓ D --> D]
 
      David: consider for yourself the case where [F : X --> X'] is
-       identity ([X = X']) and (separately) the case where
+       identity ([X ≈ X']) and (separately) the case where
        [α : G --> G ∘ F] is identity.
        the point is, you've already done the work to get this colim
        functor.
@@ -52,14 +52,14 @@ Local Open Scope category_scope.
        of two maps, one where the [F]-part is identity and one where
        the [α]-part is identity.
        and you've worked both of those cases out already.
-       *)
+       -/
 
-(** ** Definition of Lax Comma Category *)
-Definition lax_comma_category `{Funext} A B
+/- definition of Lax Comma Category -/
+definition lax_comma_category [H : Funext] A B
            (S : Pseudofunctor A) (T : Pseudofunctor B)
-           `{forall a b, IsHSet (Functor (S a) (T b))}
-: PreCategory
-  := @Build_PreCategory
+           [H : Πa b, IsHSet (Functor (S a) (T b))]
+: PreCategory :=
+     @Build_PreCategory
        (@object _ _ _ S T)
        (@morphism _ _ _ S T)
        (@identity _ _ _ S T)
@@ -69,31 +69,31 @@ Definition lax_comma_category `{Funext} A B
        (@right_identity _ _ _ S T)
        _.
 
-Definition oplax_comma_category `{Funext} A B
+definition oplax_comma_category [H : Funext] A B
            (S : Pseudofunctor A) (T : Pseudofunctor B)
-           `{forall a b, IsHSet (Functor (S a) (T b))}
-: PreCategory
-  := (lax_comma_category S T)^op.
+           [H : Πa b, IsHSet (Functor (S a) (T b))]
+: PreCategory :=
+     (lax_comma_category S T)⁻¹op.
 
-Global Instance isstrict_lax_comma_category `{Funext} A B
+definition isstrict_lax_comma_category [instance] [H : Funext] A B
        (S : Pseudofunctor A) (T : Pseudofunctor B)
-       `{IsStrictCategory A, IsStrictCategory B}
-       `{forall a b, IsHSet (Functor (S a) (T b))}
+       [H : IsStrictCategory A, IsStrictCategory B]
+       [H : Πa b, IsHSet (Functor (S a) (T b))]
 : IsStrictCategory (@lax_comma_category _ A B S T _).
 Proof.
   typeclasses eauto.
 Qed.
 
-Global Instance isstrict_oplax_comma_category `{fs : Funext} A B S T HA HB H
-: IsStrictCategory (@oplax_comma_category fs A B S T H)
-  := @isstrict_lax_comma_category fs A B S T HA HB H.
+definition isstrict_oplax_comma_category [instance] {fs : Funext} A B S T HA HB H
+: IsStrictCategory (@oplax_comma_category fs A B S T H) :=
+     @isstrict_lax_comma_category fs A B S T HA HB H.
 
-(*  Section category.
-    Context `{IsCategory A, IsCategory B}.
-    (*Context `{Funext}. *)
+/- section category
+    Context [H : IsCategory A, IsCategory B].
+    (*Context [H : Funext]. -/
 
-    Definition comma_category_isotoid (x y : comma_category)
-    : x ≅ y -> x = y.
+    definition comma_category_isotoid (x y : comma_category)
+    : x ≅ y → x ≈ y.
     Proof.
       intro i.
       destruct i as [i [i' ? ?]].
@@ -102,7 +102,7 @@ Global Instance isstrict_oplax_comma_category `{fs : Funext} A B S T HA HB H
       simpl in *.
 
 
-    Global Instance comma_category_IsCategory `{IsCategory A, IsCategory B}
+    definition comma_category_IsCategory [instance] [H : IsCategory A, IsCategory B]
     : IsCategory comma_category.
     Proof.
       hnf.
@@ -112,22 +112,22 @@ Global Instance isstrict_oplax_comma_category `{fs : Funext} A B S T HA HB H
   End category.
  *)
 
-(** ** Definition of Lax (Co)Slice Category *)
-Section lax_slice_category.
-  Context `{Funext}.
+/- definition of Lax (Co)Slice Category -/
+section lax_slice_category
+  Context [H : Funext].
   Variable A : PreCategory.
   Variable a : PreCategory.
   Variable S : Pseudofunctor A.
-  Context `{forall a0, IsHSet (Functor (S a0) a)}.
-  Context `{forall a0, IsHSet (Functor a (S a0))}.
+  Context [H : Πa0, IsHSet (Functor (S a0) a)].
+  Context [H : Πa0, IsHSet (Functor a (S a0))].
 
-  Definition lax_slice_category : PreCategory := lax_comma_category S !a.
-  Definition lax_coslice_category : PreCategory := lax_comma_category !a S.
+  definition lax_slice_category : PreCategory := lax_comma_category S !a.
+  definition lax_coslice_category : PreCategory := lax_comma_category !a S.
 
-  Definition oplax_slice_category : PreCategory := oplax_comma_category S !a.
-  Definition oplax_coslice_category : PreCategory := oplax_comma_category !a S.
+  definition oplax_slice_category : PreCategory := oplax_comma_category S !a.
+  definition oplax_coslice_category : PreCategory := oplax_comma_category !a S.
 
-(** [x ↓ F] is a coslice category; [F ↓ x] is a slice category; [x ↓ F] deals with morphisms [x -> F y]; [F ↓ x] has morphisms [F y -> x] *)
+/- [x ↓ F] is a coslice category; [F ↓ x] is a slice category; [x ↓ F] deals with morphisms [x → F y]; [F ↓ x] has morphisms [F y → x] -/
 End lax_slice_category.
 
 Arguments lax_slice_category {_} [A] a S {_}.
@@ -135,23 +135,23 @@ Arguments lax_coslice_category {_} [A] a S {_}.
 Arguments oplax_slice_category {_} [A] a S {_}.
 Arguments oplax_coslice_category {_} [A] a S {_}.
 
-(** ** Definition of Lax (Co)Slice Category Over *)
-Section lax_slice_category_over.
-  Context `{Funext}.
+/- definition of Lax (Co)Slice Category Over -/
+section lax_slice_category_over
+  Context [H : Funext].
 
-  Variable P : PreCategory -> Type.
-  Context `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}.
+  Variable P : PreCategory → Type.
+  Context {HF : ΠC D, P C → P D → IsHSet (Functor C D)}.
 
   Local Notation cat := (@sub_pre_cat _ P HF).
 
   Variable a : PreCategory.
-  Context `{forall a0 : cat, IsHSet (Functor a0.1 a)}.
-  Context `{forall a0 : cat, IsHSet (Functor a a0.1)}.
+  Context {Πa0 : cat, IsHSet (Functor a0.1 a)}.
+  Context {Πa0 : cat, IsHSet (Functor a a0.1)}.
 
-  Definition lax_slice_category_over : PreCategory := @lax_slice_category _ cat a (Pseudofunctor.Identity.identity P) _.
-  Definition lax_coslice_category_over : PreCategory := @lax_coslice_category _ cat a (Pseudofunctor.Identity.identity P) _.
-  Definition oplax_slice_category_over : PreCategory := @oplax_slice_category _ cat a (Pseudofunctor.Identity.identity P) _.
-  Definition oplax_coslice_category_over : PreCategory := @oplax_coslice_category _ cat a (Pseudofunctor.Identity.identity P) _.
+  definition lax_slice_category_over : PreCategory := @lax_slice_category _ cat a (Pseudofunctor.Identity.identity P) _.
+  definition lax_coslice_category_over : PreCategory := @lax_coslice_category _ cat a (Pseudofunctor.Identity.identity P) _.
+  definition oplax_slice_category_over : PreCategory := @oplax_slice_category _ cat a (Pseudofunctor.Identity.identity P) _.
+  definition oplax_coslice_category_over : PreCategory := @oplax_coslice_category _ cat a (Pseudofunctor.Identity.identity P) _.
 End lax_slice_category_over.
 
 Arguments lax_slice_category_over {_} P {HF} a {_}.
@@ -159,105 +159,105 @@ Arguments lax_coslice_category_over {_} P {HF} a {_}.
 Arguments oplax_slice_category_over {_} P {HF} a {_}.
 Arguments oplax_coslice_category_over {_} P {HF} a {_}.
 
-(** ** Definition of Lax (Co)Slice Arrow Category *)
-Section lax_arrow_category.
-  Context `{Funext}.
+/- definition of Lax (Co)Slice Arrow Category -/
+section lax_arrow_category
+  Context [H : Funext].
 
-  Variable P : PreCategory -> Type.
-  Context `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}.
+  Variable P : PreCategory → Type.
+  Context {HF : ΠC D, P C → P D → IsHSet (Functor C D)}.
 
   Local Notation cat := (@sub_pre_cat _ P HF).
 
-  Definition lax_arrow_category : PreCategory := @lax_comma_category _ cat cat (Pseudofunctor.Identity.identity P) (Pseudofunctor.Identity.identity P) (fun C D => HF C.2 D.2).
-  Definition oplax_arrow_category : PreCategory := @oplax_comma_category _ cat cat (Pseudofunctor.Identity.identity P) (Pseudofunctor.Identity.identity P) (fun C D => HF C.2 D.2).
+  definition lax_arrow_category : PreCategory := @lax_comma_category _ cat cat (Pseudofunctor.Identity.identity P) (Pseudofunctor.Identity.identity P) (λC D, HF C.2 D.2).
+  definition oplax_arrow_category : PreCategory := @oplax_comma_category _ cat cat (Pseudofunctor.Identity.identity P) (Pseudofunctor.Identity.identity P) (λC D, HF C.2 D.2).
 End lax_arrow_category.
 
 Arguments lax_arrow_category {_} P {_}.
 Arguments oplax_arrow_category {_} P {_}.
 
 Module Export LaxCommaCoreNotations.
-  (** We play some games to get nice notations for lax comma categories. *)
-  Section tc_notation_boiler_plate.
+  /- We play some games to get nice notations for lax comma categories. -/
+  section tc_notation_boiler_plate
     Class LCC_Builder {A B C} (x : A) (y : B) (z : C) := lcc_builder_dummy : True.
-    Definition get_LCC `{@LCC_Builder A B C x y z} : C := z.
+    definition get_LCC [H : @LCC_Builder A B C x y z] : C := z.
 
     Global Arguments get_LCC / {A B C} x y {z} {_}.
 
-    Global Instance LCC_comma `{Funext} A B
+    definition LCC_comma [instance] [H : Funext] A B
            (S : Pseudofunctor A) (T : Pseudofunctor B)
-           {_ : forall a b, IsHSet (Functor (S a) (T b))}
-    : LCC_Builder S T (lax_comma_category S T) | 1000
-      := I.
+           {_ : Πa b, IsHSet (Functor (S a) (T b))}
+    : LCC_Builder S T (lax_comma_category S T) | 1000 :=
+         I.
 
-    Global Instance LCC_slice `{Funext} A x (F : Pseudofunctor A)
-           `{forall a0, IsHSet (Functor (F a0) x)}
-    : LCC_Builder F x (lax_slice_category x F) | 100
-      := I.
+    definition LCC_slice [instance] [H : Funext] A x (F : Pseudofunctor A)
+           [H : Πa0, IsHSet (Functor (F a0) x)]
+    : LCC_Builder F x (lax_slice_category x F) | 100 :=
+         I.
 
-    Global Instance LCC_coslice `{Funext} A x (F : Pseudofunctor A)
-           `{forall a0, IsHSet (Functor x (F a0))}
-    : LCC_Builder x F (lax_coslice_category x F) | 100
-      := I.
+    definition LCC_coslice [instance] [H : Funext] A x (F : Pseudofunctor A)
+           [H : Πa0, IsHSet (Functor x (F a0))]
+    : LCC_Builder x F (lax_coslice_category x F) | 100 :=
+         I.
 
-    Global Instance LCC_slice_over `{Funext}
-           P `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}
+    definition LCC_slice_over [instance] [H : Funext]
+           P {HF : ΠC D, P C → P D → IsHSet (Functor C D)}
            a
-           `{forall a0 : @sub_pre_cat _ P HF, IsHSet (Functor a0.1 a)}
-    : LCC_Builder a (@sub_pre_cat _ P HF) (@lax_slice_category_over _ P HF a _) | 10
-      := I.
+           {Πa0 : @sub_pre_cat _ P HF, IsHSet (Functor a0.1 a)}
+    : LCC_Builder a (@sub_pre_cat _ P HF) (@lax_slice_category_over _ P HF a _) | 10 :=
+         I.
 
-    Global Instance LCC_coslice_over `{Funext}
-           P `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}
+    definition LCC_coslice_over [instance] [H : Funext]
+           P {HF : ΠC D, P C → P D → IsHSet (Functor C D)}
            a
-           `{forall a0 : @sub_pre_cat _ P HF, IsHSet (Functor a a0.1)}
-    : LCC_Builder (@sub_pre_cat _ P HF) a (@lax_coslice_category_over _ P HF a _) | 10
-      := I.
+           {Πa0 : @sub_pre_cat _ P HF, IsHSet (Functor a a0.1)}
+    : LCC_Builder (@sub_pre_cat _ P HF) a (@lax_coslice_category_over _ P HF a _) | 10 :=
+         I.
 
     Class OLCC_Builder {A B C} (x : A) (y : B) (z : C) := olcc_builder_dummy : True.
 
-    Definition get_OLCC `{@OLCC_Builder A B C x y z} : C := z.
+    definition get_OLCC [H : @OLCC_Builder A B C x y z] : C := z.
 
     Global Arguments get_OLCC / {A B C} x y {z} {_}.
 
-    Global Instance OLCC_comma `{Funext} A B
+    definition OLCC_comma [instance] [H : Funext] A B
            (S : Pseudofunctor A) (T : Pseudofunctor B)
-           {_ : forall a b, IsHSet (Functor (S a) (T b))}
-    : OLCC_Builder S T (lax_comma_category S T) | 1000
-      := I.
+           {_ : Πa b, IsHSet (Functor (S a) (T b))}
+    : OLCC_Builder S T (lax_comma_category S T) | 1000 :=
+         I.
 
-    Global Instance OLCC_slice `{Funext} A x (F : Pseudofunctor A)
-           `{forall a0, IsHSet (Functor (F a0) x)}
-    : OLCC_Builder F x (lax_slice_category x F) | 100
-      := I.
+    definition OLCC_slice [instance] [H : Funext] A x (F : Pseudofunctor A)
+           [H : Πa0, IsHSet (Functor (F a0) x)]
+    : OLCC_Builder F x (lax_slice_category x F) | 100 :=
+         I.
 
-    Global Instance OLCC_coslice `{Funext} A x (F : Pseudofunctor A)
-           `{forall a0, IsHSet (Functor x (F a0))}
-    : OLCC_Builder x F (lax_coslice_category x F) | 100
-      := I.
+    definition OLCC_coslice [instance] [H : Funext] A x (F : Pseudofunctor A)
+           [H : Πa0, IsHSet (Functor x (F a0))]
+    : OLCC_Builder x F (lax_coslice_category x F) | 100 :=
+         I.
 
-    Global Instance OLCC_slice_over `{Funext}
-           P `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}
+    definition OLCC_slice_over [instance] [H : Funext]
+           P {HF : ΠC D, P C → P D → IsHSet (Functor C D)}
            a
-           `{forall a0 : @sub_pre_cat _ P HF, IsHSet (Functor a0.1 a)}
-    : OLCC_Builder a (@sub_pre_cat _ P HF) (@lax_slice_category_over _ P HF a _) | 10
-      := I.
+           {Πa0 : @sub_pre_cat _ P HF, IsHSet (Functor a0.1 a)}
+    : OLCC_Builder a (@sub_pre_cat _ P HF) (@lax_slice_category_over _ P HF a _) | 10 :=
+         I.
 
-    Global Instance OLCC_coslice_over `{Funext}
-           P `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}
+    definition OLCC_coslice_over [instance] [H : Funext]
+           P {HF : ΠC D, P C → P D → IsHSet (Functor C D)}
            a
-           `{forall a0 : @sub_pre_cat _ P HF, IsHSet (Functor a a0.1)}
-    : OLCC_Builder (@sub_pre_cat _ P HF) a (@lax_coslice_category_over _ P HF a _) | 10
-      := I.
+           {Πa0 : @sub_pre_cat _ P HF, IsHSet (Functor a a0.1)}
+    : OLCC_Builder (@sub_pre_cat _ P HF) a (@lax_coslice_category_over _ P HF a _) | 10 :=
+         I.
   End tc_notation_boiler_plate.
 
-  (** We really want to use infix [⇓] and [⇑] for lax comma categories, but that's unicode.  Infix [,] might also be reasonable, but I can't seem to get it to work without destroying the [(_, _)] notation for ordered pairs.  So I settle for the ugly ASCII rendition [//] of [⇓] and [\\] for [⇑]. *)
-  (** Set some notations for printing *)
+  /- We really want to use infix [⇓] and [⇑] for lax comma categories, but that's unicode.  Infix [,] might also be reasonable, but I can't seem to get it to work without destroying the [(_, _)] notation for ordered pairs.  So I settle for the ugly ASCII rendition [//] of [⇓] and [\\] for [⇑]. -/
+  /- Set some notations for printing -/
   Notation "'CAT' // a" := (@lax_slice_category_over _ _ _ a _) (at level 40, left associativity) : category_scope.
   Notation "a // 'CAT'" := (@lax_coslice_category_over _ _ _ a _) (at level 40, left associativity) : category_scope.
   Notation "x // F" := (lax_coslice_category x F) (at level 40, left associativity) : category_scope.
   Notation "F // x" := (lax_slice_category x F) : category_scope.
   Notation "S // T" := (lax_comma_category S T) : category_scope.
-  (** Set the notation for parsing; typeclasses will automatically decide which of the arguments are functors and which are objects, i.e., functors from the terminal category. *)
+  /- Set the notation for parsing; typeclasses will automatically decide which of the arguments are functors and which are objects, i.e., functors from the terminal category. -/
   Notation "S // T" := (get_LCC S T) : category_scope.
 
   Notation "'CAT' \\ a" := (@oplax_slice_category_over _ _ _ a _) (at level 40, left associativity) : category_scope.
@@ -265,6 +265,6 @@ Module Export LaxCommaCoreNotations.
   Notation "x \\ F" := (oplax_coslice_category x F) (at level 40, left associativity) : category_scope.
   Notation "F \\ x" := (oplax_slice_category x F) : category_scope.
   Notation "S \\ T" := (oplax_comma_category S T) : category_scope.
-  (** Set the notation for parsing; typeclasses will automatically decide which of the arguments are functors and which are objects, i.e., functors from the terminal category. *)
+  /- Set the notation for parsing; typeclasses will automatically decide which of the arguments are functors and which are objects, i.e., functors from the terminal category. -/
   Notation "S \\ T" := (get_OLCC S T) : category_scope.
 End LaxCommaCoreNotations.

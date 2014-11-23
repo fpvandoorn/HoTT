@@ -1,4 +1,4 @@
-(** * Pointwise functors (functoriality of the functor category construction) *)
+/- Pointwise functors (functoriality of the functor category construction) -/
 Require Functor.Pointwise.Core.
 Require Functor.Pointwise.Properties.
 

@@ -1,7 +1,7 @@
-(** * Subcategories *)
-(** ** Full *)
+/- Subcategories -/
+/- Full -/
 Require Subcategory.Full.
-(** ** Wide *)
+/- Wide -/
 Require Subcategory.Wide.
 
 Include Subcategory.Full.

@@ -1,45 +1,45 @@
 Require Import Overture.
 
-(** * Universe Levels *)
+/- Universe Levels -/
 
-(** We provide casting definitions for raising universe levels. *)
+/- We provide casting definitions for raising universe levels. -/
 
-(** Because we have cumulativity (that [T : U@{i}] gives us [T : U@{j}] when [i < j]), we may define [Lift : U@{i} → U@{j}] to be the identity function with a fancy type; the type says that [i < j]. *)
-Definition Lift (A : Type@{i}) : Type@{j}
-  := Eval hnf in let enforce_lt := Type@{i} : Type@{j} in A.
+/- Because we have cumulativity (that [T : U@{i}] gives us [T : U@{j}] when [i < j]), we may define [Lift : U@{i} → U@{j}] to be the identity function with a fancy type; the type says that [i < j]. -/
+definition Lift (A : Type@{i}) : Type@{j} :=
+     Eval hnf in let enforce_lt := Type@{i} : Type@{j} in A.
 
-Definition lift {A} : A -> Lift A := fun x => x.
+definition lift {A} : A → Lift A := λx, x.
 
-Definition lower {A} : Lift A -> A := fun x => x.
+definition lower {A} : Lift A → A := λx, x.
 
-Global Instance isequiv_lift T : IsEquiv (@lift T)
-  := @BuildIsEquiv
+definition isequiv_lift [instance] T : IsEquiv (@lift T) :=
+     @BuildIsEquiv
        _ _
        (@lift T)
        (@lower T)
-       (fun _ => idpath)
-       (fun _ => idpath)
-       (fun _ => idpath).
+       (λ_, idpath)
+       (λ_, idpath)
+       (λ_, idpath).
 
-(** This version doesn't force strict containment, i.e. it allows the two universes to possibly be the same.  No fancy type is necessary here other than the universe annotations, because of cumulativity. *)
+/- This version doesn't force strict containment, i.e. it allows the two universes to possibly be the same.  No fancy type is necessary here other than the universe annotations, because of cumulativity. -/
 
-Definition Lift' (A : Type@{i}) : Type@{j} := A.
+definition Lift' (A : Type@{i}) : Type@{j} := A.
 
-(** However, if we don't give the universes as explicit arguments here, then Coq collapses them. *)
-Definition lift' {A : Type@{i}} : A -> Lift'@{i j} A := fun x => x.
+/- However, if we don't give the universes as explicit arguments here, then Coq collapses them. -/
+definition lift' {A : Type@{i}} : A → Lift'@{i j} A := λx, x.
 
-Definition lower' {A : Type@{i}} : Lift'@{i j} A -> A := fun x => x.
+definition lower' {A : Type@{i}} : Lift'@{i j} A → A := λx, x.
 
-Global Instance isequiv_lift' T : IsEquiv (@lift'@{i j} T)
-  := @BuildIsEquiv
+definition isequiv_lift' [instance] T : IsEquiv (@lift'@{i j} T) :=
+     @BuildIsEquiv
        _ _
        (@lift' T)
        (@lower' T)
-       (fun _ => idpath)
-       (fun _ => idpath)
-       (fun _ => idpath).
+       (λ_, idpath)
+       (λ_, idpath)
+       (λ_, idpath).
 
-(** We make [lift] and [lower] opaque so that typeclass resolution doesn't pick up [isequiv_lift] as an instance of [IsEquiv idmap] and wreck havok. *)
+/- We make [lift] and [lower] opaque so that typeclass resolution doesn't pick up [isequiv_lift] as an instance of [IsEquiv idmap] and wreck havok. -/
 Typeclasses Opaque lift lower lift' lower'.
 
 (*Fail Check Lift nat : Type0.

@@ -1,4 +1,4 @@
-(** * The Yoneda Lemma *)
+/- The Yoneda Lemma -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Category.Dual Functor.Dual.
 Require Import Category.Prod.
@@ -24,7 +24,7 @@ Local Open Scope morphism_scope.
 Local Open Scope category_scope.
 Local Open Scope functor_scope.
 
-(** Quoting Wikipedia on the Yoneda lemma (chainging [A] to [a] and
+/- Quoting Wikipedia on the Yoneda lemma (chainging [A] to [a] and
     [C] to [A] so that we can use unicode superscripts and
     subscripts):
 
@@ -68,7 +68,7 @@ Local Open Scope functor_scope.
     each object [a] of [A] gives rise to a natural functor to [Set]
     called a hom-functor. This functor is denoted:
 
-    [hᵃ = Hom(a, ─)].
+    [hᵃ ≈ Hom(a, ─)].
 
     The (covariant) hom-functor [hᵃ] sends [x] to the set of morphisms
     [Hom(a, x)] and sends a morphism [f] from [x] to [y] to the
@@ -76,36 +76,36 @@ Local Open Scope functor_scope.
     morphism [g] in [Hom(a, x)] to the morphism [f ∘ g] in [Hom(a,
     y)]. That is,
 
-    [f ↦ Hom(a, f) = ⟦ Hom(a, x) ∋ g ↦ f ∘ g ∈ Hom(a,y) ⟧].
- *)
+    [f ↦ Hom(a, f) ≈ ⟦ Hom(a, x) ∋ g ↦ f ∘ g ∈ Hom(a,y) ⟧].
+ -/
 
-(** ** The (co)yoneda functors [A → (Aᵒᵖ → set)] *)
-Section yoneda.
-  Context `{Funext}.
+/- The (co)yoneda functors [A → (Aᵒᵖ → set)] -/
+section yoneda
+  Context [H : Funext].
 
-  (* TODO(JasonGross): Find a way to unify the [yoneda] and [coyoneda] lemmas into a single lemma which is more functorial. *)
+  /- TODO(JasonGross): Find a way to unify the [yoneda] and [coyoneda] lemmas into a single lemma which is more functorial. -/
 
-  Definition coyoneda A : Functor A^op (A -> set_cat)
-    := ExponentialLaws.Law4.Functors.inverse _ _ _ (hom_functor A).
+  definition coyoneda A : Functor A⁻¹op (A → set_cat) :=
+       ExponentialLaws.Law4.Functors.inverse _ _ _ (hom_functor A).
 
-  Definition yoneda A : Functor A (A^op -> set_cat)
-    := coyoneda A^op.
+  definition yoneda A : Functor A (A⁻¹op → set_cat) :=
+       coyoneda A⁻¹op.
 End yoneda.
 
-(** ** The (co)yoneda lemma *)
-Section coyoneda_lemma.
+/- The (co)yoneda lemma -/
+section coyoneda_lemma
   Local Arguments Overture.compose / .
 
-  Section functor.
-    Context `{Funext}.
+  section functor
+    Context [H : Funext].
 
     Variable A : PreCategory.
-    (** Let [F] be an arbitrary functor from [A] to [Set]. Then Yoneda's
-      lemma says that: *)
+    /- Let [F] be an arbitrary functor from [A] to [Set]. Then Yoneda's
+      lemma says that: -/
     (*Variable F : Functor A (@set_cat fs).*)
-    (** For each object [a] of [A], *)
+    /- For each object [a] of [A], -/
     (*Variable a : A.*)
-    (** the natural transformations from [hᵃ] to [F] are in one-to-one
+    /- the natural transformations from [hᵃ] to [F] are in one-to-one
       correspondence with the elements of [F(a)]. That is,
 
       [Nat(hᵃ, F) ≅ F(a)].
@@ -115,35 +115,35 @@ Section coyoneda_lemma.
       [Set].
 
       Given a natural transformation [Φ] from [hᵃ] to [F], the
-      corresponding element of [F(a)] is [u = Φₐ(idₐ)]. *)
+      corresponding element of [F(a)] is [u ≈ Φₐ(idₐ)]. -/
 
-    (*   Definition coyoneda_lemma_morphism (a : A)
+    /-  definition coyoneda_lemma_morphism (a : A)
   : morphism set_cat
              (BuildhSet
-                (morphism (A -> set_cat) (coyoneda A a) F)
+                (morphism (A → set_cat) (coyoneda A a) F)
                 _)
-             (F a)
-    := fun phi => phi a 1%morphism. *)
+             (F a) :=
+       λphi, phi a 1%morphism. -/
 
 
-    Definition coyoneda_functor
-    : Functor (A -> set_cat)
-              (A -> set_cat)
-      := (compose_functor _ _ set_cat (coyoneda A)^op)
-           o (yoneda (A -> set_cat)).
+    definition coyoneda_functor
+    : Functor (A → set_cat)
+              (A → set_cat) :=
+         (compose_functor _ _ set_cat (coyoneda A)⁻¹op)
+           ∘ (yoneda (A → set_cat)).
   End functor.
 
-  Section nt.
-    Context `{Funext}.
+  section nt
+    Context [H : Funext].
 
     Variable A : PreCategory.
 
-    Definition coyoneda_natural_transformation_helper F
-    : morphism (_ -> _) (coyoneda_functor A F) F.
-    Proof.
+    definition coyoneda_natural_transformation_helper F
+    : morphism (_ → _) (coyoneda_functor A F) F.
+    /-begin
       refine (Build_NaturalTransformation
                 (coyoneda_functor A F) F
-                (fun a phi => phi a 1%morphism)
+                (λa phi, phi a 1%morphism)
                 _).
       simpl.
       abstract (
@@ -151,18 +151,18 @@ Section coyoneda_lemma.
           simpl in *;
             match goal with
               | [ T : NaturalTransformation _ _ |- _ ]
-                => simpl rewrite <- (fun s d m => apD10 (commutes T s d m))
+                => simpl rewrite <- (λs d m, apD10 (commutes T s d m))
             end;
           rewrite ?left_identity, ?right_identity;
           reflexivity
         ).
-    Defined.
+    end-/
 
-    Definition coyoneda_natural_transformation
-    : morphism (_ -> _)
+    definition coyoneda_natural_transformation
+    : morphism (_ → _)
                (coyoneda_functor A)
                1.
-    Proof.
+    /-begin
       hnf.
       simpl.
       let F := match goal with |- NaturalTransformation ?F ?G => constr:(F) end in
@@ -175,18 +175,18 @@ Section coyoneda_lemma.
       abstract (repeat first [ intro
                              | progress path_natural_transformation
                              | reflexivity ]).
-    Defined.
+    end-/
   End nt.
 
-  Definition coyoneda_lemma_morphism_inverse
-             `{Funext}
+  definition coyoneda_lemma_morphism_inverse
+             [H : Funext]
              A
-             (F : object (A -> set_cat))
+             (F : object (A → set_cat))
              a
   : morphism set_cat
              (F a)
              (coyoneda_functor A F a).
-  Proof.
+  /-begin
     intro Fa.
     hnf.
     simpl in *.
@@ -194,7 +194,7 @@ Section coyoneda_lemma.
     let G0 := match goal with |- NaturalTransformation ?F ?G => constr:(G) end in
     refine (Build_NaturalTransformation
               F0 G0
-              (fun a' : A => (fun f : morphism A a a' => morphism_of F f Fa))
+              (λa' : A, (λf : morphism A a a', morphism_of F f Fa))
               _
            ).
     simpl.
@@ -204,11 +204,11 @@ Section coyoneda_lemma.
                      | apply path_forall
                      | progress rewrite ?composition_of, ?identity_of ]
       ).
-  Defined.
+  end-/
 
-  Global Instance coyoneda_lemma `{Funext} A
+  definition coyoneda_lemma [instance] [H : Funext] A
   : IsIsomorphism (coyoneda_natural_transformation A).
-  Proof.
+  /-begin
     eapply isisomorphism_natural_transformation.
     simpl.
     intro F.
@@ -218,42 +218,42 @@ Section coyoneda_lemma.
     exists (coyoneda_lemma_morphism_inverse F a);
       simpl in *;
     abstract (
-        repeat (intro || apply path_forall || path_natural_transformation);
+        repeat (intro || apply path_Π|| path_natural_transformation);
         simpl in *;
-          solve [ simpl rewrite <- (fun c d m => ap10 (commutes x c d m));
+          solve [ simpl rewrite <- (λc d m, ap10 (commutes x c d m));
                   rewrite ?right_identity, ?left_identity;
                   reflexivity
                 | rewrite identity_of;
                   reflexivity ]
       ).
-  Defined.
+  end-/
 End coyoneda_lemma.
 
-Section yoneda_lemma.
-  (** There is a contravariant version of Yoneda's lemma which
+section yoneda_lemma
+  /- There is a contravariant version of Yoneda's lemma which
       concerns contravariant functors from [A] to [Set]. This version
       involves the contravariant hom-functor
 
-      [hₐ = Hom(─, A)],
+      [hₐ ≈ Hom(─, A)],
 
       which sends [x] to the hom-set [Hom(x, a)]. Given an arbitrary
       contravariant functor [G] from [A] to [Set], Yoneda's lemma
       asserts that
 
-      [Nat(hₐ, G) ≅ G(a)]. *)
+      [Nat(hₐ, G) ≅ G(a)]. -/
 
   Local Arguments Overture.compose / .
 
-  Section functor.
-    Context `{Funext}.
+  section functor
+    Context [H : Funext].
 
     Variable A : PreCategory.
-    (** Let [F] be an arbitrary functor from [A] to [Set]. Then Yoneda's
-      lemma says that: *)
+    /- Let [F] be an arbitrary functor from [A] to [Set]. Then Yoneda's
+      lemma says that: -/
     (*Variable F : Functor A (@set_cat fs).*)
-    (** For each object [a] of [A], *)
+    /- For each object [a] of [A], -/
     (*Variable a : A.*)
-    (** the natural transformations from [hᵃ] to [F] are in one-to-one
+    /- the natural transformations from [hᵃ] to [F] are in one-to-one
       correspondence with the elements of [F(a)]. That is,
 
       [Nat(hᵃ, F) ≅ F(a)].
@@ -263,38 +263,38 @@ Section yoneda_lemma.
       [Set].
 
       Given a natural transformation [Φ] from [hᵃ] to [F], the
-      corresponding element of [F(a)] is [u = Φₐ(idₐ)]. *)
+      corresponding element of [F(a)] is [u ≈ Φₐ(idₐ)]. -/
 
-    (* Definition yoneda_lemma_morphism A (G : object (A^op -> set_cat)) (a : A)
+    /- definition yoneda_lemma_morphism A (G : object (A⁻¹op → set_cat)) (a : A)
   : morphism set_cat
              (BuildhSet
-                (morphism (A^op -> set_cat) (yoneda A a) G)
+                (morphism (A⁻¹op → set_cat) (yoneda A a) G)
                 _)
-             (G a)
-    := fun phi => phi a 1%morphism.*)
+             (G a) :=
+       λphi, phi a 1%morphism.-/
 
-    Definition yoneda_functor
-    : Functor (A^op -> set_cat)
-              (A^op -> set_cat)
-      := coyoneda_functor A^op.
+    definition yoneda_functor
+    : Functor (A⁻¹op → set_cat)
+              (A⁻¹op → set_cat) :=
+         coyoneda_functor A⁻¹op.
   End functor.
 
-  Context `{Funext}.
+  Context [H : Funext].
 
   Variable A : PreCategory.
 
-  Definition yoneda_natural_transformation
-  : morphism (_ -> _)
+  definition yoneda_natural_transformation
+  : morphism (_ → _)
              1
-             (yoneda_functor A)
-    := @morphism_inverse _ _ _ _ (coyoneda_lemma A^op).
+             (yoneda_functor A) :=
+       @morphism_inverse _ _ _ _ (coyoneda_lemma A⁻¹op).
 
   Global Instance yoneda_lemma
-  : IsIsomorphism yoneda_natural_transformation
-    := @isisomorphism_inverse _ _ _ _ (coyoneda_lemma A^op).
+  : IsIsomorphism yoneda_natural_transformation :=
+       @isisomorphism_inverse _ _ _ _ (coyoneda_lemma A⁻¹op).
 End yoneda_lemma.
 
-(** ** The Yoneda embedding
+/- The Yoneda embedding
 
     An important special case of Yoneda's lemma is when the functor
     [F] from [A] to [Set] is another hom-functor [hᵇ]. In this case,
@@ -334,14 +334,14 @@ End yoneda_lemma.
 
     Yoneda's lemma then states that any locally small category [A] can
     be embedded in the category of contravariant functors from [A] to
-    [Set] via [h₋]. This is called the Yoneda embedding. *)
+    [Set] via [h₋]. This is called the Yoneda embedding. -/
 
-Section FullyFaithful.
-  Context `{Funext}.
+section FullyFaithful
+  Context [H : Funext].
 
   Local Arguments Overture.compose / .
 
-  Definition coyoneda_embedding (A : PreCategory) : IsFullyFaithful (coyoneda A).
+  definition coyoneda_embedding (A : PreCategory) : IsFullyFaithful (coyoneda A).
   Proof.
     intros a b.
     pose proof (@isisomorphism_inverse
@@ -370,16 +370,16 @@ Section FullyFaithful.
       + exact H1'.
   Qed.
 
-  Definition yoneda_embedding (A : PreCategory) : IsFullyFaithful (yoneda A).
+  definition yoneda_embedding (A : PreCategory) : IsFullyFaithful (yoneda A).
   Proof.
     intros a b.
-    pose proof (@coyoneda_embedding A^op a b) as CYE.
+    pose proof (@coyoneda_embedding A⁻¹op a b) as CYE.
     unfold yoneda.
     let T := type of CYE in
     let T' := (eval simpl in T) in
-    pose proof ((fun x : T => (x : T')) CYE) as CYE'.
+    pose proof ((λx : T, (x : T')) CYE) as CYE'.
     let G := match goal with |- ?G => constr:(G) end in
     let G' := (eval simpl in G) in
-    exact ((fun x : G' => (x : G)) CYE').
+    exact ((λx : G', (x : G)) CYE').
   Qed.
 End FullyFaithful.

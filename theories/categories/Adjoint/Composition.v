@@ -1,9 +1,9 @@
-(** * Adjunction composition *)
-(** ** Definition *)
+/- Adjunction composition -/
+/- definition -/
 Require Adjoint.Composition.Core.
-(** ** Associativity *)
+/- Associativity -/
 Require Adjoint.Composition.AssociativityLaw.
-(** * Left and right identity laws *)
+/- Left and right identity laws -/
 Require Adjoint.Composition.IdentityLaws.
 
 Include Adjoint.Composition.Core.

@@ -1,4 +1,4 @@
-(** * Associativity of adjunction composition *)
+/- Associativity of adjunction composition -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Functor.Composition.Core.
 Require Import Functor.Composition.Laws.
@@ -14,12 +14,12 @@ Set Asymmetric Patterns.
 Local Open Scope adjunction_scope.
 Local Open Scope morphism_scope.
 
-Section composition_lemmas.
+section composition_lemmas
   Local Notation AdjunctionWithFunctors C D :=
-    { fg : Functor C D * Functor D C
+    { fg : Functor C D × Functor D C
     | fst fg -| snd fg }.
 
-  Context `{H0 : Funext}.
+  Context {H0 : Funext}.
 
   Variable B : PreCategory.
   Variable C : PreCategory.
@@ -40,7 +40,7 @@ Section composition_lemmas.
   Local Open Scope adjunction_scope.
 
   Lemma associativity
-  : ((_, _); (AH o AG) o AF) = ((_, _); AH o (AG o AF)) :> AdjunctionWithFunctors B E.
+  : ((_, _); (AH ∘ AG) ∘ AF) ≈ ((_, _); AH ∘ (AG ∘ AF)) :> AdjunctionWithFunctors B E.
   Proof.
     apply path_sigma_uncurried; simpl.
     (exists (path_prod'

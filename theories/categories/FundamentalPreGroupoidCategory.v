@@ -1,4 +1,4 @@
-(** * Fundamental Pregroupoids *)
+/- Fundamental Pregroupoids -/
 Require Import Category.Core Category.Morphisms.
 Require Import hit.Truncations PathGroupoids.
 
@@ -11,42 +11,42 @@ Local Open Scope path_scope.
 Local Open Scope equiv_scope.
 Local Open Scope category_scope.
 
-(** Quoting the HoTT Book:
+/- Quoting the HoTT Book:
 
     Example. For _any_ type [X], there is a precategory with [X] as
-    its type of objects and with [hom(x,y) : ∥x = y∥₀]. The
-    composition operation [∥y = z∥₀ → ∥x = y∥₀ → ∥x = z∥₀] is defined
-    by induction on truncation from concatenation [(y = z) → (x = y) →
-    (x = z)]. We call this the fundamental pregroupoid of [X]. *)
+    its type of objects and with [hom(x,y) : ∥x ≈ y∥₀]. The
+    composition operation [∥y ≈ z∥₀ → ∥x ≈ y∥₀ → ∥x ≈ z∥₀] is defined
+    by induction on truncation from concatenation [(y ≈ z) → (x ≈ y) →
+    (x ≈ z)]. We call this the fundamental pregroupoid of [X]. -/
 
-(** We don't want access to all of the internals of a groupoid category at top level. *)
+/- We don't want access to all of the internals of a groupoid category at top level. -/
 Module FundamentalPreGroupoidCategoryInternals.
-  Section fundamental_pregroupoid_category.
+  section fundamental_pregroupoid_category
     Variable X : Type.
 
     Local Notation object := X (only parsing).
-    Local Notation morphism s d := (Trunc 0 (s = d :> X)) (only parsing).
+    Local Notation morphism s d := (Trunc 0 (s ≈ d :> X)) (only parsing).
 
-    Definition compose s d d' (m : morphism d d') (m' : morphism s d)
+    definition compose s d d' (m : morphism d d') (m' : morphism s d)
     : morphism s d'.
-    Proof.
+    /-begin
       revert m'; apply Trunc_rec; intro m'.
       revert m; apply Trunc_rec; intro m.
       apply tr.
-      exact (m' @ m).
-    Defined.
+      exact (m' ⬝ m).
+    end-/
 
-    Definition identity x : morphism x x
-      := tr (reflexivity _).
+    definition identity x : morphism x x :=
+         tr (reflexivity _).
 
     Global Arguments compose [s d d'] m m' / .
     Global Arguments identity x / .
   End fundamental_pregroupoid_category.
 End FundamentalPreGroupoidCategoryInternals.
 
-(** ** Categorification of the fundamental pregroupoid of a type *)
-Definition fundamental_pregroupoid_category (X : Type) : PreCategory.
-Proof.
+/- Categorification of the fundamental pregroupoid of a type -/
+definition fundamental_pregroupoid_category (X : Type) : PreCategory.
+/-begin
   refine (@Build_PreCategory
             X
             _
@@ -64,10 +64,10 @@ Proof.
                apply Trunc_ind;
                [ intro;
                  match goal with
-                   | [ |- IsHSet (?a = ?b :> ?T) ]
+                   | [ |- IsHSet (?a ≈ ?b :> ?T) ]
                      => generalize a b; intros;
                         let H := fresh in
-                        assert (H : forall x y : T, IsHProp (x = y))
+                        assert (H : Πx y : T, is_hprop (x ≈ y))
                  end;
                  typeclasses eauto
                | intro ]
@@ -78,4 +78,4 @@ Proof.
             | apply concat_1p
             | apply concat_p1 ]
     ).
-Defined.
+end-/

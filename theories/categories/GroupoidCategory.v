@@ -1,7 +1,7 @@
-(** * Groupoids *)
-(** ** Definition *)
+/- Groupoids -/
+/- definition -/
 Require GroupoidCategory.Core.
-(** ** Morphisms in a groupoid *)
+/- Morphisms in a groupoid -/
 Require GroupoidCategory.Morphisms.
 
 Include GroupoidCategory.Core.

@@ -1,4 +1,4 @@
-(** * Identity profunctor *)
+/- Identity profunctor -/
 Require Import Category.Core Functor.Core Category.Prod Category.Dual Functor.Prod.Core SetCategory.Core Profunctor.Core HomFunctor.
 
 Set Universe Polymorphism.
@@ -8,13 +8,13 @@ Set Asymmetric Patterns.
 
 Local Open Scope profunctor_scope.
 
-Section identity.
-  (** Quoting nCatLab:
+section identity
+  /- Quoting nCatLab:
 
-      In particular the identity profunctor [Id : C ⇸ C] is represented by the identity functor and hence is given by the hom-functor [C(−,−) : Cᵒᵖ × C → Set]. *)
+      In particular the identity profunctor [Id : C ⇸ C] is represented by the identity functor and hence is given by the hom-functor [C(−,−) : Cᵒᵖ × C → Set]. -/
 
-  Definition identity `{Funext} (C : PreCategory) : C -|-> C
-    := hom_functor C.
+  definition identity [H : Funext] (C : PreCategory) : C -|-> C :=
+       hom_functor C.
 End identity.
 
 Module Export ProfunctorIdentityNotations.

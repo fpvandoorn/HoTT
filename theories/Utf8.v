@@ -1,24 +1,24 @@
 Require Export Coq.Unicode.Utf8.
-Require Import HoTT.Basics (*types.Bool*) hit.Circle hit.TwoSphere hit.Truncations hit.Suspension Modality.
+Require Import HoTT.Basics (*types.bool*) hit.Circle hit.TwoSphere hit.Truncations hit.Suspension Modality.
 
 Notation Type₀ := Type0.
-Notation pr₁ := pr1.
-Notation pr₂ := pr2.
+Notation pr₁ := dpr1.
+Notation pr₂ := dpr2.
 Local Open Scope fibration_scope.
 Notation "x ₁" := (x.1) (at level 3) : fibration_scope.
 Notation "x ₂" := (x.2) (at level 3) : fibration_scope.
-Notation "g ∘ f" := (g o f) (at level 40, left associativity) : function_scope.
-(** We copy the HoTT-Agda library with regard to path concatenation. *)
-Notation "p • q" := (p @ q)%path (at level 20) : path_scope.
-Notation "p '⁻¹'" := (p^)%path (at level 3, format "p '⁻¹'") : path_scope.
-Notation "p •' q" := (p @ q)%path (at level 21, left associativity,
+Notation "g ∘ f" := (g ∘ f) (at level 40, left associativity) : function_scope.
+/- We copy the HoTT-Agda library with regard to path concatenation. -/
+Notation "p • q" := (p ⬝ q)%path (at level 20) : path_scope.
+Notation "p '⁻¹'" := (p⁻¹)%path (at level 3, format "p '⁻¹'") : path_scope.
+Notation "p •' q" := (p ⬝ q)%path (at level 21, left associativity,
                                    format "'[v' p '/' '•''  q ']'") : long_path_scope.
-(** Add error messages so people aren't intensely confused by using an almost identical character. *)
+/- Add error messages so people aren't intensely confused by using an almost identical character. -/
 Infix "∙" := $(fail "You used '∙' (BULLET OPERATOR, #x2219) when you probably meant to use '•' (BULLET, #x2022)")$ (at level 20, only parsing) : path_scope.
-(*Notation "p # x" := (transport _ p x) (right associativity, at level 65, only parsing) : path_scope.*)
+(*Notation "p ▹ x" := (transport _ p x) (right associativity, at level 65, only parsing) : path_scope.*)
 (*Notation "f == g" := (pointwise_paths f g) (at level 70, no associativity) : type_scope.*)
-Notation "A ≃ B" := (A <~> B)%equiv (at level 85) : equiv_scope.
-Notation "f '⁻¹'" := (f^-1)%equiv (at level 3, format "f '⁻¹'") : equiv_scope.
+Notation "A ≃ B" := (A ≃ B)%equiv (at level 85) : equiv_scope.
+Notation "f '⁻¹'" := (f⁻¹)%equiv (at level 3, format "f '⁻¹'") : equiv_scope.
 Notation "¬ x" := (~x) (at level 75, right associativity) : type_scope.
 Notation "x ≠ y" := (x <> y) (at level 70) : type_scope.
 (*Notation "p @@ q" := (concat2 p q)%path (at level 20) : path_scope.*)

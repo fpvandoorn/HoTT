@@ -1,4 +1,4 @@
-(** * Classify the path space of natural transformations *)
+/- Classify the path space of natural transformations -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Equivalences Types.Sigma Trunc.
 
@@ -10,8 +10,8 @@ Set Asymmetric Patterns.
 Local Open Scope morphism_scope.
 Local Open Scope natural_transformation_scope.
 
-Section path_natural_transformation.
-  Context `{Funext}.
+section path_natural_transformation
+  Context [H : Funext].
 
   Variable C : PreCategory.
   Variable D : PreCategory.
@@ -19,38 +19,38 @@ Section path_natural_transformation.
 
   Local Open Scope equiv_scope.
 
-  (** ** Equivalence between record and sigma versions of natural transformation *)
+  /- Equivalence between record and sigma versions of natural transformation -/
   Lemma equiv_sig_natural_transformation
-  : { CO : forall x, morphism D (F x) (G x)
-    | forall s d (m : morphism C s d),
-        CO d o F _1 m = G _1 m o CO s }
-      <~> NaturalTransformation F G.
-  Proof.
+  : { CO : Πx, morphism D (F x) (G x)
+    | Πs d (m : morphism C s d),
+        CO d ∘ F _1 m ≈ G _1 m ∘ CO s }
+      ≃ NaturalTransformation F G.
+  /-begin
     let build := constr:(@Build_NaturalTransformation _ _ F G) in
-    let pr1 := constr:(@components_of _ _ F G) in
-    let pr2 := constr:(@commutes _ _ F G) in
-    apply (equiv_adjointify (fun u => build u.1 u.2)
-                            (fun v => (pr1 v; pr2 v)));
+    let dpr1 := constr:(@components_of _ _ F G) in
+    let dpr2 := constr:(@commutes _ _ F G) in
+    apply (equiv_adjointify (λu, build u.1 u.2)
+                            (λv, ⟨dpr1 v, dpr2 v⟩));
       hnf;
       [ intros []; intros; simpl; expand; f_ap; exact (center _)
       | intros; apply eta_sigma ].
-  Defined.
+  end-/
 
-  (** ** The type of natural transformations is an hSet *)
+  /- The type of natural transformations is an hSet -/
   Global Instance trunc_natural_transformation
   : IsHSet (NaturalTransformation F G).
-  Proof.
+  /-begin
     eapply trunc_equiv'; [ exact equiv_sig_natural_transformation | ].
     typeclasses eauto.
   Qed.
 
-  Section path.
+  section path
     Variables T U : NaturalTransformation F G.
 
-    (** ** Equality of natural transformations is implied by equality of components *)
+    /- Equality of natural transformations is implied by equality of components -/
     Lemma path'_natural_transformation
-    : components_of T = components_of U
-      -> T = U.
+    : components_of T ≈ components_of U
+      → T ≈ U.
     Proof.
       intros.
       destruct T, U; simpl in *.
@@ -61,7 +61,7 @@ Section path_natural_transformation.
 
     Lemma path_natural_transformation
     : components_of T == components_of U
-      -> T = U.
+      → T ≈ U.
     Proof.
       intros.
       apply path'_natural_transformation.
@@ -69,8 +69,8 @@ Section path_natural_transformation.
     Qed.
 
     Let path_inv
-    : T = U -> components_of T == components_of U
-      := (fun H _ => match H with idpath => idpath end).
+    : T ≈ U → components_of T == components_of U :=
+         (λH _, match H with idpath => idpath end).
 
     Lemma eisretr_path_natural_transformation
     : Sect path_natural_transformation path_inv.
@@ -87,24 +87,24 @@ Section path_natural_transformation.
     Qed.
 
     Lemma eisadj_path_natural_transformation
-    : forall x,
+    : Πx,
         @eisretr_path_natural_transformation (path_inv x)
-        = ap path_inv (eissect_path_natural_transformation x).
+        ≈ ap path_inv (eissect_path_natural_transformation x).
     Proof.
       repeat intro.
       refine (center _).
     Qed.
 
-    (** ** Equality of natural transformations is equivalent to equality of components *)
+    /- Equality of natural transformations is equivalent to equality of components -/
     Lemma equiv_path_natural_transformation
-    : T = U <~> (components_of T == components_of U).
+    : T ≈ U ≃ (components_of T == components_of U).
     Proof.
       econstructor. econstructor. exact eisadj_path_natural_transformation.
-    Defined.
+    end-/
   End path.
 End path_natural_transformation.
 
-(** ** Tactic for proving equality of natural transformations *)
+/- Tactic for proving equality of natural transformations -/
 Ltac path_natural_transformation :=
   repeat match goal with
            | _ => intro

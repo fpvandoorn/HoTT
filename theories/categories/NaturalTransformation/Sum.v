@@ -1,4 +1,4 @@
-(** * Coproduct of natural transformations *)
+/- Coproduct of natural transformations -/
 Require Import Category.Core Functor.Core Category.Sum Functor.Sum NaturalTransformation.Core.
 
 Set Universe Polymorphism.
@@ -6,16 +6,16 @@ Set Implicit Arguments.
 Generalizable All Variables.
 Set Asymmetric Patterns.
 
-Section sum.
-  Definition sum
+section sum
+  definition sum
              C C' D F G F' G'
              (T : @NaturalTransformation C D F G)
              (T' : @NaturalTransformation C' D F' G')
   : NaturalTransformation (F + F') (G + G').
-  Proof.
+  /-begin
     refine (Build_NaturalTransformation
               (F + F') (G + G')
-              (fun x => match x with
+              (λx, match x with
                           | Datatypes.inl c => T c
                           | Datatypes.inr c' => T' c'
                         end)
@@ -24,7 +24,7 @@ Section sum.
         repeat (intros [] || intro); simpl;
         auto with natural_transformation
       ).
-  Defined.
+  end-/
 End sum.
 
 Module Export NaturalTransformationSumNotations.

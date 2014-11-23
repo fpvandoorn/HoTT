@@ -1,11 +1,11 @@
-(** * Pseudofunctors *)
-(** ** Definition *)
+/- Pseudofunctors -/
+/- definition -/
 Require Pseudofunctor.Core.
-(** ** Helper lemmas for rewriting *)
+/- Helper lemmas for rewriting -/
 Require Pseudofunctor.RewriteLaws.
-(** ** Construction from a functor to cat *)
+/- Construction from a functor to cat -/
 Require Pseudofunctor.FromFunctor.
-(** ** Identity pseudofunctor *)
+/- Identity pseudofunctor -/
 Require Pseudofunctor.Identity.
 
 Include Pseudofunctor.Core.

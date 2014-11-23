@@ -1,4 +1,4 @@
-(** * Definition of a functor *)
+/- definition of a functor -/
 Require Import Category.Core.
 
 Set Universe Polymorphism.
@@ -10,35 +10,35 @@ Delimit Scope functor_scope with functor.
 
 Local Open Scope morphism_scope.
 
-Section Functor.
+section Functor
   Variable C : PreCategory.
   Variable D : PreCategory.
 
-  (** Quoting from the lecture notes for MIT's 18.705, Commutative Algebra:
+  /- Quoting from the lecture notes for MIT's 18.705, Commutative Algebra:
 
       A map of categories is known as a functor. Namely, given
-      categories [C] and [C'], a (covariant) functor [F : C -> C'] is
+      categories [C] and [C'], a (covariant) functor [F : C → C'] is
       a rule that assigns to each object [A] of [C] an object [F A] of
-      [C'] and to each map [m : A -> B] of [C] a map [F m : F A -> F
+      [C'] and to each map [m : A → B] of [C] a map [F m : F A → F
       B] of [C'] preserving composition and identity; that is,
 
-     (1) [F (m' ∘ m) = (F m') ∘ (F m)] for maps [m : A -> B] and [m' :
-         B -> C] of [C], and
+     (1) [F (m' ∘ m) ≈ (F m') ∘ (F m)] for maps [m : A → B] and [m' :
+         B → C] of [C], and
 
-     (2) [F (id A) = id (F A)] for any object [A] of [C], where [id A]
-         is the identity morphism of [A]. **)
+     (2) [F (id A) ≈ id (F A)] for any object [A] of [C], where [id A]
+         is the identity morphism of [A]. *-/
 
   Record Functor :=
     {
-      object_of :> C -> D;
-      morphism_of : forall s d, morphism C s d
-                                -> morphism D (object_of s) (object_of d);
-      composition_of : forall s d d'
+      object_of :> C → D;
+      morphism_of : Πs d, morphism C s d
+                                → morphism D (object_of s) (object_of d);
+      composition_of : Πs d d'
                               (m1 : morphism C s d) (m2: morphism C d d'),
-                         morphism_of _ _ (m2 o m1)
-                         = (morphism_of _ _ m2) o (morphism_of _ _ m1);
-      identity_of : forall x, morphism_of _ _ (identity x)
-                              = identity (object_of x)
+                         morphism_of _ _ (m2 ∘ m1)
+                         ≈ (morphism_of _ _ m2) ∘ (morphism_of _ _ m1);
+      identity_of : Πx, morphism_of _ _ (identity x)
+                              ≈ identity (object_of x)
     }.
 End Functor.
 
@@ -54,7 +54,7 @@ Arguments composition_of [C D] F _ _ _ _ _ : rename.
 Arguments identity_of [C D] F _ : rename.
 
 Module Export FunctorCoreNotations.
-  (** Perhaps we should consider making this more global? *)
+  /- Perhaps we should consider making this more global? -/
   Local Notation "C --> D" := (Functor C D) (at level 99, right associativity, y at level 200) : type_scope.
   Notation "F '_0' x" := (object_of F x) (at level 10, no associativity, only parsing) : object_scope.
   Notation "F '_1' m" := (morphism_of F m) (at level 10, no associativity) : morphism_scope.

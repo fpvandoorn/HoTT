@@ -1,7 +1,7 @@
-(** * Laws about product categories *)
+/- Laws about product categories -/
 Require Import Category.Core Functor.Core InitialTerminalCategory.Core InitialTerminalCategory.Functors Category.Prod Functor.Prod Functor.Composition.Core Functor.Identity Functor.Prod.Universal Functor.Composition.Laws Functor.Prod.Universal.
 Require Import Functor.Paths.
-Require Import Types.Prod Types.Forall HoTT.Tactics.
+Require Import Types.Prod Types.ΠHoTT.Tactics.
 
 Set Universe Polymorphism.
 Set Implicit Arguments.
@@ -16,99 +16,99 @@ Local Notation fst_type := Coq.Init.Datatypes.fst.
 Local Notation snd_type := Coq.Init.Datatypes.snd.
 Local Notation pair_type := Coq.Init.Datatypes.pair.
 
-(** ** Swap functor [C × D → D × C] *)
+/- Swap functor [C × D → D × C] -/
 Module Swap.
-  Definition functor (C D : PreCategory)
-  : Functor (C * D) (D * C)
-    := Build_Functor (C * D) (D * C)
-                     (fun cd => (snd_type cd, fst_type cd)%core)
-                     (fun _ _ m => (snd_type m, fst_type m)%core)
-                     (fun _ _ _ _ _ => idpath)
-                     (fun _ => idpath).
+  definition functor (C D : PreCategory)
+  : Functor (C × D) (D × C) :=
+       Build_Functor (C × D) (D × C)
+                     (λcd, (snd_type cd, fst_type cd)%core)
+                     (λ_ _ m, (snd_type m, fst_type m)%core)
+                     (λ_ _ _ _ _, idpath)
+                     (λ_, idpath).
 
-  Definition law (C D : PreCategory)
-  : functor C D o functor D C = 1
-    := idpath.
+  definition law (C D : PreCategory)
+  : functor C D ∘ functor D C ≈ 1 :=
+       idpath.
 End Swap.
 
-(** ** [A * (B * C) ≅ (A * B) * C] *)
+/- [A × (B × C) ≅ (A × B) × C] -/
 Module Associativity.
-  Section associativity.
+  section associativity
     Variable A : PreCategory.
     Variable B : PreCategory.
     Variable C : PreCategory.
 
-    Definition functor : Functor (A * (B * C)) ((A * B) * C)
-      := (fst * (fst o snd)) * (snd o snd).
-    Definition inverse : Functor ((A * B) * C) (A * (B * C))
-      := (fst o fst) * ((snd o fst) * snd).
+    definition functor : Functor (A × (B × C)) ((A × B) × C) :=
+         (fst × (fst ∘ snd)) × (snd ∘ snd).
+    definition inverse : Functor ((A × B) × C) (A × (B × C)) :=
+         (fst ∘ fst) × ((snd ∘ fst) × snd).
 
-    Definition law
-    : functor o inverse = 1
-      /\ inverse o functor = 1
-      := (idpath, idpath)%core.
+    definition law
+    : functor ∘ inverse ≈ 1
+      /\ inverse ∘ functor ≈ 1 :=
+         (idpath, idpath)%core.
   End associativity.
 End Associativity.
 
-(** ** Laws about the initial category [0] *)
+/- Laws about the initial category [0] -/
 Module Law0.
-  Section law0.
-    Context `{Funext}.
-    Context `{IsInitialCategory zero}.
+  section law0
+    Context [H : Funext].
+    Context [H : IsInitialCategory zero].
     Local Notation "0" := zero : category_scope.
 
     Variable C : PreCategory.
 
     Global Instance is_initial_category__product
-    : IsInitialCategory (C * 0)
-      := fun P c => initial_category_ind P (snd c).
+    : IsInitialCategory (C × 0) :=
+         λP c, initial_category_ind P (snd c).
 
     Global Instance is_initial_category__product'
-    : IsInitialCategory (0 * C)
-      := fun P c => initial_category_ind P (fst c).
+    : IsInitialCategory (0 × C) :=
+         λP c, initial_category_ind P (fst c).
 
-    Definition functor : Functor (C * 0) 0 := Functors.from_initial _.
-    Definition functor' : Functor (0 * C) 0 := Functors.from_initial _.
-    Definition inverse : Functor 0 (C * 0) := Functors.from_initial _.
-    Definition inverse' : Functor 0 (0 * C) := Functors.from_initial _.
+    definition functor : Functor (C × 0) 0 := Functors.from_initial _.
+    definition functor' : Functor (0 × C) 0 := Functors.from_initial _.
+    definition inverse : Functor 0 (C × 0) := Functors.from_initial _.
+    definition inverse' : Functor 0 (0 × C) := Functors.from_initial _.
 
-    (** *** [C × 0 ≅ 0] *)
-    Definition law
-    : functor o inverse = 1
-      /\ inverse o functor = 1
-      := center _.
+    /- [C × 0 ≅ 0] -/
+    definition law
+    : functor ∘ inverse ≈ 1
+      /\ inverse ∘ functor ≈ 1 :=
+         center _.
 
-    (** *** [0 × C ≅ 0] *)
-    Definition law'
-    : functor' o inverse' = 1
-      /\ inverse' o functor' = 1
-      := center _.
+    /- [0 × C ≅ 0] -/
+    definition law'
+    : functor' ∘ inverse' ≈ 1
+      /\ inverse' ∘ functor' ≈ 1 :=
+         center _.
   End law0.
 End Law0.
 
-(** ** Laws about the terminal category [1] *)
+/- Laws about the terminal category [1] -/
 Module Law1.
-  Section law1.
-    Context `{Funext}.
-    Context `{IsTerminalCategory one}.
+  section law1
+    Context [H : Funext].
+    Context [H : IsTerminalCategory one].
     Local Notation "1" := one : category_scope.
     Variable C : PreCategory.
 
-    Definition functor : Functor (C * 1) C
-      := fst.
+    definition functor : Functor (C × 1) C :=
+         fst.
 
-    Definition functor' : Functor (1 * C) C
-      := snd.
+    definition functor' : Functor (1 × C) C :=
+         snd.
 
-    Definition inverse : Functor C (C * 1)
-      := 1 * Functors.to_terminal _.
+    definition inverse : Functor C (C × 1) :=
+         1 × Functors.to_terminal _.
 
-    Definition inverse' : Functor C (1 * C)
-      := Functors.to_terminal _ * 1.
+    definition inverse' : Functor C (1 × C) :=
+         Functors.to_terminal _ × 1.
 
-    (** We could throw this in a [repeat match goal with ... end], but
+    /- We could throw this in a [repeat match goal with ... end], but
       we know the order, so we hard-code the order to speed it up by a
-      factor of about 10. *)
+      factor of about 10. -/
 
     Local Ltac t_prod :=
       split;
@@ -123,19 +123,19 @@ Module Law1.
         by assumption);
       try (reflexivity || exact (center _)).
 
-    (** *** [C × 1 ≅ C] *)
+    /- [C × 1 ≅ C] -/
     Lemma law1
-    : functor o inverse = 1
-      /\ inverse o functor = 1.
+    : functor ∘ inverse ≈ 1
+      /\ inverse ∘ functor ≈ 1.
     Proof.
       unfold functor, inverse.
       t_prod.
     Qed.
 
-    (** *** [1 × C ≅ C] *)
+    /- [1 × C ≅ C] -/
     Lemma law1'
-    : functor' o inverse' = 1
-      /\ inverse' o functor' = 1.
+    : functor' ∘ inverse' ≈ 1
+      /\ inverse' ∘ functor' ≈ 1.
     Proof.
       unfold functor', inverse'.
       t_prod.

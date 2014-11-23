@@ -1,4 +1,4 @@
-(** * Initial and terminal category notations *)
+/- Initial and terminal category notations -/
 Require InitialTerminalCategory.Functors.
 Require InitialTerminalCategory.Pseudofunctors.
 

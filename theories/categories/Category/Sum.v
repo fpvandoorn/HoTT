@@ -1,4 +1,4 @@
-(** * The coproduct of categories *)
+/- The coproduct of categories -/
 Require Export Category.Core.
 
 Set Universe Polymorphism.
@@ -6,13 +6,13 @@ Set Implicit Arguments.
 Generalizable All Variables.
 Set Asymmetric Patterns.
 
-(** ** Definition of [+] for categories *)
-Section internals.
+/- definition of [+] for categories -/
+section internals
   Variable C : PreCategory.
   Variable D : PreCategory.
 
-  Definition sum_morphism (s d : C + D) : Type
-    := match s, d with
+  definition sum_morphism (s d : C + D) : Type :=
+       match s, d with
          | inl s, inl d => morphism C s d
          | inr s, inr d => morphism D s d
          | _, _ => Empty
@@ -20,29 +20,29 @@ Section internals.
 
   Global Arguments sum_morphism _ _ / .
 
-  Definition sum_identity (x : C + D) : sum_morphism x x
-    := match x with
+  definition sum_identity (x : C + D) : sum_morphism x x :=
+       match x with
          | inl x => identity x
          | inr x => identity x
        end.
 
   Global Arguments sum_identity _ / .
 
-  Definition sum_compose (s d d' : C + D)
+  definition sum_compose (s d d' : C + D)
              (m1 : sum_morphism d d') (m2 : sum_morphism s d)
   : sum_morphism s d'.
-  Proof.
+  /-begin
     case s, d, d'; simpl in *;
     solve [ case m1
           | case m2
           | eapply compose; eassumption ].
-  Defined.
+  end-/
 
   Global Arguments sum_compose [_ _ _] _ _ / .
 End internals.
 
-Definition sum (C D : PreCategory) : PreCategory.
-Proof.
+definition sum (C D : PreCategory) : PreCategory.
+/-begin
   refine (@Build_PreCategory
             (C + D)%type
             (sum_morphism C D)
@@ -57,7 +57,7 @@ Proof.
       auto with morphism;
       typeclasses eauto
     ).
-Defined.
+end-/
 
 Module Export CategorySumNotations.
   Infix "+" := sum : category_scope.

@@ -1,24 +1,24 @@
-(** * Adjunctions *)
-(** ** Definitions *)
+/- Adjunctions -/
+/- Definitions -/
 Require Adjoint.Core.
-(** *** unit+UMP *)
-(** *** counit+UMP *)
-(** *** unit+counit+zig+zag *)
+/- unit+UMP -/
+/- counit+UMP -/
+/- unit+counit+zig+zag -/
 Require Adjoint.UnitCounit.
-(** *** universal morphisms *)
+/- universal morphisms -/
 Require Adjoint.UniversalMorphisms.
-(** *** hom-set isomorphism *)
+/- hom-set isomorphism -/
 Require Adjoint.Hom.
-(** ** Coercions between various definitions *)
+/- Coercions between various definitions -/
 Require Adjoint.UnitCounitCoercions.
 Require Adjoint.HomCoercions.
-(** ** Opposite adjunctions *)
+/- Opposite adjunctions -/
 Require Adjoint.Dual.
-(** ** Path spaces of adjunctions *)
+/- Path spaces of adjunctions -/
 Require Adjoint.Paths.
-(** ** Composition *)
+/- Composition -/
 Require Adjoint.Composition.
-(** ** Pointwise adjunctions *)
+/- Pointwise adjunctions -/
 Require Adjoint.Pointwise.
 
 Include Adjoint.Core.

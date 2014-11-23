@@ -1,4 +1,4 @@
-(** * Hom Functor *)
+/- Hom Functor -/
 Require Import Category.Core Functor.Core SetCategory.Core Category.Dual Functor.Composition.Core.
 Require Category.Prod Functor.Prod.Core.
 Import Category.Prod.CategoryProdNotations Functor.Prod.Core.FunctorProdCoreNotations.
@@ -11,32 +11,32 @@ Set Asymmetric Patterns.
 
 Local Open Scope morphism_scope.
 
-(** ** Definition of [hom : Cᵒᵖ × C → Set] as a functor *)
-Section hom_functor.
-  Context `{Funext}.
+/- definition of [hom : Cᵒᵖ × C → Set] as a functor -/
+section hom_functor
+  Context [H : Funext].
   Variable C : PreCategory.
 
   Local Notation obj_of c'c :=
     (BuildhSet
        (morphism
           C
-          (fst (c'c : object (C^op * C)))
-          (snd (c'c : object (C^op * C))))).
+          (fst (c'c : object (C⁻¹op × C)))
+          (snd (c'c : object (C⁻¹op × C))))).
 
-  Let hom_functor_morphism_of s's d'd (hf : morphism (C^op * C) s's d'd)
-  : morphism set_cat (obj_of s's) (obj_of d'd)
-    := fun g => snd hf o g o fst hf.
+  Let hom_functor_morphism_of s's d'd (hf : morphism (C⁻¹op × C) s's d'd)
+  : morphism set_cat (obj_of s's) (obj_of d'd) :=
+       λg, snd hf ∘ g ∘ fst hf.
 
-  Definition hom_functor : Functor (C^op * C) set_cat.
-    refine (Build_Functor (C^op * C) set_cat
-                          (fun c'c => obj_of c'c)
+  definition hom_functor : Functor (C⁻¹op × C) set_cat.
+    refine (Build_Functor (C⁻¹op × C) set_cat
+                          (λc'c, obj_of c'c)
                           hom_functor_morphism_of
                           _
                           _);
     subst hom_functor_morphism_of;
     simpl;
     abstract (
-        repeat (apply path_forall || intros [] || intro);
+        repeat (apply path_Π|| intros [] || intro);
         unfold compose, Overture.compose;
         simpl in *;
         rewrite <- ?associativity, ?left_identity, ?right_identity;
@@ -45,8 +45,8 @@ Section hom_functor.
   Defined.
 End hom_functor.
 
-Section covariant_contravariant.
-  Context `{Funext}.
+section covariant_contravariant
+  Context [H : Funext].
   Variable C : PreCategory.
 
   Local Open Scope functor_scope.
@@ -54,10 +54,10 @@ Section covariant_contravariant.
   Local Arguments Functor.Prod.Core.induced_snd / .
   Local Arguments Functor.Prod.Core.induced_fst / .
 
-  (** ** Covariant hom functor [hom_C(A, ─) : C → set] *)
-  Definition covariant_hom_functor (A : object C^op)
-    := Eval simpl in Functor.Prod.Core.induced_snd (hom_functor C) A.
-  (** ** Contravariant hom functor [hom_C(─, A) : Cᵒᵖ → set] *)
-  Definition contravariant_hom_functor (A : C)
-    := Eval simpl in Functor.Prod.Core.induced_fst (hom_functor C) A.
+  /- Covariant hom functor [hom_C(A, ─) : C → set] -/
+  definition covariant_hom_functor (A : object C⁻¹op) :=
+       Eval simpl in Functor.Prod.Core.induced_snd (hom_functor C) A.
+  /- Contravariant hom functor [hom_C(─, A) : Cᵒᵖ → set] -/
+  definition contravariant_hom_functor (A : C) :=
+       Eval simpl in Functor.Prod.Core.induced_fst (hom_functor C) A.
 End covariant_contravariant.

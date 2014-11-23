@@ -1,5 +1,5 @@
-(* -*- mode: coq; mode: visual-line -*-  *)
-(** * Universes of truncated types. *)
+/- -*- mode: coq; mode: visual-line -*-  -/
+/- Universes of truncated types. -/
 
 Require Import HoTT.Basics HoTT.Types.
 Require Import HProp UnivalenceImpliesFunext.
@@ -7,95 +7,95 @@ Local Open Scope equiv_scope.
 
 Generalizable Variables A B n f.
 
-(** * Universes of truncated types
+/- Universes of truncated types
 
-Now that we have the univalence axiom (from [types/Universe]), we study further the universes [TruncType] of truncated types (including [hProp] and [hSet]) that were defined in [Basics/Trunc].  *)
+Now that we have the univalence axiom (from [types/Universe]), we study further the universes [TruncType] of truncated types (including [hProp] and [hSet]) that were defined in [Basics/Trunc].  -/
 
-(** ** Paths in [TruncType] *)
+/- Paths in [TruncType] -/
 
-Section TruncType.
-Context `{Univalence}.
+section TruncType
+Context [H : Univalence].
 
-Definition issig_trunctype {n : trunc_index}
-  : { X : Type & IsTrunc n X } <~> TruncType n.
-Proof.
+definition issig_trunctype {n : trunc_index}
+  : ΣX : Type, is_trunc n X  ≃ TruncType n.
+/-begin
   issig (@BuildTruncType n) (@trunctype_type n) (@istrunc_trunctype_type n).
-Defined.
+end-/
 
-Global Instance isequiv_ap_trunctype {n : trunc_index} (A B : n-Type)
+definition isequiv_ap_trunctype [instance] {n : trunc_index} (A B : n-Type)
 : IsEquiv (@ap _ _ (@trunctype_type n) A B).
-Proof.
-  (* It seems to be easier to construct its inverse directly as an equivalence. *)
-  transparent assert (e : ((A = B :> Type) <~> (A = B :> n-Type))).
-  { equiv_via ((issig_trunctype ^-1 A) = (issig_trunctype ^-1 B)).
+/-begin
+  /- It seems to be easier to construct its inverse directly as an equivalence. -/
+  transparent assert (e : ((A ≈ B :> Type) ≃ (A ≈ B :> n-Type))).
+  { equiv_via ((issig_trunctype ⁻¹ A) ≈ (issig_trunctype ⁻¹ B)).
     - simpl. apply (equiv_path_sigma_hprop
                       (trunctype_type A; istrunc_trunctype_type A)
                       (trunctype_type B; istrunc_trunctype_type B)).
     - symmetry. apply equiv_ap. refine _. }
-  (* Apparently writing [equiv_inverse e] here instead of [e^-1] is much faster. *)
+  /- Apparently writing [equiv_inverse e] here instead of [e⁻¹] is much faster. -/
   refine (isequiv_homotopic (equiv_inverse e) _).
   intros p; destruct p; reflexivity.
-Defined.
+end-/
 
-Definition equiv_path_trunctype {n : trunc_index} (A B : TruncType n)
-  : (A <~> B) <~> (A = B :> TruncType n).
-Proof.
-  equiv_via (A = B :> Type).
+definition equiv_path_trunctype {n : trunc_index} (A B : TruncType n)
+  : (A ≃ B) ≃ (A ≈ B :> TruncType n).
+/-begin
+  equiv_via (A ≈ B :> Type).
   - apply equiv_path_universe.
   - exact (equiv_inverse (BuildEquiv _ _ (@ap _ _ (@trunctype_type n) A B) _)).
-Defined.
+end-/
 
-Definition path_trunctype {n : trunc_index} {A B : TruncType n}
-  : A <~> B -> (A = B :> TruncType n)
-:= equiv_path_trunctype A B.
+definition path_trunctype {n : trunc_index} {A B : TruncType n}
+  : A ≃ B → (A ≈ B :> TruncType n) :=
+   equiv_path_trunctype A B.
 
 Global Instance isequiv_path_trunctype
        {n : trunc_index} {A B : TruncType n}
 : IsEquiv (@path_trunctype n A B).
-Proof.
+/-begin
   exact _.
-Defined.
+end-/
 
-Definition path_hset {A B} := @path_trunctype 0 A B.
-Definition path_hprop {A B} := @path_trunctype -1 A B.
+definition path_hset {A B} := @path_trunctype 0 A B.
+definition path_hprop {A B} := @path_trunctype -1 A B.
 
-Global Instance istrunc_trunctype {n : trunc_index}
-  : IsTrunc n.+1 (TruncType n) | 0.
-Proof.
+definition istrunc_trunctype [instance] {n : trunc_index}
+  : is_trunc n.+1 (TruncType n) | 0.
+/-begin
   intros A B.
   refine (trunc_equiv _ (equiv_path_trunctype A B)).
   case n as [ | n'].
-  - apply contr_equiv_contr_contr. (* The reason is different in this case. *)
+  - apply contr_equiv_contr_contr. /- The reason is different in this case. -/
   - apply istrunc_equiv.
-Defined.
+end-/
 
-Global Instance isset_hProp : IsHSet hProp.
-Proof.
+definition isset_hProp [instance] : IsHSet hProp.
+/-begin
   exact _.
-Defined.
+end-/
 
-Global Instance Sn_trunctype: forall n, IsTrunc n.+1 (sigT (IsTrunc n)) |0.
-Proof.
+definition Sn_trunctype: [instance] Πn, is_trunc n.+1 (sigT (IsTrunc n)) |0.
+/-begin
   intro n.
   apply (trunc_equiv' _ (equiv_inverse issig_trunctype)).
-Defined.
+end-/
 
-(** ** Some standard inhabitants *)
+/- Some standard inhabitants -/
 
-Definition Unit_hp : hProp := (BuildhProp Unit).
-Definition False_hp : hProp := (BuildhProp Empty).
-Definition Negation_hp `{Funext} (hprop : hProp) : hProp := BuildhProp (~hprop).
-(** We could continue with products etc *)
+definition Unit_hp : hProp := (BuildhProp unit).
+definition False_hp : hProp := (BuildhProp Empty).
+definition Negation_hp [H : Funext] (hprop : hProp) : hProp := BuildhProp (~hprop).
+/- We could continue with products etc -/
 
-(** ** The canonical map from Bool to hProp *)
-Definition is_true (b : Bool) : hProp
-  := if b then Unit_hp else False_hp.
+/- The canonical map from bool to hProp -/
+definition is_true (b : bool) : hProp :=
+     if b then Unit_hp else False_hp.
 
-(** ** Facts about HProps using univalence *)
+/- Facts about HProps using univalence -/
 
-Global Instance trunc_path_IsHProp X Y `{IsHProp Y}
-: IsHProp (X = Y).
-Proof.
+definition trunc_path_IsHProp [instance] X Y [H : is_hprop Y]
+: is_hprop (X ≈ Y).
+/-begin
   apply hprop_allpath.
   intros pf1 pf2.
   apply (equiv_inj (equiv_path X Y)).
@@ -103,32 +103,32 @@ Proof.
   intros x; by apply path_ishprop.
 Qed.
 
-Definition path_iff_ishprop_uncurried `{IsHProp A, IsHProp B}
-: (A <-> B) -> A = B :> Type
-  := @path_universe_uncurried _ A B o equiv_iff_hprop_uncurried.
+definition path_iff_ishprop_uncurried [H : is_hprop A, is_hprop B]
+: (A <-> B) → A ≈ B :> Type :=
+     @path_universe_uncurried _ A B ∘ equiv_iff_hprop_uncurried.
 
-Definition path_iff_hprop_uncurried {A B : hProp}
-: (A <-> B) -> A = B :> hProp
-  := (@path_hprop A B) o (@equiv_iff_hprop_uncurried A _ B _).
+definition path_iff_hprop_uncurried {A B : hProp}
+: (A <-> B) → A ≈ B :> hProp :=
+     (@path_hprop A B) ∘ (@equiv_iff_hprop_uncurried A _ B _).
 
-Global Instance isequiv_path_iff_ishprop_uncurried `{IsHProp A, IsHProp B}
+definition isequiv_path_iff_ishprop_uncurried [instance] [H : is_hprop A, is_hprop B]
 : IsEquiv (@path_iff_ishprop_uncurried A _ B _).
 Proof.
   exact _.
-Defined.
+end-/
 
-Global Instance isequiv_path_iff_hprop_uncurried {A B : hProp}
+definition isequiv_path_iff_hprop_uncurried [instance] {A B : hProp}
 : IsEquiv (@path_iff_hprop_uncurried A B).
-Proof.
+/-begin
   exact _.
-Defined.
+end-/
 
-Definition path_iff_ishprop `{IsHProp A, IsHProp B}
-: (A -> B) -> (B -> A) -> A = B :> Type
-  := fun f g => path_iff_ishprop_uncurried (f,g).
+definition path_iff_ishprop [H : is_hprop A, is_hprop B]
+: (A → B) → (B → A) → A ≈ B :> Type :=
+     λf g, path_iff_ishprop_uncurried (f,g).
 
-Definition path_iff_hprop {A B : hProp}
-: (A -> B) -> (B -> A) -> A = B :> hProp
-  := fun f g => path_iff_hprop_uncurried (f,g).
+definition path_iff_hprop {A B : hProp}
+: (A → B) → (B → A) → A ≈ B :> hProp :=
+     λf g, path_iff_hprop_uncurried (f,g).
 
 End TruncType.

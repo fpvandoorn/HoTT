@@ -1,4 +1,4 @@
-(** * Functors about currying, between [C₁ × C₂ → D] and [C₁ → (C₂ → D)] *)
+/- Functors about currying, between [C₁ × C₂ → D] and [C₁ → (C₂ → D)] -/
 Require Import Category.Core Category.Prod FunctorCategory.Core Functor.Core NaturalTransformation.Core NaturalTransformation.Paths.
 
 Set Universe Polymorphism.
@@ -8,8 +8,8 @@ Set Asymmetric Patterns.
 
 Local Open Scope functor_scope.
 
-Section law4.
-  Context `{Funext}.
+section law4
+  Context [H : Funext].
   Variable C1 : PreCategory.
   Variable C2 : PreCategory.
   Variable D : PreCategory.
@@ -32,76 +32,76 @@ Section law4.
               | _ => rewrite <- ?associativity, !commutes
             end).
 
-  (** ** [(yⁿ)ᵐ → yⁿᵐ] *)
-  Section functor.
-    Local Ltac do_exponential4
-      := do_exponential4_helper ltac:(rewrite !composition_of).
+  /- [(yⁿ)ᵐ → yⁿᵐ] -/
+  section functor
+    Local Ltac do_exponential4 :=
+         do_exponential4_helper ltac:(rewrite !composition_of).
 
-    Definition functor_object_of
-    : (C1 -> (C2 -> D))%category -> (C1 * C2 -> D)%category.
-    Proof.
+    definition functor_object_of
+    : (C1 → (C2 → D))%category → (C1 × C2 → D)%category.
+    /-begin
       intro F; hnf in F |- *.
       refine (Build_Functor
-                (C1 * C2) D
-                (fun c1c2 => F (fst c1c2) (snd c1c2))
-                (fun s d m => F (fst d) _1 (snd m) o (F _1 (fst m)) (snd s))
+                (C1 × C2) D
+                (λc1c2, F (fst c1c2) (snd c1c2))
+                (λs d m, F (fst d) _1 (snd m) ∘ (F _1 (fst m)) (snd s))
                 _
                 _);
         abstract do_exponential4.
-    Defined.
+    end-/
 
-    Definition functor_morphism_of
-               s d (m : morphism (C1 -> (C2 -> D)) s d)
-    : morphism (C1 * C2 -> D)
+    definition functor_morphism_of
+               s d (m : morphism (C1 → (C2 → D)) s d)
+    : morphism (C1 × C2 → D)
                (functor_object_of s)
                (functor_object_of d).
-    Proof.
+    /-begin
       simpl.
       refine (Build_NaturalTransformation
                 (functor_object_of s)
                 (functor_object_of d)
-                (fun c => m (fst c) (snd c))
+                (λc, m (fst c) (snd c))
                 _);
         abstract (
             repeat match goal with
-                     | [ |- context[components_of ?T ?x o components_of ?U ?x] ] =>
-                       change (T x o U x) with ((compose (C := (_ -> _)) T U) x)
+                     | [ |- context[components_of ?T ?x ∘ components_of ?U ?x] ] =>
+                       change (T x ∘ U x) with ((compose (C := (_ → _)) T U) x)
                      | _ => f_ap
                      | _ => rewrite !commutes
                      | _ => do_exponential4
                    end
           ).
-    Defined.
+    end-/
 
-    Definition functor
-    : Functor (C1 -> (C2 -> D)) (C1 * C2 -> D).
-    Proof.
+    definition functor
+    : Functor (C1 → (C2 → D)) (C1 × C2 → D).
+    /-begin
       refine (Build_Functor
-                (C1 -> (C2 -> D)) (C1 * C2 -> D)
+                (C1 → (C2 → D)) (C1 × C2 → D)
                 functor_object_of
                 functor_morphism_of
                 _
                 _);
       abstract by path_natural_transformation.
-    Defined.
+    end-/
   End functor.
 
-  (** ** [yⁿᵐ → (yⁿ)ᵐ] *)
-  Section inverse.
-    Local Ltac do_exponential4_inverse
-      := do_exponential4_helper ltac:(rewrite <- !composition_of).
+  /- [yⁿᵐ → (yⁿ)ᵐ] -/
+  section inverse
+    Local Ltac do_exponential4_inverse :=
+         do_exponential4_helper ltac:(rewrite <- !composition_of).
 
-    Section object_of.
-      Variable F : Functor (C1 * C2) D.
+    section object_of
+      Variable F : Functor (C1 × C2) D.
 
-      Definition inverse_object_of_object_of
-      : C1 -> (C2 -> D)%category.
-      Proof.
+      definition inverse_object_of_object_of
+      : C1 → (C2 → D)%category.
+      /-begin
         intro c1.
         refine (Build_Functor
                   C2 D
-                  (fun c2 => F (c1, c2))
-                  (fun s2 d2 m2 => morphism_of
+                  (λc2, F (c1, c2))
+                  (λs2 d2 m2, morphism_of
                                      F
                                      (s := (c1, s2))
                                      (d := (c1, d2))
@@ -109,82 +109,82 @@ Section law4.
                   _
                   _);
           abstract do_exponential4_inverse.
-      Defined.
+      end-/
 
-      Definition inverse_object_of_morphism_of
+      definition inverse_object_of_morphism_of
                  s d (m : morphism C1 s d)
-      : morphism (C2 -> D)
+      : morphism (C2 → D)
                  (inverse_object_of_object_of s)
                  (inverse_object_of_object_of d).
-      Proof.
+      /-begin
         refine (Build_NaturalTransformation
                   (inverse_object_of_object_of s)
                   (inverse_object_of_object_of d)
-                  (fun c => morphism_of
+                  (λc, morphism_of
                               F
                               (s := (s, c))
                               (d := (d, c))
                               (m, identity c))
                   _);
         abstract do_exponential4_inverse.
-      Defined.
+      end-/
 
-      Definition inverse_object_of
-      : (C1 -> (C2 -> D))%category.
-      Proof.
+      definition inverse_object_of
+      : (C1 → (C2 → D))%category.
+      /-begin
         refine (Build_Functor
-                  C1 (C2 -> D)
+                  C1 (C2 → D)
                   inverse_object_of_object_of
                   inverse_object_of_morphism_of
                   _
                   _);
         abstract (path_natural_transformation; do_exponential4_inverse).
-      Defined.
+      end-/
     End object_of.
 
-    Section morphism_of.
-      Definition inverse_morphism_of_components_of
-                 s d (m : morphism (C1 * C2 -> D) s d)
-      : forall c, morphism (C2 -> D)
+    section morphism_of
+      definition inverse_morphism_of_components_of
+                 s d (m : morphism (C1 × C2 → D) s d)
+      : Πc, morphism (C2 → D)
                            ((inverse_object_of s) c)
                            ((inverse_object_of d) c).
-      Proof.
+      /-begin
         intro c.
         refine (Build_NaturalTransformation
                   ((inverse_object_of s) c)
                   ((inverse_object_of d) c)
-                  (fun c' => m (c, c'))
+                  (λc', m (c, c'))
                   _).
         abstract do_exponential4_inverse.
-      Defined.
+      end-/
 
-      Definition inverse_morphism_of
-                 s d (m : morphism (C1 * C2 -> D) s d)
-      : morphism (C1 -> (C2 -> D))
+      definition inverse_morphism_of
+                 s d (m : morphism (C1 × C2 → D) s d)
+      : morphism (C1 → (C2 → D))
                  (inverse_object_of s)
                  (inverse_object_of d).
-      Proof.
+      /-begin
         refine (Build_NaturalTransformation
                   (inverse_object_of s)
                   (inverse_object_of d)
                   (inverse_morphism_of_components_of m)
                   _).
         abstract (path_natural_transformation; do_exponential4_inverse).
-      Defined.
+      end-/
     End morphism_of.
 
     Arguments inverse_morphism_of_components_of / _ _ _ _ .
 
-    Definition inverse
-    : Functor (C1 * C2 -> D) (C1 -> (C2 -> D)).
-    Proof.
+    definition inverse
+    : Functor (C1 × C2 → D) (C1 → (C2 → D)).
+    /-begin
       refine (Build_Functor
-                (C1 * C2 -> D) (C1 -> (C2 -> D))
+                (C1 × C2 → D) (C1 → (C2 → D))
                 inverse_object_of
                 inverse_morphism_of
                 _
                 _);
       abstract by path_natural_transformation.
-    Defined.
+    end-/
   End inverse.
 End law4.

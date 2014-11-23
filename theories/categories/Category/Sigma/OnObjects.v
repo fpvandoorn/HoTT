@@ -1,5 +1,5 @@
-(** * ∑-categories on objects - a generalization of subcategories *)
-Require Import Types.Unit.
+/- ∑-categories on objects - a generalization of subcategories -/
+Require Import Types.unit.
 Require Import Category.Core Functor.Core Category.Sigma.Core.
 Require Functor.Composition.Core Functor.Identity.
 Require Import Functor.Paths.
@@ -12,66 +12,66 @@ Generalizable All Variables.
 Set Asymmetric Patterns.
 
 Local Notation sigT_type := Coq.Init.Specif.sigT.
-Local Notation pr1_type := Overture.pr1.
+Local Notation pr1_type := Overture.dpr1.
 
 Local Open Scope morphism_scope.
 Local Open Scope functor_scope.
 
-Section sigT_obj.
+section sigT_obj
   Variable A : PreCategory.
-  Variable Pobj : A -> Type.
+  Variable Pobj : A → Type.
 
-  (** ** Definition of [sigT_obj]-precategory *)
-  Definition sigT_obj : PreCategory
-    := @Build_PreCategory
+  /- definition of [sigT_obj]-precategory -/
+  definition sigT_obj : PreCategory :=
+       @Build_PreCategory
          (sigT_type Pobj)
-         (fun s d => morphism A (pr1_type s) (pr1_type d))
-         (fun x => @identity A (pr1_type x))
-         (fun s d d' m1 m2 => m1 o m2)%morphism
-         (fun _ _ _ _ => associativity A _ _ _ _)
-         (fun _ _ => left_identity A _ _)
-         (fun _ _ => right_identity A _ _)
+         (λs d, morphism A (pr1_type s) (pr1_type d))
+         (λx, @identity A (pr1_type x))
+         (λs d d' m1 m2, m1 ∘ m2)%morphism
+         (λ_ _ _ _, associativity A _ _ _ _)
+         (λ_ _, left_identity A _ _)
+         (λ_ _, right_identity A _ _)
          _.
 
-  (** ** First projection functor *)
-  Definition pr1_obj : Functor sigT_obj A
-    := Build_Functor
+  /- First projection functor -/
+  definition pr1_obj : Functor sigT_obj A :=
+       Build_Functor
          sigT_obj A
          (@pr1_type _ _)
-         (fun s d m => m)
-         (fun _ _ _ _ _ => idpath)
-         (fun _ => idpath).
+         (λs d m, m)
+         (λ_ _ _ _ _, idpath)
+         (λ_, idpath).
 
-  Definition sigT_obj_as_sigT : PreCategory
-    := @sig A Pobj (fun _ _ _ => Unit) _ (fun _ => tt) (fun _ _ _ _ _ _ _ => tt).
+  definition sigT_obj_as_sigT : PreCategory :=
+       @sig A Pobj (λ_ _ _, unit) _ (λ_, star) (λ_ _ _ _ _ _ _, star).
 
-  Definition sigT_functor_obj : Functor sigT_obj_as_sigT sigT_obj
-    := Build_Functor sigT_obj_as_sigT sigT_obj
-                     (fun x => x)
-                     (fun _ _ => @pr1_type _ _)
-                     (fun _ _ _ _ _ => idpath)
-                     (fun _ => idpath).
+  definition sigT_functor_obj : Functor sigT_obj_as_sigT sigT_obj :=
+       Build_Functor sigT_obj_as_sigT sigT_obj
+                     (λx, x)
+                     (λ_ _, @pr1_type _ _)
+                     (λ_ _ _ _ _, idpath)
+                     (λ_, idpath).
 
-  Definition sigT_functor_obj_inv : Functor sigT_obj sigT_obj_as_sigT
-    := Build_Functor sigT_obj sigT_obj_as_sigT
-                     (fun x => x)
-                     (fun _ _ m => existT _ m tt)
-                     (fun _ _ _ _ _ => idpath)
-                     (fun _ => idpath).
+  definition sigT_functor_obj_inv : Functor sigT_obj sigT_obj_as_sigT :=
+       Build_Functor sigT_obj sigT_obj_as_sigT
+                     (λx, x)
+                     (λ_ _ m, existT _ m star)
+                     (λ_ _ _ _ _, idpath)
+                     (λ_, idpath).
 
   Local Open Scope functor_scope.
 
-  Lemma sigT_obj_eq `{Funext}
-  : sigT_functor_obj o sigT_functor_obj_inv = 1
-    /\ sigT_functor_obj_inv o sigT_functor_obj = 1.
+  Lemma sigT_obj_eq [H : Funext]
+  : sigT_functor_obj ∘ sigT_functor_obj_inv ≈ 1
+    /\ sigT_functor_obj_inv ∘ sigT_functor_obj ≈ 1.
   Proof.
     split; path_functor; trivial.
     repeat (intros [] || intro || apply path_forall).
     reflexivity.
   Qed.
 
-  Definition sigT_obj_compat : pr1_obj o sigT_functor_obj = pr1
-    := idpath.
+  definition sigT_obj_compat : pr1_obj ∘ sigT_functor_obj ≈ dpr1 :=
+       idpath.
 End sigT_obj.
 
 Arguments pr1_obj {A Pobj}.

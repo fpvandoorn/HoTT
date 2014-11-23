@@ -1,4 +1,4 @@
-(** * Left and right identity laws of adjunction composition *)
+/- Left and right identity laws of adjunction composition -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Functor.Composition.Core.
 Require Import Functor.Composition.Laws.
@@ -14,12 +14,12 @@ Set Asymmetric Patterns.
 Local Open Scope adjunction_scope.
 Local Open Scope morphism_scope.
 
-Section identity_lemmas.
+section identity_lemmas
   Local Notation AdjunctionWithFunctors C D :=
-    { fg : Functor C D * Functor D C
+    { fg : Functor C D × Functor D C
     | fst fg -| snd fg }.
 
-  Context `{Funext}.
+  Context [H : Funext].
 
   Variable C : PreCategory.
   Variable D : PreCategory.
@@ -32,7 +32,7 @@ Section identity_lemmas.
   Local Open Scope adjunction_scope.
 
   Lemma left_identity
-  : ((_, _); 1 o A) = ((_, _); A) :> AdjunctionWithFunctors C D.
+  : ((_, _); 1 ∘ A) ≈ ((_, _); A) :> AdjunctionWithFunctors C D.
   Proof.
     apply path_sigma_uncurried; simpl.
     (exists (path_prod'
@@ -42,7 +42,7 @@ Section identity_lemmas.
   Qed.
 
   Lemma right_identity
-  : ((_, _); A o 1) = ((_, _); A) :> AdjunctionWithFunctors C D.
+  : ((_, _); A ∘ 1) ≈ ((_, _); A) :> AdjunctionWithFunctors C D.
   Proof.
     apply path_sigma_uncurried; simpl.
     (exists (path_prod'

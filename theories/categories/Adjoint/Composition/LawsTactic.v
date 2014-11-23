@@ -1,4 +1,4 @@
-(** * Tactic for proving laws about adjoint composition *)
+/- Tactic for proving laws about adjoint composition -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Functor.Composition.Core.
 Require Import Functor.Composition.Laws.
@@ -15,27 +15,27 @@ Ltac law_t :=
   path_adjunction; simpl;
   repeat match goal with
            | [ |- context[unit (transport ?P ?p ?z)] ]
-             => simpl rewrite (@ap_transport _ P _ _ _ p (fun _ => @unit _ _ _ _) z)
+             => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, @unit _ _ _ _) z)
            | [ |- context[counit (transport ?P ?p ?z)] ]
-             => simpl rewrite (@ap_transport _ P _ _ _ p (fun _ => @counit _ _ _ _) z)
+             => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, @counit _ _ _ _) z)
            | [ |- context[components_of (transport ?P ?p ?z)] ]
-             => simpl rewrite (@ap_transport _ P _ _ _ p (fun _ => @components_of _ _ _ _) z)
+             => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, @components_of _ _ _ _) z)
          end;
   rewrite !transport_forall_constant;
   repeat
     match goal with
-      | [ |- context[transport (fun y => ?f (@object_of ?C ?D y ?x))] ]
-        => rewrite (fun a b => @transport_compose _ _ a b (fun y' => f (y' x)) (@object_of C D))
-      | [ |- context[transport (fun y => ?f (?g (@object_of ?C ?D y ?x)))] ]
-        => rewrite (fun a b => @transport_compose _ _ a b (fun y' => f (g (y' x))) (@object_of C D))
-      | [ |- context[transport (fun y => ?f (?g (?h (?i (@object_of ?C ?D y ?x)))))] ]
-        => rewrite (fun a b => @transport_compose _ _ a b (fun y' => f (g (h (i (y' x))))) (@object_of C D))
-      | [ |- context[transport (fun y => ?f (@object_of ?C ?D y ?x) ?z)] ]
-        => rewrite (fun a b => @transport_compose _ _ a b (fun y' => f (y' x) z) (@object_of C D))
-      | [ |- context[transport (fun y => ?f (?g (@object_of ?C ?D y ?x)) ?z)] ]
-        => rewrite (fun a b => @transport_compose _ _ a b (fun y' => f (g (y' x)) z) (@object_of C D))
-      | [ |- context[transport (fun y => ?f (?g (?h (?i (@object_of ?C ?D y ?x)))) ?z)] ]
-        => rewrite (fun a b => @transport_compose _ _ a b (fun y' => f (g (h (i (y' x)))) z) (@object_of C D))
+      | [ |- context[transport (λy, ?f (@object_of ?C ?D y ?x))] ]
+        => rewrite (λa b, @transport_compose _ _ a b (λy', f (y' x)) (@object_of C D))
+      | [ |- context[transport (λy, ?f (?g (@object_of ?C ?D y ?x)))] ]
+        => rewrite (λa b, @transport_compose _ _ a b (λy', f (g (y' x))) (@object_of C D))
+      | [ |- context[transport (λy, ?f (?g (?h (?i (@object_of ?C ?D y ?x)))))] ]
+        => rewrite (λa b, @transport_compose _ _ a b (λy', f (g (h (i (y' x))))) (@object_of C D))
+      | [ |- context[transport (λy, ?f (@object_of ?C ?D y ?x) ?z)] ]
+        => rewrite (λa b, @transport_compose _ _ a b (λy', f (y' x) z) (@object_of C D))
+      | [ |- context[transport (λy, ?f (?g (@object_of ?C ?D y ?x)) ?z)] ]
+        => rewrite (λa b, @transport_compose _ _ a b (λy', f (g (y' x)) z) (@object_of C D))
+      | [ |- context[transport (λy, ?f (?g (?h (?i (@object_of ?C ?D y ?x)))) ?z)] ]
+        => rewrite (λa b, @transport_compose _ _ a b (λy', f (g (h (i (y' x)))) z) (@object_of C D))
     end;
   unfold symmetry, symmetric_paths;
   rewrite ?ap_V;

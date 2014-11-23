@@ -1,6 +1,6 @@
-(** We prove that Fam and Pow are equivalent.
+/- We prove that Fam and Pow are equivalent.
 This equivalence is close to the existence of an object classifier.
-*)
+-/
 
 Require Import HoTT.Basics.
 Require Import Types.Universe Types.Sigma Types.Arrow.
@@ -8,61 +8,61 @@ Require Import Fibrations HProp EquivalenceVarieties UnivalenceImpliesFunext.
 Local Open Scope equiv_scope.
 Local Open Scope path_scope.
 
-Section AssumeUnivalence.
-Context `{ua:Univalence}.
+section AssumeUnivalence
+Context {ua:Univalence}.
 
-(** This should be moved. *)
-Definition pullback {A0 B C} (f:B-> A0) (g:C->A0):= {b:B & {c:C & f b = g c}}.
+/- This should be moved. -/
+definition pullback {A0 B C} (f:B-> A0) (g:C->A0):= Σb:B, Σc:C, f b ≈ g c.
 
-Section FamPow.
-(** We consider Families and Powers over a fixed type [A] *)
+section FamPow
+/- We consider Families and Powers over a fixed type [A] -/
 Variable A:Type.
-Definition Fam A:=sigT (fun I:Type  => I->A).
-Definition p2f: (A->Type)-> Fam A:=  fun Q:(A->Type) => ( (sigT Q) ; @pr1 _ _).
-Definition f2p: Fam A -> (A->Type):=
- fun F => let (I, f) := F in (fun a => (hfiber f a)).
+definition Fam A:=sigT (λI:Type , I->A).
+definition p2f: (A->Type)-> Fam A:=  λQ:(A->Type), ( (sigT Q) ; @dpr1 _ _).
+definition f2p: Fam A → (A->Type):=
+ λF, let (I, f) := F in (λa, (hfiber f a)).
 
-(* This is generalized in Functorish.v *)
-Theorem transport_exp (U V:Type)(w:U<~>V): forall (f:U->A),
-  (transport (fun I:Type => I->A) (path_universe w) f) = (f o w^-1).
-Proof.
+/- This is generalized in Functorish.v -/
+Theorem transport_exp (U V:Type)(w:U≃V): Π(f:U->A),
+  (transport (λI:Type, I->A) (path_universe w) f) ≈ (f ∘ w⁻¹).
+/-begin
   intros f; apply path_arrow; intros y.
-  refine (transport_arrow_toconst _ _ _ @ _).
+  refine (transport_arrow_toconst _ _ _ ⬝ _).
   unfold compose; apply ap.
   by apply transport_path_universe_V.
 Qed.
 
-Theorem FamequivPow : (A->Type)<~>(Fam A).
+Theorem FamequivPow : (A->Type)≃(Fam A).
 Proof.
 apply (equiv_adjointify p2f f2p).
-(* Theorem right (F:Fam A) : F = (p2ff2p F) *)
- +intros [I f]. set (e:=equiv_path_sigma _ (@existT Type (fun I0 : Type => I0 -> A) I f)
-  ({a : A & hfiber f a} ; @pr1 _ _)). simpl in e.
-  enough (X:{p : I = {a : A & @hfiber I A f a} &
-     @transport _ (fun I0 : Type => I0 -> A) _ _ p f = @pr1 _ _}) by apply (e X)^.
+/- Theorem right (F:Fam A) : F ≈ (p2ff2p F) -/
+ +intros [I f]. set (e:=equiv_path_sigma _ (@existT Type (λI0 : Type, I0 → A) I f)
+  (Σa : A, hfiber f a ; @dpr1 _ _)). simpl in e.
+  enough (X:{p : I ≈ Σa : A, @hfiber I A f a &
+     @transport _ (λI0 : Type, I0 → A) _ _ p f ≈ @dpr1 _ _}) by apply (e X)⁻¹.
   set (w:=@equiv_fibration_replacement A I f).
   exists (path_universe w). 
-  transitivity (f o w^-1);[apply transport_exp|apply path_forall;by (intros [a [i p]])].
- (* Theorem left (P:A -> Type) : (f2pp2f P) = P *)
+  transitivity (f ∘ w⁻¹);[apply transport_exp|apply path_forall;by (intros [a [i p]])].
+ /- Theorem left (P:A → Type) : (f2pp2f P) ≈ P -/
  + intro P. by_extensionality a.
- apply ((path_universe (@hfiber_fibration  _ a P))^).
-Defined.
+ apply ((path_universe (@hfiber_fibration  _ a P))⁻¹).
+end-/
 
-(** We construct the universal diagram for the object classifier *)
-Definition topmap {B} (f:B->A) (b:B): pointedType :=
+/- We construct the universal diagram for the object classifier -/
+definition topmap {B} (f:B->A) (b:B): pointedType :=
   (hfiber f (f b) ; (b ; idpath (f b))).
 
-Local Definition help_objclasspb_is_fibrantreplacement (P:A-> Type): (sigT P)->
-  (pullback P (@pr1 _ (fun u :Type => u))):=
-(fun (X : {a : A & P a}) => (fun (a : A) (q : P a) => (a; ((P a; q); 1))) X.1 X.2).
+Local definition help_objclasspb_is_fibrantreplacement (P:A-> Type): (sigT P)->
+  (pullback P (@dpr1 _ (λu :Type, u))):=
+(λ(X : Σa : A, P a), (λ(a : A) (q : P a), (a; (⟨P a, q⟩; 1))) X.1 X.2).
 
-Local Definition help_objclasspb_is_fibrantreplacement2 (P:A-> Type):
- (pullback P (@pr1 _ (fun u :Type => u))) -> (sigT P).
-intros [a [[T t] p]]. exact (a;(transport (fun X => X) (p^) t)).
+Local definition help_objclasspb_is_fibrantreplacement2 (P:A-> Type):
+ (pullback P (@dpr1 _ (λu :Type, u))) → (sigT P).
+intros [a [[T t] p]]. exact (a;(transport (λX, X) (p⁻¹) t)).
 Defined.
 
-Lemma objclasspb_is_fibrantreplacement (P:A-> Type): (sigT P) <~> (pullback P (@pr1 _ (fun u :Type => u))).
-Proof.
+Lemma objclasspb_is_fibrantreplacement (P:A-> Type): (sigT P) ≃ (pullback P (@dpr1 _ (λu :Type, u))).
+/-begin
 exists (help_objclasspb_is_fibrantreplacement P).
 apply isequiv_biinv. split; exists (help_objclasspb_is_fibrantreplacement2 P); intros [a p]. apply idpath.
 destruct p as [[T t] p].
@@ -72,49 +72,49 @@ Qed.
 
 End FamPow.
 
-Section Subobjectclassifier.
-(** We prove that hProp is the subobject classifier *)
-(** In fact, the proof works for general mere predicates on [Type], 
-not just [IsHProp], truncations and modalities are important examples.*)
+section Subobjectclassifier
+/- We prove that hProp is the subobject classifier -/
+/- In fact, the proof works for general mere predicates on [Type], 
+not just [IsHProp], truncations and modalities are important examples.-/
 Variable A:Type.
-Variable isP:Type -> Type.
-Variable ishprop_isP: forall I, IsHProp (isP I).
-Definition IsPfibered {I} (f:I->A):=forall i, isP (hfiber f i).
-Definition PFam := (sig (fun F:Fam A => IsPfibered (pr2 F))).
-(* Bug: abstract should accept more than one tactic.
+Variable isP:Type → Type.
+Variable ishprop_isP: ΠI, is_hprop (isP I).
+definition IsPfibered {I} (f:I->A):=Πi, isP (hfiber f i).
+definition PFam := (sig (λF:Fam A, IsPfibered (dpr2 F))).
+/- Bug: abstract should accept more than one tactic.
 https://coq.inria.fr/bugs/show_bug.cgi?id=3609
 Alternatively, we would like to use [Program] here.
 6a99db1c31fe267fdef7be755fa169fb6a87e3cf
-Instead we split the [Definition] and first make a [Local Definition] *)
-Local Definition pow2Pfam_pf (P:forall a:A, {X :Type & isP X}): 
-           IsPfibered (pr2 (p2f A (pr1 o P))). 
+Instead we split the [Definition] and first make a [Local Definition] -/
+Local definition pow2Pfam_pf (P:Πa:A, ΣX :Type, isP X): 
+           IsPfibered (dpr2 (p2f A (dpr1 ∘ P))). 
 Proof.
 intro i. cbn. 
-rewrite <- (path_universe_uncurried (@hfiber_fibration A i (pr1 o P))).
+rewrite <- (path_universe_uncurried (@hfiber_fibration A i (dpr1 ∘ P))).
 apply ((P i).2).
 Qed.
 
-Definition pow2Pfam (P:forall a:A, {X :Type & isP X}): PFam:=
-  (p2f A (fun a => (pr1 (P a))); pow2Pfam_pf P).
+definition pow2Pfam (P:Πa:A, ΣX :Type, isP X): PFam:=
+  (p2f A (λa, (dpr1 (P a))); pow2Pfam_pf P).
 
-Local Definition Pfam2pow_pf (F:PFam)(a:A):isP (f2p A F.1 a). 
+Local definition Pfam2pow_pf (F:PFam)(a:A):isP (f2p A F.1 a). 
 unfold f2p. by destruct F as [[I f] p].
 Qed.
 
-Definition Pfam2pow (F:PFam) (a:A): {X :Type & isP X}:=
+definition Pfam2pow (F:PFam) (a:A): ΣX :Type, isP X:=
    ((f2p A F.1 a); (Pfam2pow_pf F a)).
 
-Theorem PowisoPFam : (forall a:A, {X :Type & isP X})<~>PFam.
+Theorem PowisoPFam : (Πa:A, ΣX :Type, isP X)≃PFam.
 Proof.
 apply (equiv_adjointify pow2Pfam Pfam2pow).
  + intros [[B f] q]. apply path_sigma_hprop. cbn.
-  refine (@eisretr _ _ (FamequivPow A) _ (B;f)).
+  refine (@eisretr _ _ (FamequivPow A) _ ⟨B,f⟩).
 + intro P. apply path_forall. intro a.
- assert (f2p A (p2f A (pr1 o P)) a = (pr1 (P a))).
+ assert (f2p A (p2f A (dpr1 ∘ P)) a ≈ (dpr1 (P a))).
   set (p:=@eissect _ _ (FamequivPow A) _).
-  apply (ap10 (p (pr1 o P)) a).
+  apply (ap10 (p (dpr1 ∘ P)) a).
 by apply path_sigma_hprop.
-Defined.
+end-/
 End Subobjectclassifier.
 
 End AssumeUnivalence.

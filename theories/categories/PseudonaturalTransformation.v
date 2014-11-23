@@ -1,6 +1,6 @@
-(** * Pseudonatural Transformations *)
+/- Pseudonatural Transformations -/
 
-(** ** Definition of pseudonatural transformations *)
+/- definition of pseudonatural transformations -/
 Require PseudonaturalTransformation.Core.
 
 Include PseudonaturalTransformation.Core.

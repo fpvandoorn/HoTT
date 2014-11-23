@@ -1,4 +1,4 @@
-(** * Opposite natural transformations *)
+/- Opposite natural transformations -/
 Require Category.Dual Functor.Dual.
 Import Category.Dual.CategoryDualNotations Functor.Dual.FunctorDualNotations.
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
@@ -10,26 +10,26 @@ Set Asymmetric Patterns.
 
 Local Open Scope category_scope.
 
-(** ** Definition of [Tᵒᵖ] *)
-Definition opposite
+/- definition of [Tᵒᵖ] -/
+definition opposite
            C D
            (F G : Functor C D)
            (T : NaturalTransformation F G)
-: NaturalTransformation G^op F^op
-  := Build_NaturalTransformation' (G^op) (F^op)
+: NaturalTransformation G⁻¹op F⁻¹op :=
+     Build_NaturalTransformation' (G⁻¹op) (F⁻¹op)
                                   (components_of T)
-                                  (fun s d => commutes_sym T d s)
-                                  (fun s d => commutes T d s).
+                                  (λs d, commutes_sym T d s)
+                                  (λs d, commutes T d s).
 
-Local Notation "T ^op" := (opposite T) (at level 3, format "T ^op") : natural_transformation_scope.
+Local Notation "T ⁻¹op" := (opposite T) (at level 3, format "T ⁻¹op") : natural_transformation_scope.
 
-(** ** [ᵒᵖ] is judgmentally involutive *)
+/- [ᵒᵖ] is judgmentally involutive -/
 Local Open Scope natural_transformation_scope.
 
-Definition opposite_involutive C D (F G : Functor C D) (T : NaturalTransformation F G)
-: (T^op)^op = T
-  := idpath.
+definition opposite_involutive C D (F G : Functor C D) (T : NaturalTransformation F G)
+: (T⁻¹op)⁻¹op ≈ T :=
+     idpath.
 
 Module Export NaturalTransformationDualNotations.
-  Notation "T ^op" := (opposite T) (at level 3, format "T ^op") : natural_transformation_scope.
+  Notation "T ⁻¹op" := (opposite T) (at level 3, format "T ⁻¹op") : natural_transformation_scope.
 End NaturalTransformationDualNotations.

@@ -1,4 +1,4 @@
-(** * Functoriality of functor category construction *)
+/- Functoriality of functor category construction -/
 Require Import Category.Core Functor.Core FunctorCategory.Core Functor.Pointwise.Core Functor.Pointwise.Properties Category.Dual Category.Prod Cat.Core ExponentialLaws.Law4.Functors.
 
 Set Universe Polymorphism.
@@ -8,30 +8,30 @@ Set Asymmetric Patterns.
 
 Local Open Scope category_scope.
 
-(** ** [(_ → _)] is a functor [catᵒᵖ × cat → cat] *)
-Section functor.
-  Context `{Funext}.
+/- [(_ → _)] is a functor [catᵒᵖ × cat → cat] -/
+section functor
+  Context [H : Funext].
 
-  Variable P : PreCategory -> Type.
-  Context `{forall C, IsHProp (P C)}.
-  Context `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}.
+  Variable P : PreCategory → Type.
+  Context [H : ΠC, is_hprop (P C)].
+  Context {HF : ΠC D, P C → P D → IsHSet (Functor C D)}.
 
   Local Notation cat := (sub_pre_cat P HF).
 
-  Hypothesis has_functor_categories : forall C D : cat, P (C.1 -> D.1).
+  Hypothesis has_functor_categories : ΠC D : cat, P (C.1 → D.1).
 
-  Definition functor_uncurried
-  : object ((cat^op * cat) -> cat)
-    := Eval cbv zeta in
-        let object_of := (fun CD => (((fst CD).1 -> (snd CD).1);
+  definition functor_uncurried
+  : object ((cat⁻¹op × cat) → cat) :=
+       Eval cbv zeta in
+        let object_of := (λCD, (((fst CD).1 → (snd CD).1);
                                      has_functor_categories (fst CD) (snd CD)))
         in Build_Functor
-             (cat^op * cat) cat
+             (cat⁻¹op × cat) cat
              object_of
-             (fun CD C'D' FG => pointwise (fst FG) (snd FG))
-             (fun _ _ _ _ _ => Functor.Pointwise.Properties.composition_of _ _ _ _)
-             (fun _ => Functor.Pointwise.Properties.identity_of _ _).
+             (λCD C'D' FG, pointwise (fst FG) (snd FG))
+             (λ_ _ _ _ _, Functor.Pointwise.Properties.composition_of _ _ _ _)
+             (λ_, Functor.Pointwise.Properties.identity_of _ _).
 
-  Definition functor : object (cat^op -> (cat -> cat))
-    := ExponentialLaws.Law4.Functors.inverse _ _ _ functor_uncurried.
+  definition functor : object (cat⁻¹op → (cat → cat)) :=
+       ExponentialLaws.Law4.Functors.inverse _ _ _ functor_uncurried.
 End functor.

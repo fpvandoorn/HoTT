@@ -1,4 +1,4 @@
-(** * Morphisms in a groupoid *)
+/- Morphisms in a groupoid -/
 Require Import Category.Core Category.Morphisms Category.Univalent GroupoidCategory.Core.
 Require Import Trunc Equivalences HoTT.Tactics.
 
@@ -10,15 +10,15 @@ Set Asymmetric Patterns.
 Local Open Scope equiv_scope.
 Local Open Scope category_scope.
 
-Section groupoid_category.
+section groupoid_category
   Variable X : Type.
-  Context `{IsTrunc 1 X}.
+  Context [H : is_trunc 1 X].
 
-  Definition isotoid (s d : groupoid_category X)
-  : s <~=~> d -> s = d
-    := fun f => f : morphism _ _ _.
+  definition isotoid (s d : groupoid_category X)
+  : s <~=~> d → s ≈ d :=
+       λf, f : morphism _ _ _.
 
-  (** ** All groupoids are categories *)
+  /- All groupoids are categories -/
   Global Instance iscategory_groupoid_category
   : IsCategory (groupoid_category X).
   Proof.

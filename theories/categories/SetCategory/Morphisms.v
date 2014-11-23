@@ -1,4 +1,4 @@
-(** * Morphisms in [set_cat] *)
+/- Morphisms in [set_cat] -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Category.Morphisms NaturalTransformation.Paths.
 Require Import Category.Univalent.
@@ -16,13 +16,13 @@ Local Open Scope morphism_scope.
 Local Open Scope category_scope.
 
 Lemma isisomorphism_set_cat_natural_transformation_paths
-      `{fs : Funext} (X : set_cat) C D F G
+      {fs : Funext} (X : set_cat) C D F G
       (T1 T2 : morphism set_cat X (BuildhSet (@NaturalTransformation C D F G)))
-      (H : forall x y, T1 x y = T2 x y)
-      `{@IsIsomorphism set_cat _ _ T1}
+      (H : Πx y, T1 x y ≈ T2 x y)
+      [H : @IsIsomorphism set_cat _ _ T1]
 : @IsIsomorphism set_cat _ _ T2.
-Proof.
-  exists (T1^-1)%morphism;
+/-begin
+  exists (T1⁻¹)%morphism;
   abstract (
       first [ apply @iso_moveR_Vp
             | apply @iso_moveR_pV ];
@@ -33,42 +33,42 @@ Proof.
                    | apply @path_forall
                    | path_natural_transformation ]
     ).
-Defined.
+end-/
 
-Section equiv_iso_set_cat.
-  (** ** Isomorphisms in [set_cat] are eqivalent to equivalences. *)
-  Context `{Funext}.
+section equiv_iso_set_cat
+  /- Isomorphisms in [set_cat] are eqivalent to equivalences. -/
+  Context [H : Funext].
 
-  Definition isiso_isequiv s d (m : morphism set_cat s d)
-             `{IsEquiv _ _ m}
-  : IsIsomorphism m
-    := Build_IsIsomorphism
+  definition isiso_isequiv s d (m : morphism set_cat s d)
+             [H : IsEquiv _ _ m]
+  : IsIsomorphism m :=
+       Build_IsIsomorphism
          set_cat s d
-         m m^-1%equiv
-         (path_forall _ _ (eissect m))
-         (path_forall _ _ (eisretr m)).
+         m m⁻¹%equiv
+         (path_Π_ _ (eissect m))
+         (path_Π_ _ (eisretr m)).
 
-  Definition isequiv_isiso s d (m : morphism set_cat s d)
-             `{IsIsomorphism _ _ _ m}
-  : IsEquiv m
-    := BuildIsEquiv
+  definition isequiv_isiso s d (m : morphism set_cat s d)
+             [H : IsIsomorphism _ _ _ m]
+  : IsEquiv m :=
+       BuildIsEquiv
          _ _
-         m m^-1%morphism
+         m m⁻¹%morphism
          (ap10 right_inverse)
          (ap10 left_inverse)
-         (fun _ => path_ishprop _ _).
+         (λ_, path_ishprop _ _).
 
-  Definition iso_equiv (s d : set_cat) (m : s <~> d)
-  : s <~=~> d
-    := Build_Isomorphic
+  definition iso_equiv (s d : set_cat) (m : s ≃ d)
+  : s <~=~> d :=
+       Build_Isomorphic
          (@isiso_isequiv s d m _).
 
-  Global Instance isequiv_isiso_isequiv s d
+  definition isequiv_isiso_isequiv [instance] s d
   : IsEquiv (@iso_equiv s d) | 0.
-  Proof.
+  /-begin
     refine (isequiv_adjointify
               (@iso_equiv s d)
-              (fun m => BuildEquiv _ _ _ (@isequiv_isiso s d m m))
+              (λm, BuildEquiv _ _ _ (@isequiv_isiso s d m m))
               _
               _);
     simpl in *;
@@ -79,51 +79,51 @@ Section equiv_iso_set_cat.
         apply ap;
         apply path_ishprop
       ).
-  Defined.
+  end-/
 
-  Lemma path_idtoequiv_idtoiso (s d : set_cat) (p : s = d)
-  : iso_equiv s d (equiv_path _ _ (ap trunctype_type p)) = idtoiso set_cat p.
-  Proof.
+  Lemma path_idtoequiv_idtoiso (s d : set_cat) (p : s ≈ d)
+  : iso_equiv s d (equiv_path _ _ (ap trunctype_type p)) ≈ idtoiso set_cat p.
+  /-begin
     apply path_isomorphic.
     case p.
     reflexivity.
-  Defined.
+  end-/
 End equiv_iso_set_cat.
 
-Section equiv_iso_prop_cat.
-  (** ** Isomorphisms in [prop_cat] are eqivalent to equivalences. *)
-  Context `{Funext}.
+section equiv_iso_prop_cat
+  /- Isomorphisms in [prop_cat] are eqivalent to equivalences. -/
+  Context [H : Funext].
 
-  Definition isiso_isequiv_prop s d (m : morphism prop_cat s d)
-             `{IsEquiv _ _ m}
-  : IsIsomorphism m
-    := Build_IsIsomorphism
+  definition isiso_isequiv_prop s d (m : morphism prop_cat s d)
+             [H : IsEquiv _ _ m]
+  : IsIsomorphism m :=
+       Build_IsIsomorphism
          prop_cat s d
-         m m^-1%equiv
-         (path_forall _ _ (eissect m))
-         (path_forall _ _ (eisretr m)).
+         m m⁻¹%equiv
+         (path_Π_ _ (eissect m))
+         (path_Π_ _ (eisretr m)).
 
-  Definition isequiv_isiso_prop s d (m : morphism prop_cat s d)
-             `{IsIsomorphism _ _ _ m}
-  : IsEquiv m
-    := BuildIsEquiv
+  definition isequiv_isiso_prop s d (m : morphism prop_cat s d)
+             [H : IsIsomorphism _ _ _ m]
+  : IsEquiv m :=
+       BuildIsEquiv
          _ _
-         m m^-1%morphism
+         m m⁻¹%morphism
          (ap10 right_inverse)
          (ap10 left_inverse)
-         (fun _ => path_ishprop _ _).
+         (λ_, path_ishprop _ _).
 
-  Definition iso_equiv_prop (s d : prop_cat) (m : s <~> d)
-  : s <~=~> d
-    := Build_Isomorphic
+  definition iso_equiv_prop (s d : prop_cat) (m : s ≃ d)
+  : s <~=~> d :=
+       Build_Isomorphic
          (@isiso_isequiv_prop s d m _).
 
-  Global Instance isequiv_isiso_isequiv_prop s d
+  definition isequiv_isiso_isequiv_prop [instance] s d
   : IsEquiv (@iso_equiv_prop s d) | 0.
-  Proof.
+  /-begin
     refine (isequiv_adjointify
               (@iso_equiv_prop s d)
-              (fun m => BuildEquiv _ _ _ (@isequiv_isiso_prop s d m _))
+              (λm, BuildEquiv _ _ _ (@isequiv_isiso_prop s d m _))
               _
               _);
     simpl in *;
@@ -134,32 +134,32 @@ Section equiv_iso_prop_cat.
         apply ap;
         apply path_ishprop
       ).
-  Defined.
+  end-/
 
-  Lemma path_idtoequiv_idtoiso_prop (s d : prop_cat) (p : s = d)
-  : iso_equiv_prop s d (equiv_path _ _ (ap trunctype_type p)) = idtoiso prop_cat p.
-  Proof.
+  Lemma path_idtoequiv_idtoiso_prop (s d : prop_cat) (p : s ≈ d)
+  : iso_equiv_prop s d (equiv_path _ _ (ap trunctype_type p)) ≈ idtoiso prop_cat p.
+  /-begin
     apply path_isomorphic.
     case p.
     reflexivity.
-  Defined.
+  end-/
 End equiv_iso_prop_cat.
 
 Local Close Scope morphism_scope.
-Global Instance iscategory_set_cat `{Univalence}
+definition iscategory_set_cat [instance] [H : Univalence]
 : IsCategory set_cat.
-Proof.
+/-begin
   intros C D.
   eapply @isequiv_homotopic; [ | intro; apply path_idtoequiv_idtoiso ].
-  change (IsEquiv (iso_equiv C D o equiv_path C D o @ap _ _ trunctype_type C D)).
+  change (IsEquiv (iso_equiv C D ∘ equiv_path C D ∘ @ap _ _ trunctype_type C D)).
   typeclasses eauto.
-Defined.
+end-/
 
-Global Instance iscategory_prop_cat `{Univalence}
+definition iscategory_prop_cat [instance] [H : Univalence]
 : IsCategory prop_cat.
-Proof.
+/-begin
   intros C D.
   eapply @isequiv_homotopic; [ | intro; apply path_idtoequiv_idtoiso_prop ].
-  change (IsEquiv (iso_equiv_prop C D o equiv_path C D o @ap _ _ trunctype_type C D)).
+  change (IsEquiv (iso_equiv_prop C D ∘ equiv_path C D ∘ @ap _ _ trunctype_type C D)).
   typeclasses eauto.
-Defined.
+end-/

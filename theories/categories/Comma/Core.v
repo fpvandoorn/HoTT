@@ -1,4 +1,4 @@
-(** * Comma categories *)
+/- Comma categories -/
 Require Import Category.Core Functor.Core.
 Require Import InitialTerminalCategory.Core InitialTerminalCategory.Functors.
 Require Functor.Identity.
@@ -15,7 +15,7 @@ Local Open Scope equiv_scope.
 Local Open Scope morphism_scope.
 Local Open Scope category_scope.
 
-(** Quoting Wikipedia:
+/- Quoting Wikipedia:
 
     Suppose that [A], [B], and [C] are categories, and [S] and [T] are
     functors
@@ -25,7 +25,7 @@ Local Open Scope category_scope.
     We can form the comma category [(S ↓ T)] as follows:
 
     - The objects are all triples [(α, β, f)] with [α] an object in
-      [A], [β] an object in [B], and [f : S α -> T β] a morphism in
+      [A], [β] an object in [B], and [f : S α → T β] a morphism in
       [C].
 
     - The morphisms from [(α, β, f)] to [(α', β', f')] are all pairs
@@ -46,11 +46,11 @@ Local Open Scope category_scope.
 
     Morphisms are composed by taking [(g, h) ∘ (g', h')] to be [(g ∘
     g', h ∘ h')], whenever the latter expression is defined.  The
-    identity morphism on an object [(α, β, f)] is [(1_α, 1_β)].  *)
+    identity morphism on an object [(α, β, f)] is [(1_α, 1_β)].  -/
 
-(** ** Comma category [(S / T)] *)
+/- Comma category [(S / T)] -/
 Module Import CommaCategory.
-  Section comma_category_parts.
+  section comma_category_parts
     Variable A : PreCategory.
     Variable B : PreCategory.
     Variable C : PreCategory.
@@ -74,48 +74,48 @@ Module Import CommaCategory.
          | morphism C (S a) (T b) }}).
 
     Lemma issig_object
-    : object_sig_T <~> object.
-    Proof.
+    : object_sig_T ≃ object.
+    /-begin
       issig (@Build_object)
             (@a)
             (@b)
             (@f).
-    Defined.
+    end-/
 
-    Global Instance trunc_object `{IsTrunc n A, IsTrunc n B}
-           `{forall s d, IsTrunc n (morphism C s d)}
-    : IsTrunc n object.
-    Proof.
+    definition trunc_object [instance] [H : is_trunc n A, is_trunc n B]
+           [H : Πs d, is_trunc n (morphism C s d)]
+    : is_trunc n object.
+    /-begin
       eapply trunc_equiv';
       [ exact issig_object | ].
       typeclasses eauto.
     Qed.
 
     Lemma path_object' (x y : object)
-    : forall (Ha : x.(a) = y.(a))
-             (Hb : x.(b) = y.(b)),
-        transport (fun X => morphism C (S X) _)
+    : Π(Ha : x.(a) ≈ y.(a))
+             (Hb : x.(b) ≈ y.(b)),
+        transport (λX, morphism C (S X) _)
                   Ha
-                  (transport (fun Y => morphism C _ (T Y))
+                  (transport (λY, morphism C _ (T Y))
                              Hb
                              x.(f))
-        = y.(f)
-        -> x = y.
+        ≈ y.(f)
+        → x ≈ y.
     Proof.
       destruct x, y; simpl.
       intros; path_induction; reflexivity.
-    Defined.
+    end-/
 
     Lemma ap_a_path_object' x y Ha Hb Hf
-    : ap (@a) (@path_object' x y Ha Hb Hf) = Ha.
-    Proof.
+    : ap (@a) (@path_object' x y Ha Hb Hf) ≈ Ha.
+    /-begin
       destruct x, y; simpl in *.
       destruct Ha, Hb, Hf; simpl in *.
       reflexivity.
     Qed.
 
     Lemma ap_b_path_object' x y Ha Hb Hf
-    : ap (@b) (@path_object' x y Ha Hb Hf) = Hb.
+    : ap (@b) (@path_object' x y Ha Hb Hf) ≈ Hb.
     Proof.
       destruct x, y; simpl in *.
       destruct Ha, Hb, Hf; simpl in *.
@@ -128,12 +128,12 @@ Module Import CommaCategory.
       Build_morphism' {
           g : Category.Core.morphism A (abf.(a)) (a'b'f'.(a));
           h : Category.Core.morphism B (abf.(b)) (a'b'f'.(b));
-          p : T _1 h o abf.(f) = a'b'f'.(f) o S _1 g;
-          p_sym : a'b'f'.(f) o S _1 g = T _1 h o abf.(f)
+          p : T _1 h ∘ abf.(f) ≈ a'b'f'.(f) ∘ S _1 g;
+          p_sym : a'b'f'.(f) ∘ S _1 g ≈ T _1 h ∘ abf.(f)
         }.
 
-    Definition Build_morphism abf a'b'f' g h p : morphism abf a'b'f'
-      := @Build_morphism' abf a'b'f' g h p p^.
+    definition Build_morphism abf a'b'f' g h p : morphism abf a'b'f' :=
+         @Build_morphism' abf a'b'f' g h p p⁻¹.
 
     Global Arguments Build_morphism / .
     Global Arguments g _ _ _ / .
@@ -144,28 +144,28 @@ Module Import CommaCategory.
     Local Notation morphism_sig_T abf a'b'f' :=
       ({ g : Category.Core.morphism A (abf.(a)) (a'b'f'.(a))
        | { h : Category.Core.morphism B (abf.(b)) (a'b'f'.(b))
-         | T _1 h o abf.(f) = a'b'f'.(f) o S _1 g }}).
+         | T _1 h ∘ abf.(f) ≈ a'b'f'.(f) ∘ S _1 g }}).
 
     Local Notation morphism_sig_T' abf a'b'f' :=
       ({ g : Category.Core.morphism A (abf.(a)) (a'b'f'.(a))
        | { h : Category.Core.morphism B (abf.(b)) (a'b'f'.(b))
-         | { _ : T _1 h o abf.(f) = a'b'f'.(f) o S _1 g
-           | a'b'f'.(f) o S _1 g = T _1 h o abf.(f) }}}).
+         | { _ : T _1 h ∘ abf.(f) ≈ a'b'f'.(f) ∘ S _1 g
+           | a'b'f'.(f) ∘ S _1 g ≈ T _1 h ∘ abf.(f) }}}).
 
     Lemma issig_morphism' abf a'b'f'
     : (morphism_sig_T' abf a'b'f')
-        <~> morphism abf a'b'f'.
+        ≃ morphism abf a'b'f'.
     Proof.
       issig (@Build_morphism' abf a'b'f')
             (@g abf a'b'f')
             (@h abf a'b'f')
             (@p abf a'b'f')
             (@p_sym abf a'b'f').
-    Defined.
+    end-/
 
-    Lemma issig_morphism_helper {T0} `{IsHSet T0} (a b : T0) (pf : a = b)
-    : Contr (b = a).
-    Proof.
+    Lemma issig_morphism_helper {T0} [H : IsHSet T0] (a b : T0) (pf : a ≈ b)
+    : is_contr (b ≈ a).
+    /-begin
       destruct pf.
       apply contr_inhabited_hprop; try reflexivity.
       typeclasses eauto.
@@ -174,23 +174,23 @@ Module Import CommaCategory.
 
     Lemma issig_morphism abf a'b'f'
     : (morphism_sig_T abf a'b'f')
-        <~> morphism abf a'b'f'.
+        ≃ morphism abf a'b'f'.
     Proof.
       etransitivity; [ | exact (issig_morphism' abf a'b'f') ].
       repeat (apply equiv_functor_sigma_id; intro).
       symmetry; apply equiv_sigma_contr; intro.
       apply issig_morphism_helper; assumption.
-    Defined.
+    end-/
 
-    Global Instance trunc_morphism abf a'b'f'
-           `{IsTrunc n (Category.Core.morphism A (abf.(a)) (a'b'f'.(a)))}
-           `{IsTrunc n (Category.Core.morphism B (abf.(b)) (a'b'f'.(b)))}
-           `{forall m1 m2,
-               IsTrunc n (T _1 m2 o abf.(f) = a'b'f'.(f) o S _1 m1)}
-    : IsTrunc n (morphism abf a'b'f').
-    Proof.
-      assert (forall m1 m2,
-                IsTrunc n (a'b'f'.(f) o S _1 m1 = T _1 m2 o abf.(f)))
+    definition trunc_morphism [instance] abf a'b'f'
+           [H : is_trunc n (Category.Core.morphism A (abf.(a)) (a'b'f'.(a)))]
+           [H : is_trunc n (Category.Core.morphism B (abf.(b)) (a'b'f'.(b)))]
+           [H : Πm1 m2,
+               is_trunc n (T _1 m2 ∘ abf.(f) ≈ a'b'f'.(f) ∘ S _1 m1)]
+    : is_trunc n (morphism abf a'b'f').
+    /-begin
+      assert (Πm1 m2,
+                is_trunc n (a'b'f'.(f) ∘ S _1 m1 ≈ T _1 m2 ∘ abf.(f)))
         by (intros; apply (trunc_equiv _ inverse)).
       eapply trunc_equiv';
       [ exact (issig_morphism _ _) | ].
@@ -199,9 +199,9 @@ Module Import CommaCategory.
 
     Lemma path_morphism abf a'b'f'
           (gh g'h' : morphism abf a'b'f')
-    : gh.(g) = g'h'.(g)
-      -> gh.(h) = g'h'.(h)
-      -> gh = g'h'.
+    : gh.(g) ≈ g'h'.(g)
+      → gh.(h) ≈ g'h'.(h)
+      → gh ≈ g'h'.
     Proof.
       destruct gh, g'h'; simpl.
       intros; path_induction.
@@ -209,43 +209,43 @@ Module Import CommaCategory.
       all:exact (center _).
     Qed.
 
-    Definition compose s d d'
+    definition compose s d d'
                (gh : morphism d d') (g'h' : morphism s d)
-    : morphism s d'
-      := Build_morphism'
+    : morphism s d' :=
+         Build_morphism'
            s d'
-           (gh.(g) o g'h'.(g))
-           (gh.(h) o g'h'.(h))
-           ((ap (fun m => m o s.(f)) (composition_of T _ _ _ _ _))
-              @ (associativity _ _ _ _ _ _ _ _)
-              @ (ap (fun m => _ o m) g'h'.(p))
-              @ (associativity_sym _ _ _ _ _ _ _ _)
-              @ (ap (fun m => m o _) gh.(p))
-              @ (associativity _ _ _ _ _ _ _ _)
-              @ (ap (fun m => d'.(f) o m) (composition_of S _ _ _ _ _)^))%path
-           ((ap (fun m => d'.(f) o m) (composition_of S _ _ _ _ _))
-              @ (associativity_sym _ _ _ _ _ _ _ _)
-              @ (ap (fun m => m o _) gh.(p_sym))
-              @ (associativity _ _ _ _ _ _ _ _)
-              @ (ap (fun m => _ o m) g'h'.(p_sym))
-              @ (associativity_sym _ _ _ _ _ _ _ _)
-              @ (ap (fun m => m o s.(f)) (composition_of T _ _ _ _ _)^))%path.
+           (gh.(g) ∘ g'h'.(g))
+           (gh.(h) ∘ g'h'.(h))
+           ((ap (λm, m ∘ s.(f)) (composition_of T _ _ _ _ _))
+              ⬝ (associativity _ _ _ _ _ _ _ _)
+              ⬝ (ap (λm, _ ∘ m) g'h'.(p))
+              ⬝ (associativity_sym _ _ _ _ _ _ _ _)
+              ⬝ (ap (λm, m ∘ _) gh.(p))
+              ⬝ (associativity _ _ _ _ _ _ _ _)
+              ⬝ (ap (λm, d'.(f) ∘ m) (composition_of S _ _ _ _ _)⁻¹))%path
+           ((ap (λm, d'.(f) ∘ m) (composition_of S _ _ _ _ _))
+              ⬝ (associativity_sym _ _ _ _ _ _ _ _)
+              ⬝ (ap (λm, m ∘ _) gh.(p_sym))
+              ⬝ (associativity _ _ _ _ _ _ _ _)
+              ⬝ (ap (λm, _ ∘ m) g'h'.(p_sym))
+              ⬝ (associativity_sym _ _ _ _ _ _ _ _)
+              ⬝ (ap (λm, m ∘ s.(f)) (composition_of T _ _ _ _ _)⁻¹))%path.
 
     Global Arguments compose _ _ _ _ _ / .
 
-    Definition identity x : morphism x x
-      := Build_morphism'
+    definition identity x : morphism x x :=
+         Build_morphism'
            x x
            (identity (x.(a)))
            (identity (x.(b)))
-           ((ap (fun m => m o x.(f)) (identity_of T _))
-              @ (left_identity _ _ _ _)
-              @ ((right_identity _ _ _ _)^)
-              @ (ap (fun m => x.(f) o m) (identity_of S _)^))
-           ((ap (fun m => x.(f) o m) (identity_of S _))
-              @ (right_identity _ _ _ _)
-              @ ((left_identity _ _ _ _)^)
-              @ (ap (fun m => m o x.(f)) (identity_of T _)^)).
+           ((ap (λm, m ∘ x.(f)) (identity_of T _))
+              ⬝ (left_identity _ _ _ _)
+              ⬝ ((right_identity _ _ _ _)⁻¹)
+              ⬝ (ap (λm, x.(f) ∘ m) (identity_of S _)⁻¹))
+           ((ap (λm, x.(f) ∘ m) (identity_of S _))
+              ⬝ (right_identity _ _ _ _)
+              ⬝ ((left_identity _ _ _ _)⁻¹)
+              ⬝ (ap (λm, m ∘ x.(f)) (identity_of T _)⁻¹)).
 
     Global Arguments identity _ / .
   End comma_category_parts.
@@ -259,7 +259,7 @@ Local Ltac path_comma_t :=
   simpl;
   auto with morphism.
 
-Definition comma_category A B C (S : Functor A C) (T : Functor B C)
+definition comma_category A B C (S : Functor A C) (T : Functor B C)
 : PreCategory.
 Proof.
   refine (@Build_PreCategory
@@ -273,21 +273,21 @@ Proof.
             _
          );
   abstract path_comma_t.
-Defined.
+end-/
 
-Global Instance isstrict_comma_category A B C S T
-       `{IsStrictCategory A, IsStrictCategory B}
+definition isstrict_comma_category [instance] A B C S T
+       [H : IsStrictCategory A, IsStrictCategory B]
 : IsStrictCategory (@comma_category A B C S T).
 Proof.
   typeclasses eauto.
 Qed.
 
-(*  Section category.
-    Context `{IsCategory A, IsCategory B}.
-    (*Context `{Funext}. *)
+/- section category
+    Context [H : IsCategory A, IsCategory B].
+    (*Context [H : Funext]. -/
 
-    Definition comma_category_isotoid (x y : comma_category)
-    : x ≅ y -> x = y.
+    definition comma_category_isotoid (x y : comma_category)
+    : x ≅ y → x ≈ y.
     Proof.
       intro i.
       destruct i as [i [i' ? ?]].
@@ -296,7 +296,7 @@ Qed.
       simpl in *.
 
 
-    Global Instance comma_category_IsCategory `{IsCategory A, IsCategory B}
+    definition comma_category_IsCategory [instance] [H : IsCategory A, IsCategory B]
     : IsCategory comma_category.
     Proof.
       hnf.
@@ -309,54 +309,54 @@ Qed.
 Hint Unfold compose identity : category.
 Hint Constructors morphism object : category.
 
-(** ** (co)slice category [(a / F)], [(F / a)] *)
-Section slice_category.
+/- (co)slice category [(a / F)], [(F / a)] -/
+section slice_category
   Variable A : PreCategory.
   Variable C : PreCategory.
   Variable a : C.
   Variable S : Functor A C.
 
-  Definition slice_category := comma_category S (!a).
-  Definition coslice_category := comma_category (!a) S.
+  definition slice_category := comma_category S (!a).
+  definition coslice_category := comma_category (!a) S.
 
-  (** [x ↓ F] is a coslice category; [F ↓ x] is a slice category; [x ↓ F] deals with morphisms [x -> F y]; [F ↓ x] has morphisms [F y -> x] *)
+  /- [x ↓ F] is a coslice category; [F ↓ x] is a slice category; [x ↓ F] deals with morphisms [x → F y]; [F ↓ x] has morphisms [F y → x] -/
 End slice_category.
 
-(** ** (co)slice category over [(a / C)], [(C / a)] *)
-Section slice_category_over.
+/- (co)slice category over [(a / C)], [(C / a)] -/
+section slice_category_over
   Variable C : PreCategory.
   Variable a : C.
 
-  Definition slice_category_over := slice_category a (Functor.Identity.identity C).
-  Definition coslice_category_over := coslice_category a (Functor.Identity.identity C).
+  definition slice_category_over := slice_category a (Functor.Identity.identity C).
+  definition coslice_category_over := coslice_category a (Functor.Identity.identity C).
 End slice_category_over.
 
-(** ** category of arrows *)
-Section arrow_category.
+/- category of arrows -/
+section arrow_category
   Variable C : PreCategory.
 
-  Definition arrow_category := comma_category (Functor.Identity.identity C) (Functor.Identity.identity C).
+  definition arrow_category := comma_category (Functor.Identity.identity C) (Functor.Identity.identity C).
 End arrow_category.
 
-Definition CC_Functor' (C : PreCategory) (D : PreCategory) := Functor C D.
-Coercion cc_functor_from_terminal' (C : PreCategory) (x : C) : CC_Functor' _ C
-  := (!x)%functor.
-Coercion cc_identity_functor' (C : PreCategory) : CC_Functor' C C
-  := 1%functor.
+definition CC_Functor' (C : PreCategory) (D : PreCategory) := Functor C D.
+Coercion cc_functor_from_terminal' (C : PreCategory) (x : C) : CC_Functor' _ C :=
+     (!x)%functor.
+Coercion cc_identity_functor' (C : PreCategory) : CC_Functor' C C :=
+     1%functor.
 Global Arguments CC_Functor' / .
 Global Arguments cc_functor_from_terminal' / .
 Global Arguments cc_identity_functor' / .
 
 Module Export CommaCoreNotations.
-  (** We really want to use infix [↓] for comma categories, but that's unicode.  Infix [,] might also be reasonable, but I can't seem to get it to work without destroying the [(_, _)] notation for ordered pairs.  So I settle for the ugly ASCII rendition [/] of [↓]. *)
-  (** Set some notations for printing *)
+  /- We really want to use infix [↓] for comma categories, but that's unicode.  Infix [,] might also be reasonable, but I can't seem to get it to work without destroying the [(_, _)] notation for ordered pairs.  So I settle for the ugly ASCII rendition [/] of [↓]. -/
+  /- Set some notations for printing -/
   Notation "C / a" := (@slice_category_over C a) : category_scope.
   Notation "a \ C" := (@coslice_category_over C a) (at level 40, left associativity) : category_scope.
   Notation "a / C" := (@coslice_category_over C a) : category_scope.
   Notation "x / F" := (coslice_category x F) : category_scope.
   Notation "F / x" := (slice_category x F) : category_scope.
   Notation "S / T" := (comma_category S T) : category_scope.
-  (** Set the notation for parsing; coercions will automatically decide which of the arguments are functors and which are objects, i.e., functors from the terminal category. *)
+  /- Set the notation for parsing; coercions will automatically decide which of the arguments are functors and which are objects, i.e., functors from the terminal category. -/
   Notation "S / T" := (comma_category (S : CC_Functor' _ _)
                                       (T : CC_Functor' _ _)) : category_scope.
 End CommaCoreNotations.
