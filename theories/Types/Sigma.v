@@ -136,7 +136,7 @@ definition eta_path_sigma_uncurried {P : A → Type} {u v : sigT P}
   destruct p. reflexivity.
 end-/
 
-Lemma transport_pr1_path_sigma_uncurried
+definition transport_pr1_path_sigma_uncurried
       {P : A → Type} {u v : sigT P}
       (pq : Σp : u.1 ≈ v.1, transport P p u.2 ≈ v.2 )
       Q
@@ -175,7 +175,7 @@ definition transport_pr1_path_sigma
 
 definition isequiv_path_sigma [instance] {P : A → Type} {u v : sigT P}
 : IsEquiv (path_sigma_uncurried P u v) | 0 :=
-     BuildIsEquiv
+     IsEquiv.mk
        _ _
        _ (λr, ⟨r..1, r..2⟩)
        eta_path_sigma
@@ -189,7 +189,7 @@ end-/
 
 definition equiv_path_sigma `(P : A → Type) (u v : sigT P)
 : Σp : u.1 ≈ v.1,  p ▹ u.2 ≈ v.2 ≃ (u ≈ v) :=
-     BuildEquiv _ _ (path_sigma_uncurried P u v) _.
+     Equiv.mk _ _ (path_sigma_uncurried P u v) _.
 
 /- This identification respects path concatenation. -/
 
@@ -381,7 +381,7 @@ definition equiv_functor_sigma {P : A → Type} {Q : B → Type}
            (g : Πa, P a → Q (f a))
            [H : Πa, @IsEquiv (P a) (Q (f a)) (g a)]
 : sigT P ≃ sigT Q :=
-     BuildEquiv _ _ (functor_sigma f g) _.
+     Equiv.mk _ _ (functor_sigma f g) _.
 
 definition equiv_functor_sigma' {P : A → Type} {Q : B → Type}
            (f : A ≃ B)
@@ -394,7 +394,7 @@ definition equiv_functor_sigma_id {P : A → Type} {Q : A → Type}
 : sigT P ≃ sigT Q :=
      equiv_functor_sigma (equiv_idmap A) g.
 
-/- Lemma 3.11.9(i): Summing up a contractible family of types does nothing. -/
+/- definition 3.11.9(i): Summing up a contractible family of types does nothing. -/
 
 definition isequiv_pr1_contr [instance] {A} {P : A → Type}
          [H : Πa, is_contr (P a)]
@@ -410,9 +410,9 @@ end-/
 definition equiv_sigma_contr {A : Type} (P : A → Type)
            [H : Πa, is_contr (P a)]
 : sigT P ≃ A :=
-     BuildEquiv _ _ dpr1 _.
+     Equiv.mk _ _ dpr1 _.
 
-/- Lemma 3.11.9(ii): Dually, summing up over a contractible type does nothing. -/
+/- definition 3.11.9(ii): Dually, summing up over a contractible type does nothing. -/
 
 definition equiv_contr_sigma {A : Type} (P : A → Type) [H : is_contr A]
 : Σx : A, P x  ≃ P (center A).
@@ -430,9 +430,9 @@ end-/
 
 definition equiv_sigma_assoc `(P : A → Type) (Q : Σa : A, P a → Type)
 : Σa : A, Σp : P a, Q ⟨a,p⟩ ≃ sigT Q :=
-     @BuildEquiv
+     @Equiv.mk
        _ _ _
-       (@BuildIsEquiv
+       (@IsEquiv.mk
           Σa : A, Σp : P a, Q ⟨a,p⟩ (sigT Q)
           (λapq, (⟨apq.1, apq.2.1⟩; apq.2.2))
           (λapq, (apq.1.1; ⟨apq.1.2, apq.2⟩))
@@ -442,12 +442,12 @@ definition equiv_sigma_assoc `(P : A → Type) (Q : Σa : A, P a → Type)
 
 definition equiv_sigma_prod `(Q : (A × B) → Type)
 : Σa : A, Σb : B, Q (a,b) ≃ sigT Q :=
-     @BuildEquiv
+     @Equiv.mk
        _ _ _
-       (@BuildIsEquiv
+       (@IsEquiv.mk
           Σa : A, Σb : B, Q (a,b) (sigT Q)
           (λapq, ((apq.1, apq.2.1); apq.2.2))
-          (λapq, (fst apq.1; ⟨snd apq.1, apq.2⟩))
+          (λapq, (pr1 apq.1; ⟨pr2 apq.1, apq.2⟩))
           (λ_, 1)
           (λ_, 1)
           (λ_, 1)).
@@ -457,17 +457,17 @@ definition equiv_sigma_prod `(Q : (A × B) → Type)
 definition equiv_sigma_symm `(P : A → B → Type)
 : Σa : A, Σb : B, P a b ≃ Σb : B, Σa : A, P a b :=
    equiv_compose'
-     (equiv_inverse (equiv_sigma_prod (λx, P (snd x) (fst x))))
+     (equiv_inverse (equiv_sigma_prod (λx, P (pr2 x) (pr1 x))))
    (equiv_compose'
       (equiv_functor_sigma' (equiv_prod_symm A B)
-                            (λx, equiv_idmap (P (fst x) (snd x))))
-      (equiv_sigma_prod (λx, P (fst x) (snd x)))).
+                            (λx, equiv_idmap (P (pr1 x) (pr2 x))))
+      (equiv_sigma_prod (λx, P (pr1 x) (pr2 x)))).
 
 definition equiv_sigma_symm0 (A B : Type)
 : Σa : A, B ≃ Σb : B, A.
 /-begin
-  refine (BuildEquiv _ _ (λ(w:Σa:A, B), ⟨w.2 , w.1⟩) _).
-  refine (BuildIsEquiv _ _ _ (λ(z:Σb:B, A), ⟨z.2 , z.1⟩)
+  refine (Equiv.mk _ _ (λ(w:Σa:A, B), ⟨w.2 , w.1⟩) _).
+  refine (IsEquiv.mk _ _ _ (λ(z:Σb:B, A), ⟨z.2 , z.1⟩)
                        _ _ _); intros [x y]; reflexivity.
 end-/
 
@@ -477,7 +477,7 @@ end-/
 definition isequiv_sigT_ind [instance] {P : A → Type}
          (Q : sigT P → Type)
 : IsEquiv (sigT_ind Q) | 0 :=
-     BuildIsEquiv
+     IsEquiv.mk
        _ _
        (sigT_ind Q)
        (λf x y, f ⟨x,y⟩)
@@ -488,7 +488,7 @@ definition isequiv_sigT_ind [instance] {P : A → Type}
 definition equiv_sigT_ind {P : A → Type}
            (Q : sigT P → Type)
 : (Π(x:A) (y:P x), Q ⟨x,y⟩) ≃ (Πxy, Q xy) :=
-     BuildEquiv _ _ (sigT_ind Q) _.
+     Equiv.mk _ _ (sigT_ind Q) _.
 
 /- The negative universal property. -/
 
@@ -507,7 +507,7 @@ definition sigT_coind
 Global Instance isequiv_sigT_coind
          {A : X → Type} {P : Πx, A x → Type}
 : IsEquiv (sigT_coind_uncurried P) | 0 :=
-     BuildIsEquiv
+     IsEquiv.mk
        _ _
        (sigT_coind_uncurried P)
        (λh, existT (λf, Πx, P x (f x))
@@ -521,7 +521,7 @@ definition equiv_sigT_coind
            `(A : X → Type) (P : Πx, A x → Type)
 : Σf : Πx, A x, Πx, P x (f x) 
     ≃ (Πx, sigT (P x)) :=
-     BuildEquiv _ _ (sigT_coind_uncurried P) _.
+     Equiv.mk _ _ (sigT_coind_uncurried P) _.
 
 /- Sigmas preserve truncation -/
 
@@ -556,4 +556,4 @@ Hint Immediate isequiv_path_sigma_hprop : typeclass_instances.
 definition equiv_path_sigma_hprop {A : Type} {P : A → Type}
            {HP : Πa, is_hprop (P a)} (u v : sigT P)
 : (u.1 ≈ v.1) ≃ (u ≈ v) :=
-     BuildEquiv _ _ (path_sigma_hprop _ _) _.
+     Equiv.mk _ _ (path_sigma_hprop _ _) _.

@@ -42,7 +42,7 @@ definition path_arrow_1 {A B : Type} (f : A → B)
 
 definition equiv_ap10 [H : Funext] {A B : Type} f g
 : (f ≈ g) ≃ (f == g) :=
-     BuildEquiv _ _ (@ap10 A B f g) _.
+     Equiv.mk _ _ (@ap10 A B f g) _.
 
 definition isequiv_path_arrow [instance] {A B : Type} (f g : A → B)
   : IsEquiv (path_arrow f g) | 0 :=

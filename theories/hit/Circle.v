@@ -235,6 +235,6 @@ definition S1_encode_isequiv (x:S1) : IsEquiv (S1_encode x).
 end-/
 
 definition equiv_loopS1_int : (base ≈ base) ≃ Int :=
-     BuildEquiv _ _ (S1_encode base) (S1_encode_isequiv base).
+     Equiv.mk _ _ (S1_encode base) (S1_encode_isequiv base).
 
 End AssumeUnivalence.

@@ -132,7 +132,7 @@ section ClosedModalTypes
         + intros [u a]. simpl.
           pose (uac u). apply contr.
       × intros z. pattern z.
-        refine (pushout_ind fst snd _ _ _ z).
+        refine (pushout_ind pr1 pr2 _ _ _ z).
         + intros [u | a].
           { pose (contr_inhabited_hprop U u).
             apply path_contr. } 
@@ -246,9 +246,9 @@ Module Accessible_ClosedModalities
       pose (X_inO u).
       apply ooextendable_contr; exact _.
     - intros ext u.
-      exists ((fst (ext u 1%nat) Empty_rec).1 star); intros x.
+      exists ((pr1 (ext u 1%nat) Empty_rec).1 star); intros x.
       unfold const in ext.
-      exact ((fst (snd (ext u 2) (fst (ext u 1%nat) Empty_rec).1
+      exact ((pr1 (pr2 (ext u 2) (pr1 (ext u 1%nat) Empty_rec).1
                        (λ_, x)) (Empty_ind _)).1 star).
   end-/
 

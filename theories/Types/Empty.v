@@ -23,12 +23,12 @@ definition contr_from_Empty [instance] {_ : Funext} (A : Type) :
 definition hprop_Empty [instance] : is_hprop Empty.
 /-begin intro x. destruct x. end-/
 
-Lemma Empty_rec {T : Type} (falso: Empty) : T.
+definition Empty_rec {T : Type} (falso: Empty) : T.
 /-begin case falso. end-/
 
 definition all_to_empty_isequiv [instance] (T : Type) (f : T → Empty) : IsEquiv f.
 /-begin
-  refine (BuildIsEquiv _ _ _ 
+  refine (IsEquiv.mk _ _ _ 
     (Empty_ind (λ_, T))                /- := equiv_inf -/
     (λfals:Empty, match fals with end) /- : Sect equiv_inf f -/
     (λt:T, match (f t) with end)       /- : Sect f equiv_inf -/

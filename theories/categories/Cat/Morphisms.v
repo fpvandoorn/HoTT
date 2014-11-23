@@ -24,7 +24,7 @@ section iso_lemmas
   Variable Fd : PreCategory.
   Variable Fm : morphism C s d → Functor Fs Fd.
 
-  Lemma transport_Fc_to_idtoiso
+  definition transport_Fc_to_idtoiso
         s' d' u
   : @transport _ (λm, morphism _ (Fm m s') d') _ _ p u
     ≈ u ∘ components_of (Category.Morphisms.idtoiso (_ → _) (ap Fm p) : morphism _ _ _)⁻¹ s'.
@@ -32,7 +32,7 @@ section iso_lemmas
     case p; clear p; simpl; autorewrite with morphism; reflexivity.
   Qed.
 
-  Lemma transport_cF_to_idtoiso
+  definition transport_cF_to_idtoiso
         s' d' u
   : @transport _ (λm, morphism _ s' (Fm m d')) _ _ p u
     ≈ components_of (Category.Morphisms.idtoiso (_ → _) (ap Fm p) : morphism _ _ _) d' ∘ u.

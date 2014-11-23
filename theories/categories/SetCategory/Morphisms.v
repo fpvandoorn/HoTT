@@ -15,7 +15,7 @@ Local Open Scope equiv_scope.
 Local Open Scope morphism_scope.
 Local Open Scope category_scope.
 
-Lemma isisomorphism_set_cat_natural_transformation_paths
+definition isisomorphism_set_cat_natural_transformation_paths
       {fs : Funext} (X : set_cat) C D F G
       (T1 T2 : morphism set_cat X (BuildhSet (@NaturalTransformation C D F G)))
       (H : Πx y, T1 x y ≈ T2 x y)
@@ -51,7 +51,7 @@ section equiv_iso_set_cat
   definition isequiv_isiso s d (m : morphism set_cat s d)
              [H : IsIsomorphism _ _ _ m]
   : IsEquiv m :=
-       BuildIsEquiv
+       IsEquiv.mk
          _ _
          m m⁻¹%morphism
          (ap10 right_inverse)
@@ -68,7 +68,7 @@ section equiv_iso_set_cat
   /-begin
     refine (isequiv_adjointify
               (@iso_equiv s d)
-              (λm, BuildEquiv _ _ _ (@isequiv_isiso s d m m))
+              (λm, Equiv.mk _ _ _ (@isequiv_isiso s d m m))
               _
               _);
     simpl in *;
@@ -81,7 +81,7 @@ section equiv_iso_set_cat
       ).
   end-/
 
-  Lemma path_idtoequiv_idtoiso (s d : set_cat) (p : s ≈ d)
+  definition path_idtoequiv_idtoiso (s d : set_cat) (p : s ≈ d)
   : iso_equiv s d (equiv_path _ _ (ap trunctype_type p)) ≈ idtoiso set_cat p.
   /-begin
     apply path_isomorphic.
@@ -106,7 +106,7 @@ section equiv_iso_prop_cat
   definition isequiv_isiso_prop s d (m : morphism prop_cat s d)
              [H : IsIsomorphism _ _ _ m]
   : IsEquiv m :=
-       BuildIsEquiv
+       IsEquiv.mk
          _ _
          m m⁻¹%morphism
          (ap10 right_inverse)
@@ -123,7 +123,7 @@ section equiv_iso_prop_cat
   /-begin
     refine (isequiv_adjointify
               (@iso_equiv_prop s d)
-              (λm, BuildEquiv _ _ _ (@isequiv_isiso_prop s d m _))
+              (λm, Equiv.mk _ _ _ (@isequiv_isiso_prop s d m _))
               _
               _);
     simpl in *;
@@ -136,7 +136,7 @@ section equiv_iso_prop_cat
       ).
   end-/
 
-  Lemma path_idtoequiv_idtoiso_prop (s d : prop_cat) (p : s ≈ d)
+  definition path_idtoequiv_idtoiso_prop (s d : prop_cat) (p : s ≈ d)
   : iso_equiv_prop s d (equiv_path _ _ (ap trunctype_type p)) ≈ idtoiso prop_cat p.
   /-begin
     apply path_isomorphic.

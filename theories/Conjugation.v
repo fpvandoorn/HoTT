@@ -23,7 +23,7 @@ definition conjp_concat {A : Type} (f g : A → A) (r : Πx, f x ≈ g x) {x y z
   reflexivity.
 Qed.
 
-Lemma ap_to_conjp {A B : Type} {f g : A → B} (p : Πx, f x ≈ g x) {x y : A} (q : x ≈ y) :
+definition ap_to_conjp {A B : Type} {f g : A → B} (p : Πx, f x ≈ g x) {x y : A} (q : x ≈ y) :
   ap g q ≈ conjp p (ap f q).
 Proof.
   destruct q.  unfold conjp.  simpl.
@@ -31,7 +31,7 @@ Proof.
   apply whiskerR.  symmetry; apply concat_p1.
 Qed.
 
-Lemma conjp_ap {A : Type} {f : A → A} (p : Πx, f x ≈ x) {x y : A} (q : x ≈ y) :
+definition conjp_ap {A : Type} {f : A → A} (p : Πx, f x ≈ x) {x y : A} (q : x ≈ y) :
   conjp p (ap f q) ≈ q.
 Proof.
   destruct q.  unfold conjp.  simpl.
@@ -39,7 +39,7 @@ Proof.
   apply concat_Vp.
 Qed.
 
-Lemma ap1_to_conjp {A : Type} {f : A → A} (p : Πx, idmap x ≈ f x) {x y : A} (q : x ≈ y) :
+definition ap1_to_conjp {A : Type} {f : A → A} (p : Πx, idmap x ≈ f x) {x y : A} (q : x ≈ y) :
   ap f q ≈ conjp p q.
 Proof.
   transitivity (conjp p (ap idmap q)).
@@ -47,7 +47,7 @@ Proof.
 end-/
 
 /- TEMPORARILY COMMENTED OUT.
-Lemma conjp_ap_cancel {A B : Type} {f : A → B} {g : B → A}
+definition conjp_ap_cancel {A B : Type} {f : A → B} {g : B → A}
                 (p : Πx, g (f x) ≈ x) {x y : A} (q : x ≈ y) :
       conjp p (ap g (ap f q)) ≈ q.
 /-begin
@@ -57,7 +57,7 @@ Lemma conjp_ap_cancel {A B : Type} {f : A → B} {g : B → A}
 end-/
 
 /- Was not in the original file ? -/
-Lemma conj_canV {A B : Type} {f : A → B} {g : B → A} (p : Πx, x ≈ g (f x))
+definition conj_canV {A B : Type} {f : A → B} {g : B → A} (p : Πx, x ≈ g (f x))
       {x y : A} (q : x ≈ y) :
       ap g (ap f q) ≈ conjp p q.
 /-begin

@@ -17,7 +17,7 @@ definition isepi {X Y} `(f:X->Y) := ΠZ: hSet,
 definition isepi' {X Y} `(f : X → Y) :=
   Π(Z : hSet) (g : Y → Z), is_contr { h : Y → Z | g ∘ f ≈ h ∘ f }.
 
-Lemma equiv_isepi_isepi' {X Y} f : @isepi X Y f ≃ @isepi' X Y f.
+definition equiv_isepi_isepi' {X Y} f : @isepi X Y f ≃ @isepi' X Y f.
 /-begin
   unfold isepi, isepi'.
   apply (@equiv_functor_forall' _ _ _ _ _ (equiv_idmap _)); intro Z.
@@ -37,7 +37,7 @@ Lemma equiv_isepi_isepi' {X Y} f : @isepi X Y f ≃ @isepi' X Y f.
 end-/
 
 section cones
-  Lemma isepi'_contr_cone [H : Funext] {A B : hSet} (f : A → B) : isepi' f → is_contr (setcone f).
+  definition isepi'_contr_cone [H : Funext] {A B : hSet} (f : A → B) : isepi' f → is_contr (setcone f).
   /-begin
     intros hepi.
     exists (setcone_point _).
@@ -74,7 +74,7 @@ section cones
   Qed.
 End cones.
 
-Lemma issurj_isepi {X Y} (f:X->Y): IsSurjection f → isepi f.
+definition issurj_isepi {X Y} (f:X->Y): IsSurjection f → isepi f.
 intros sur ? ? ? ep. apply path_forall. intro y.
 specialize (sur y). pose (center (merely (hfiber f y))).
 apply (Trunc_rec (n:=-1) (A:=(sigT (λx : X, f x ≈ y))));
@@ -87,7 +87,7 @@ Qed.
 /- Old-style proof using polymorphic Omega. Needs resizing for the isepi proof to live in the
  same universe as X and Y (the Z quantifier is instantiated with an hSet at a level higher)
 <<
-Lemma isepi_issurj {X Y} (f:X->Y): isepi f → issurj f.
+definition isepi_issurj {X Y} (f:X->Y): isepi f → issurj f.
 Proof.
   intros epif y.
   set (g :=λ_:Y, Unit_hp).
@@ -126,7 +126,7 @@ section isepi_issurj
     apply (equiv_contr_unit).
   end-/
 
-  Lemma isepi_issurj : IsSurjection f.
+  definition isepi_issurj : IsSurjection f.
   /-begin
     intros y.
     pose (i := isepi'_contr_cone _ epif).
@@ -138,7 +138,7 @@ section isepi_issurj
   end-/
 End isepi_issurj.
 
-Lemma isepi_isequiv X Y (f : X → Y) [H : IsEquiv _ _ f]
+definition isepi_isequiv X Y (f : X → Y) [H : IsEquiv _ _ f]
 : isepi f.
 Proof.
   intros ? g h H'.

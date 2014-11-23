@@ -28,7 +28,7 @@ end-/
 section AssumeFunext
 Context [H : Funext].
 
-Theorem equiv_hset_axiomK {A} : IsHSet A ≃ axiomK A.
+definition equiv_hset_axiomK {A} : IsHSet A ≃ axiomK A.
 /-begin
   apply (equiv_adjointify (@axiomK_hset A) (@hset_axiomK A)).
   - intros K. by_extensionality x. by_extensionality x'.
@@ -43,7 +43,7 @@ definition axiomK_isprop [instance] A : is_hprop (axiomK A) | 0.
   apply (trunc_equiv _ equiv_hset_axiomK).
 end-/
 
-Theorem set_path2 {A} [H : IsHSet A] {x y : A} (p q : x ≈ y):
+definition set_path2 {A} [H : IsHSet A] {x y : A} (p q : x ≈ y):
   p ≈ q.
 /-begin
   induction q.
@@ -56,7 +56,7 @@ end-/
    identity path thus specified is in fact (homotopic to) its identity
    homotopy (whew!).  -/
 /- TODO: What was the purpose of this lemma?  Do we need it at all?  It's actually fairly trivial. -/
-Lemma axiomK_idpath {A} (x : A) (K : axiomK A) :
+definition axiomK_idpath {A} (x : A) (K : axiomK A) :
   K x (idpath x) ≈ idpath (idpath x).
 /-begin
   pose (T1A := @trunc_succ _ A (@hset_axiomK A K)).
@@ -66,7 +66,7 @@ end-/
 End AssumeFunext.
 
 /- We prove that if [R] is a reflexive mere relation on [X] implying identity, then [X] is an hSet, and hence [R x y] is equivalent to [x ≈ y]. -/
-Lemma isset_hrel_subpaths
+definition isset_hrel_subpaths
       {X R}
       [H : Reflexive X R]
       [H : Πx y, is_hprop (R x y)]
@@ -111,7 +111,7 @@ definition isinj {X Y} (f : X → Y) :=
      Πx0 x1 : X,
        f x0 ≈ f x1 → x0 ≈ x1.
 
-Lemma isinj_embedding {A B : Type} (m : A → B) : IsEmbedding m → isinj m.
+definition isinj_embedding {A B : Type} (m : A → B) : IsEmbedding m → isinj m.
 /-begin
   intros ise x y p.
   pose (ise (m y)).
@@ -119,7 +119,7 @@ Lemma isinj_embedding {A B : Type} (m : A → B) : IsEmbedding m → isinj m.
   exact (ap dpr1 q).
 end-/
 
-Lemma isinj_ismono [H : Funext] {X Y} (f : X → Y) : isinj f → ismono f.
+definition isinj_ismono [H : Funext] {X Y} (f : X → Y) : isinj f → ismono f.
 Proof.
   intros ? ? ? ? H'.
   apply path_forall.
@@ -138,7 +138,7 @@ definition ismono_isinj {X Y} (f : X → Y)
                (ap (λx, unit_name x) H'))
             star.
 
-Lemma ismono_isequiv [H : Funext] X Y (f : X → Y) [H : IsEquiv _ _ f]
+definition ismono_isequiv [H : Funext] X Y (f : X → Y) [H : IsEquiv _ _ f]
 : ismono f.
 Proof.
   intros ? g h H'.

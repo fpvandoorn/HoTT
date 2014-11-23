@@ -351,7 +351,7 @@ definition inO_sigma [instance] {O : Modality} (A:Type) (B:A → Type)
   apply O_ind_beta.
 end-/
 
-/- Theorem 7.3.9: The reflector [O] can be discarded inside a reflected sum. -/
+/- definition 7.3.9: The reflector [O] can be discarded inside a reflected sum. -/
 definition equiv_O_sigma_O {O : Modality} {A} (P : A → Type)
 : ∘ Σx:A, ∘ (P x) ≃ ∘ Σx:A, P x.
 /-begin
@@ -398,9 +398,9 @@ section OIndEquiv
 
     definition equiv_O_ind
     : (Πa, B (to ∘ A a)) ≃ (Πoa, B oa) :=
-       BuildEquiv _ _ (O_ind B) _.
+       Equiv.mk _ _ (O_ind B) _.
 
-    /- Theorem 7.7.7 -/
+    /- definition 7.7.7 -/
     definition isequiv_oD_to_O
     : IsEquiv (λ(h : Πoa, B oa), h oD to ∘ A) :=
        equiv_isequiv (equiv_inverse equiv_O_ind).
@@ -649,7 +649,7 @@ section ConnectedMaps
   end-/
 
   /- We can re-express this in terms of extensions. -/
-  Lemma extension_conn_map_elim
+  definition extension_conn_map_elim
         {A B : Type} (f : A → B) [H : IsConnMap ∘ _ _ f]
         (P : B → Type) {Πb:B, In ∘ (P b)}
         (d : Πa:A, P (f a))
@@ -659,7 +659,7 @@ section ConnectedMaps
     apply conn_map_comp.
   end-/
 
-  Lemma allpath_extension_conn_map
+  definition allpath_extension_conn_map
         {A B : Type} (f : A → B) [H : IsConnMap ∘ _ _ f]
         (P : B → Type) {Πb:B, In ∘ (P b)}
         (d : Πa:A, P (f a))
@@ -671,7 +671,7 @@ section ConnectedMaps
   end-/
 
   /- It follows that [conn_map_elim] is actually an equivalence. -/
-  Theorem isequiv_o_conn_map 
+  definition isequiv_o_conn_map 
           {A B : Type} (f : A → B) [H : IsConnMap ∘ _ _ f]
           (P : B → Type) {Πb:B, In ∘ (P b)}
   : IsEquiv (λ(g : Πb:B, P b), g oD f).
@@ -687,8 +687,8 @@ section ConnectedMaps
       apply path_forall; intros x; apply conn_map_comp.
   end-/
 
-  /- Conversely, if a map satisfies this elimination principle (expressed via extensions), then it is connected.  This completes the proof of Lemma 7.5.7 from the book. -/
-  Lemma conn_map_from_extension_elim {A B : Type} (f : A → B)
+  /- Conversely, if a map satisfies this elimination principle (expressed via extensions), then it is connected.  This completes the proof of definition 7.5.7 from the book. -/
+  definition conn_map_from_extension_elim {A B : Type} (f : A → B)
   : (Π(P : B → Type) {P_inO : Πb:B, In ∘ (P b)}
             (d : Πa:A, P (f a)),
        ExtensionAlong f P d)
@@ -709,7 +709,7 @@ section ConnectedMaps
     apply O_ind_beta.
   end-/
 
-  /- Lemma 7.5.6: Connected maps compose and cancel on the right. -/
+  /- definition 7.5.6: Connected maps compose and cancel on the right. -/
   definition conn_map_compose [instance] {A B C : Type} (f : A → B) (g : B → C)
          [H : IsConnMap ∘ _ _ f] [H : IsConnMap ∘ _ _ g]
   : IsConnMap ∘ (g ∘ f).
@@ -729,7 +729,7 @@ section ConnectedMaps
     exact (conn_map_comp (g ∘ f) P (d oD f) a).
   end-/
 
-  /- Lemma 7.5.10: A map to a type in [O] exhibits its codomain as the [O]-reflection of its domain if (and only if) it is [O]-connected. -/
+  /- definition 7.5.10: A map to a type in [O] exhibits its codomain as the [O]-reflection of its domain if (and only if) it is [O]-connected. -/
   definition isequiv_O_rec_conn_map {A B : Type} [H : In ∘ B]
              (f : A → B) [H : IsConnMap ∘ _ _ f]
   : IsEquiv (O_rec f).
@@ -741,7 +741,7 @@ section ConnectedMaps
     - apply mapinO_between_inO; exact _.
   end-/
 
-  /- Lemma 7.5.12 -/
+  /- definition 7.5.12 -/
   section ConnMapFunctorSigma
 
     Context {A B : Type} {P : A → Type} {Q : B → Type}
@@ -777,7 +777,7 @@ section ConnectedMaps
 
   End ConnMapFunctorSigma.
 
-  /- Lemma 7.5.13.  The "if" direction is a special case of [conn_map_functor_sigma], so we prove only the "only if" direction. -/
+  /- definition 7.5.13.  The "if" direction is a special case of [conn_map_functor_sigma], so we prove only the "only if" direction. -/
   definition conn_map_fiber
              {A : Type} {P Q : A → Type} (f : Πa, P a → Q a)
              [H : IsConnMap ∘ _ _ (functor_sigma idmap f)]
@@ -788,7 +788,7 @@ section ConnectedMaps
     exact (hfiber_functor_sigma_idmap P Q f a q).
   end-/
 
-  /- Lemma 7.5.14: Connected maps are inverted by [O]. -/
+  /- definition 7.5.14: Connected maps are inverted by [O]. -/
   definition O_inverts_conn_map [instance] {A B : Type} (f : A → B)
          [H : IsConnMap ∘ _ _ f]
   : IsEquiv (O_functor ∘ f).
@@ -818,7 +818,7 @@ End ConnectedMaps.
 section ModalFact
   Context {fs : Funext} (O : Modality).
 
-  /- Lemma 7.6.4 -/
+  /- definition 7.6.4 -/
   definition image {A B : Type} (f : A → B)
   : Factorization (@IsConnMap O) (@MapIn O) f.
   /-begin
@@ -834,8 +834,8 @@ section ModalFact
       exact (inO_equiv_inO _ (hfiber_fibration b (O ∘ (hfiber f)))).
   end-/
 
-  /- This is the composite of the three displayed equivalences at the beginning of the proof of Lemma 7.6.5.  Note that it involves only a single factorization of [f]. -/
-  Lemma O_hfiber_O_fact {A B : Type} {f : A → B}
+  /- This is the composite of the three displayed equivalences at the beginning of the proof of definition 7.6.5.  Note that it involves only a single factorization of [f]. -/
+  definition O_hfiber_O_fact {A B : Type} {f : A → B}
         (fact : Factorization (@IsConnMap O) (@MapIn O) f) (b : B)
   : ∘ (hfiber (factor2 fact ∘ factor1 fact) b)
       ≃ hfiber (factor2 fact) b.
@@ -852,8 +852,8 @@ section ModalFact
       exact (inclass2 fact b).
   end-/
 
-  /- This is the corresponding first three of the displayed "mapsto"s in proof of Lemma 7.6.5, and also the last three in reverse order, generalized to an arbitrary path [p].  Note that it is much harder to prove than in the book, because we are working in the extra generality of a modality where [O_ind_beta] is only propositional. -/
-  Lemma O_hfiber_O_fact_inverse_beta {A B : Type} {f : A → B}
+  /- This is the corresponding first three of the displayed "mapsto"s in proof of definition 7.6.5, and also the last three in reverse order, generalized to an arbitrary path [p].  Note that it is much harder to prove than in the book, because we are working in the extra generality of a modality where [O_ind_beta] is only propositional. -/
+  definition O_hfiber_O_fact_inverse_beta {A B : Type} {f : A → B}
         (fact : Factorization (@IsConnMap O) (@MapIn O) f)
         (a : A) (b : B) (p : factor2 fact (factor1 fact a) ≈ b)
   : (O_hfiber_O_fact fact b)⁻¹
@@ -881,7 +881,7 @@ section ModalFact
 
     Let H := λx, fact_factors fact x ⬝ (fact_factors fact' x)⁻¹.
 
-    /- Lemma 7.6.5, part 1. -/
+    /- definition 7.6.5, part 1. -/
     definition equiv_O_factor_hfibers (b:B)
     : hfiber (factor2 fact) b ≃ hfiber (factor2 fact') b.
     Proof.
@@ -892,7 +892,7 @@ section ModalFact
       exact H.
     end-/
 
-    /- Lemma 7.6.5, part 2. -/
+    /- definition 7.6.5, part 2. -/
     definition equiv_O_factor_hfibers_beta (a : A)
     : equiv_O_factor_hfibers (factor2 fact (factor1 fact a))
                              ⟨factor1 fact a , 1⟩
@@ -916,7 +916,7 @@ section ModalFact
 
   End TwoFactorizations.
 
-  /- Theorem 7.6.6.  Recall that a lot of hard work was done in [Factorization.path_factorization]. -/
+  /- definition 7.6.6.  Recall that a lot of hard work was done in [Factorization.path_factorization]. -/
   definition O_factsys : FactorizationSystem.
   Proof.
     refine (Build_FactorizationSystem
@@ -1019,10 +1019,10 @@ definition extendable_isnull_fibers (n : nat)
   revert C.
   simple_induction n n IHn; intros C null; [exact star | split].
   - intros g.
-    exists (λb, (fst (null b 1%nat) (λx, x.2 ▹ g x.1)).1 star).
+    exists (λb, (pr1 (null b 1%nat) (λx, x.2 ▹ g x.1)).1 star).
     intros a.
     rewrite (path_unit star (const star a)).
-    exact ((fst (null (f a) 1%nat) _).2 ⟨a , 1⟩).
+    exact ((pr1 (null (f a) 1%nat) _).2 ⟨a , 1⟩).
   - intros h k.
     apply IHn; intros b.
     apply ooextendable_homotopy, null.
@@ -1111,7 +1111,7 @@ Module Accessible_Modalities_from_ReflectiveSubuniverses
       - intros X_inO [ [i x] | [i x] ];
           exact (ooextendable_const_isconnected_inO@{u a a i i} ∘ _ _ ).
       - intros Xnull.
-        apply (snd (inO_iff_islocal_internal ∘ X)); intros i.
+        apply (pr2 (inO_iff_islocal_internal ∘ X)); intros i.
         refine (cancelL_ooextendable@{a a a i i i i i i i}
                   (λ_, X) (Acc.acc_gen ∘ i)
                   (to ∘ (lgen_codomain (Acc.acc_gen O) i)) _ _).

@@ -17,7 +17,7 @@ section groupoid_cat
   Let P : PreCategory → Type :=
        λC, IsGroupoid C /\ IsStrictCategory C.
   Let HF : ΠC D, P C → P D → IsHSet (Functor C D) :=
-       λC D HC HD, @trunc_functor _ C D _ (snd HD) _.
+       λC D HC HD, @trunc_functor _ C D _ (pr2 HD) _.
 
   /- There is a full precategory of [cat] which is the strict groupoid precategories -/
 

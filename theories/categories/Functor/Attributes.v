@@ -73,7 +73,7 @@ section full_faithful
 
   /- Full × Faithful → Fully Faithful -/
   /- We start with a helper method, which assumes that epi × mono → iso, and ten prove this assumption -/
-  Lemma isfullyfaithful_isfull_isfaithful_helper [H : IsFull] [H : IsFaithful]
+  definition isfullyfaithful_isfull_isfaithful_helper [H : IsFull] [H : IsFaithful]
         (H' : Πx y (m : morphism set_cat x y),
                 IsEpimorphism m
                 → IsMonomorphism m
@@ -90,7 +90,7 @@ section fully_faithful_helpers
   Variables x y : hSet.
   Variable m : x → y.
 
-  Lemma isisomorphism_isequiv_set_cat
+  definition isisomorphism_isequiv_set_cat
         {H' : IsEquiv _ _ m}
   : IsIsomorphism (m : morphism set_cat x y).
   Proof.

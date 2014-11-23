@@ -20,13 +20,13 @@ section identity_lemmas
 
   /- left identity : [1 ∘ F ≈ F] -/
   /- If we had that [match (p : a ≈ b) in (_ ≈ y) return (a ≈ y) with idpath => idpath end ≡ p] (a form of eta for paths), this would be judgemental. -/
-  Lemma left_identity (F : Functor C D) : 1 ∘ F ≈ F.
+  definition left_identity (F : Functor C D) : 1 ∘ F ≈ F.
   /-begin
     by path_functor.
   end-/
 
   /- right identity : [F ∘ 1 ≈ F] -/
-  Lemma right_identity (F : Functor C D) : F ∘ 1 ≈ F.
+  definition right_identity (F : Functor C D) : F ∘ 1 ≈ F.
   /-begin
     by path_functor.
   end-/
@@ -56,7 +56,7 @@ section composition_lemmas
   Local Open Scope functor_scope.
 
   /- associativity : [(H ∘ G) ∘ F ≈ H ∘ (G ∘ F)] -/
-  Lemma associativity
+  definition associativity
         (F : Functor B C) (G : Functor C D) (H : Functor D E)
   : (H ∘ G) ∘ F ≈ H ∘ (G ∘ F).
   /-begin
@@ -99,7 +99,7 @@ section coherence
                  \\ //
                  G ∘ F
 >> -/
-  Lemma triangle C D E (F : Functor C D) (G : Functor D E)
+  definition triangle C D E (F : Functor C D) (G : Functor D E)
   : (associativity F 1 G ⬝ ap (compose G) (left_identity F))
     ≈ (ap (λG' : Functor D E, G' ∘ F) (right_identity G)).
   Proof.
@@ -123,7 +123,7 @@ section coherence
               ||                      ||
       ((K ∘ H) ∘ G) ∘ F ====== (K ∘ (H ∘ G)) ∘ F
 >> -/
-  Lemma pentagon A B C D E
+  definition pentagon A B C D E
         (F : Functor A B) (G : Functor B C) (H : Functor C D) (K : Functor D E)
   : (associativity F G (K ∘ H) ⬝ associativity (G ∘ F) H K)
     ≈ (ap (λKHG, KHG ∘ F) (associativity G H K) ⬝ associativity F (H ∘ G) K ⬝ ap (compose K) (associativity F G H)).

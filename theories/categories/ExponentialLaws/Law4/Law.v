@@ -20,7 +20,7 @@ section Law4
   Variable C2 : PreCategory.
   Variable D : PreCategory.
 
-  Lemma helper1 c
+  definition helper1 c
   : functor C1 C2 D (inverse C1 C2 D c) ≈ c.
   /-begin
     path_functor.
@@ -31,14 +31,14 @@ section Law4
       ).
   end-/
 
-  Lemma helper2_helper c x
+  definition helper2_helper c x
   : inverse C1 C2 D (functor C1 C2 D c) x ≈ c x.
   /-begin
     path_functor.
     abstract exp_laws_t.
   end-/
 
-  Lemma helper2 c
+  definition helper2 c
   : inverse C1 C2 D (functor C1 C2 D c) ≈ c.
   /-begin
     path_functor.
@@ -46,7 +46,7 @@ section Law4
     abstract (unfold helper2_helper; exp_laws_t).
   end-/
 
-  Lemma law
+  definition law
   : functor C1 C2 D ∘ inverse C1 C2 D ≈ 1
     /\ inverse C1 C2 D ∘ functor C1 C2 D ≈ 1.
   Proof.

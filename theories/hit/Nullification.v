@@ -20,15 +20,15 @@ Fixpoint extendable_over_unit (n : nat)
 /-begin
   destruct n as [|n]; [exact star | split].
   - intros g g'.
-    exists ((fst (ext' (fst ext g).1)
-                 (λa, ((fst ext g).2 a)⁻¹ ▹ (g' a))).1);
+    exists ((pr1 (ext' (pr1 ext g).1)
+                 (λa, ((pr1 ext g).2 a)⁻¹ ▹ (g' a))).1);
       intros a; simpl.
     apply moveR_transport_p.
-    exact ((fst (ext' (fst ext g).1)
-                (λa, ((fst ext g).2 a)⁻¹ ▹ (g' a))).2 a).
+    exact ((pr1 (ext' (pr1 ext g).1)
+                (λa, ((pr1 ext g).2 a)⁻¹ ▹ (g' a))).2 a).
   - intros h k h' k'.
     apply extendable_over_unit; intros g.
-    exact (snd (ext' k) (λu, g u ▹ h' u) k').
+    exact (pr2 (ext' k) (λu, g u ▹ h' u) k').
 end-/
 
 definition ooextendable_over_unit

@@ -69,7 +69,7 @@ definition isgroupoid_groupoid_category [instance] X [H : is_trunc 1 X]
 end-/
 
 /- 0-types give rise to strict (groupoid) categories -/
-Lemma isstrict_groupoid_category X [H : IsHSet X]
+definition isstrict_groupoid_category X [H : IsHSet X]
 : IsStrictCategory (groupoid_category X).
 /-begin
   typeclasses eauto.

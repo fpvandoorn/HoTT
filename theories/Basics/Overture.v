@@ -151,10 +151,10 @@ Notation "x ≈ y :> A" := (@paths A x y) : type_scope.
 Notation "x ≈ y" := (x ≈ y :>_) : type_scope.
 
 /- Ensure [internal_paths_rew] and [internal_paths_rew_r] are defined outside sections, so they are not unnecessarily polymorphic. -/
-Lemma paths_rew A a y P (X : P a) (H : a ≈ y :> A) : P y.
+definition paths_rew A a y P (X : P a) (H : a ≈ y :> A) : P y.
 /-begin rewrite <- H. exact X. end-/
 
-Lemma paths_rew_r A a y P (X : P y) (H : a ≈ y :> A) : P a.
+definition paths_rew_r A a y P (X : P y) (H : a ≈ y :> A) : P a.
 /-begin rewrite → H. exact X. end-/
 
 definition reflexive_paths [instance] {A} : Reflexive (@paths A) | 0 := @idpath A.
@@ -326,7 +326,7 @@ definition Sect {A B : Type} (s : A → B) (r : B → A) :=
   Πx : A, r (s x) ≈ x.
 
 /- A typeclass that includes the data making [f] into an adjoint equivalence. -/
-Class IsEquiv {A B : Type} (f : A → B) := BuildIsEquiv {
+Class IsEquiv {A B : Type} (f : A → B) := IsEquiv.mk {
   equiv_inv : B → A ;
   eisretr : Sect equiv_inv f;
   eissect : Sect f equiv_inv;
@@ -338,7 +338,7 @@ Arguments eissect {A B} f {_} _.
 Arguments eisadj {A B} f {_} _.
 
 /- A record that includes all the data of an adjoint equivalence. -/
-Record Equiv A B := BuildEquiv {
+Record Equiv A B := Equiv.mk {
   equiv_fun : A → B ;
   equiv_isequiv : IsEquiv equiv_fun
 }.

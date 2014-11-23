@@ -24,7 +24,7 @@ section lemmas
   Variable C : PreCategory.
   Variable F : Pseudofunctor C.
 
-  Lemma p_composition_of_coherent_for_rewrite_helper w x y z
+  definition p_composition_of_coherent_for_rewrite_helper w x y z
         (f : morphism C w x) (g : morphism C x y) (h : morphism C y z)
         (p p0 p1 p2 : PreCategory) (f0 : morphism C w z → Functor p2 p1)
         (f1 : Functor p0 p1) (f2 : Functor p2 p) (f3 : Functor p p0)
@@ -58,7 +58,7 @@ section lemmas
       {n0 : f4 <~=~> (f2 ∘ f1)%functor} {n1 : f0 <~=~> (f1 ∘ f3)%functor}
       {n2 : f <~=~> (f2 ∘ f0)%functor}.
 
-    Lemma p_composition_of_coherent_iso_for_rewrite__isisomorphism_helper'
+    definition p_composition_of_coherent_iso_for_rewrite__isisomorphism_helper'
     : @IsIsomorphism
         (_ → _) _ _
         (n2 ⁻¹ ∘ (f2 oL n1 ⁻¹ ∘ (associator_1 f2 f1 f3 ∘ (n0 oR f3 ∘ n))))%natural_transformation.
@@ -87,7 +87,7 @@ section lemmas
          ap (λi, @morphism_inverse _ _ _ _ (@isisomorphism_isomorphic _ _ _ i)) H'.
   End helper.
 
-  Lemma p_composition_of_coherent_iso_for_rewrite w x y z
+  definition p_composition_of_coherent_iso_for_rewrite w x y z
         (f : morphism C w x) (g : morphism C x y) (h : morphism C y z)
   : (Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ F w z) (Category.Core.associativity C w x y z f g h)))
     ≈ @Build_Isomorphic
@@ -104,7 +104,7 @@ section lemmas
     exact p_composition_of_coherent_for_rewrite_helper.
   Qed.
 
-  Lemma p_left_identity_of_coherent_iso_for_rewrite x y (f : morphism C x y)
+  definition p_left_identity_of_coherent_iso_for_rewrite x y (f : morphism C x y)
   : (Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ F x y) (Category.Core.left_identity C x y f)))
     ≈ @Build_Isomorphic
         (_ → _) _ _
@@ -120,7 +120,7 @@ section lemmas
     etransitivity; apply Category.Core.left_identity.
   Qed.
 
-  Lemma p_right_identity_of_coherent_iso_for_rewrite x y (f : morphism C x y)
+  definition p_right_identity_of_coherent_iso_for_rewrite x y (f : morphism C x y)
   : (Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ F x y) (Category.Core.right_identity C x y f)))
     ≈ @Build_Isomorphic
         (_ → _) _ _

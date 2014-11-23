@@ -91,7 +91,7 @@ intros.
     intros H P.
 >> -/
 
-  Lemma pseudofunctor_of_functor__composition_of
+  definition pseudofunctor_of_functor__composition_of
         {x0 x1 x2 x : PreCategory}
         {x7 x11 : Functor x0 x1}
         {x12 : x7 ≈ x11}
@@ -114,7 +114,7 @@ intros.
     symmetry; simpl; pseudofunctor_t.
   Qed.
 
-  Lemma pseudofunctor_of_functor__left_identity_of
+  definition pseudofunctor_of_functor__left_identity_of
         {x0 x : PreCategory}
         {x2 : Functor x x} {x3 : x2 ≈ 1%functor}
         {x4 x5 : Functor x0 x} {x6 : x4 ≈ x5} {x7 : x4 ≈ (x2 ∘ x5)%functor}
@@ -129,7 +129,7 @@ intros.
     simpl; pseudofunctor_t.
   Qed.
 
-  Lemma pseudofunctor_of_functor__right_identity_of
+  definition pseudofunctor_of_functor__right_identity_of
         {x0 x : PreCategory}
         {x4 : Functor x0 x0} {x5 : x4 ≈ 1%functor}
         {x2 x3 : Functor x0 x} {x6 : x2 ≈ x3} {x7 : x2 ≈ (x3 ∘ x4)%functor}

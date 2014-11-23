@@ -1,4 +1,4 @@
-/- The Yoneda Lemma -/
+/- The Yoneda definition -/
 Require Import Category.Core Functor.Core NaturalTransformation.Core.
 Require Import Category.Dual Functor.Dual.
 Require Import Category.Prod.

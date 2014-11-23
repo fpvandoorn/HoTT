@@ -35,7 +35,7 @@ section law1
       ).
   end-/
 
-  Lemma law
+  definition law
   : @functor _ one _ C ∘ inverse C ≈ 1
     /\ inverse C ∘ @functor _ one _ C ≈ 1.
   Proof.

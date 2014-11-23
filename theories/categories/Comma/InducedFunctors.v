@@ -25,15 +25,15 @@ section comma_category_induced_functor
 
   definition comma_category_induced_functor_object_of s d
              (m : morphism ((A → C)⁻¹op × (B → C)) s d)
-             (x : fst s / snd s)
-  : (fst d / snd d) :=
+             (x : pr1 s / pr2 s)
+  : (pr1 d / pr2 d) :=
        CommaCategory.Build_object
-         (fst d) (snd d)
+         (pr1 d) (pr2 d)
          (CommaCategory.a x)
          (CommaCategory.b x)
-         ((snd m) (CommaCategory.b x) ∘ CommaCategory.f x ∘ (fst m) (CommaCategory.a x)).
+         ((pr2 m) (CommaCategory.b x) ∘ CommaCategory.f x ∘ (pr1 m) (CommaCategory.a x)).
 
-  Lemma comma_category_induced_functor_object_of_identity s x
+  definition comma_category_induced_functor_object_of_identity s x
   : comma_category_induced_functor_object_of (Category.Core.identity s) x
     ≈ x.
   /-begin
@@ -65,8 +65,8 @@ section comma_category_induced_functor
   end-/
 
   definition comma_category_induced_functor_morphism_of s d m s0 d0
-             (m0 : morphism (fst s / snd s) s0 d0)
-  : morphism (fst d / snd d)
+             (m0 : morphism (pr1 s / pr2 s) s0 d0)
+  : morphism (pr1 d / pr2 d)
              (@comma_category_induced_functor_object_of s d m s0)
              (@comma_category_induced_functor_object_of s d m d0).
   /-begin
@@ -88,9 +88,9 @@ section comma_category_induced_functor
 
   definition comma_category_induced_functor s d
              (m : morphism ((A → C)⁻¹op × (B → C)) s d)
-  : Functor (fst s / snd s) (fst d / snd d).
+  : Functor (pr1 s / pr2 s) (pr1 d / pr2 d).
   /-begin
-    refine (Build_Functor (fst s / snd s) (fst d / snd d)
+    refine (Build_Functor (pr1 s / pr2 s) (pr1 d / pr2 d)
                           (@comma_category_induced_functor_object_of s d m)
                           (@comma_category_induced_functor_morphism_of s d m)
                           _

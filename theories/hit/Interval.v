@@ -30,7 +30,7 @@ Axiom interval_ind_beta_seg : Π(P : interval → Type)
 End Interval.
 
 /-  Should fail:
-Lemma test (P : interval → Type) (a : P zero) (b : P one)
+definition test (P : interval → Type) (a : P zero) (b : P one)
       (p p' : seg ▹ a ≈ b) :
     interval_ind P a b p ≈ interval_ind P a b p'.
 reflexivity.

@@ -13,7 +13,7 @@ Context [H : Funext].
 definition NullHomotopy {X Y : Type} (f : X → Y) :=
      Σy : Y, Πx:X, f x ≈ y.
 
-Lemma istrunc_nullhomotopy {n : trunc_index}
+definition istrunc_nullhomotopy {n : trunc_index}
   {X Y : Type} (f : X → Y) [H : is_trunc n Y]
   : is_trunc n (NullHomotopy f).
 /-begin

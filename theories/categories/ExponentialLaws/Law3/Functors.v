@@ -12,7 +12,7 @@ Set Asymmetric Patterns.
 Local Open Scope natural_transformation_scope.
 Local Open Scope functor_scope.
 
-Local Notation fst_type := Coq.Init.Datatypes.fst.
+Local Notation fst_type := Coq.Init.Datatypes.pr1.
 Local Notation snd_type := Coq.Init.Datatypes.snd.
 Local Notation pair_type := Coq.Init.Datatypes.pair.
 
@@ -27,8 +27,8 @@ section law3
   : Functor (D → C1 × C2) ((D → C1) × (D → C2)) :=
        Build_Functor
          (D → C1 × C2) ((D → C1) × (D → C2))
-         (λH, (fst ∘ H, snd ∘ H)%core)
-         (λs d m, (fst oL m, snd oL m)%core)
+         (λH, (pr1 ∘ H, pr2 ∘ H)%core)
+         (λs d m, (pr1 oL m, pr2 oL m)%core)
          (λ_ _ _ _ _, path_prod' (composition_of_whisker_l _ _ _)
                                       (composition_of_whisker_l _ _ _))
          (λ_, path_prod' (whisker_l_right_identity _ _)

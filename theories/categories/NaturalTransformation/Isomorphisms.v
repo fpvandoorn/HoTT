@@ -116,7 +116,7 @@ End composition.
 
 /- Equalities induced by isomorphisms of objects -/
 section object_isomorphisms
-  Lemma path_components_of_isisomorphism
+  definition path_components_of_isisomorphism
         [H : IsIsomorphism C s d m]
         D (F G : Functor C D) (T : NaturalTransformation F G)
   : (G _1 m)⁻¹ ∘ (T d ∘ F _1 m) ≈ T s.
@@ -125,7 +125,7 @@ section object_isomorphisms
     apply commutes.
   Qed.
 
-  Lemma path_components_of_isisomorphism'
+  definition path_components_of_isisomorphism'
         [H : IsIsomorphism C s d m]
         D (F G : Functor C D) (T : NaturalTransformation F G)
   : (G _1 m ∘ T s) ∘ (F _1 m)⁻¹ ≈ T d.

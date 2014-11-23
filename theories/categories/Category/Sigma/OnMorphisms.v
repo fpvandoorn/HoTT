@@ -93,7 +93,7 @@ section sigT_mor
 
   Local Open Scope functor_scope.
 
-  Lemma sigT_mor_eq [H : Funext]
+  definition sigT_mor_eq [H : Funext]
   : sigT_functor_mor ∘ sigT_functor_mor_inv ≈ 1
     /\ sigT_functor_mor_inv ∘ sigT_functor_mor ≈ 1.
   /-begin

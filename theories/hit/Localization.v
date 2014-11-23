@@ -51,12 +51,12 @@ Fixpoint ExtendableAlong_Over
        | 0 => λ_, unit
        | S n => λext',
                 (Π(g : Πa, C (f a)) (g' : Πa, D (f a) (g a)),
-                  {rec : Πb, D b ((fst ext' g).1 b) &
-                         Πa, (fst ext' g).2 a ▹ rec (f a) ≈ g' a }) *
+                  {rec : Πb, D b ((pr1 ext' g).1 b) &
+                         Πa, (pr1 ext' g).2 a ▹ rec (f a) ≈ g' a }) *
                 Π(h k : Πb, C b)
                        (h' : Πb, D b (h b)) (k' : Πb, D b (k b)),
                   ExtendableAlong_Over n f (λb, h b ≈ k b)
-                    (snd ext' h k) (λb c, c ▹ h' b ≈ k' b)
+                    (pr2 ext' h k) (λb c, c ▹ h' b ≈ k' b)
      end ext.
 
 /- Like [ExtendableAlong], these can be postcomposed with known equivalences. -/
@@ -73,18 +73,18 @@ definition extendable_over_postcompose' (n : nat)
   intros ext'.
   split.
   - intros h k.
-    exists (λb, g b ((fst ext h).1 b)
-                     ((fst ext' h (λa, (g _ _)⁻¹ (k a))).1 b)).
+    exists (λb, g b ((pr1 ext h).1 b)
+                     ((pr1 ext' h (λa, (g _ _)⁻¹ (k a))).1 b)).
     intros a.
-    refine ((ap_transport ((fst ext h).2 a) (g (f a)) _)⁻¹ ⬝ _).
+    refine ((ap_transport ((pr1 ext h).2 a) (g (f a)) _)⁻¹ ⬝ _).
     apply moveR_equiv_M.
-    exact ((fst ext' h (λa, (g _ _)⁻¹ (k a))).2 a).
+    exact ((pr1 ext' h (λa, (g _ _)⁻¹ (k a))).2 a).
   - intros p q p' q'.
     refine (IHn (λb, p b ≈ q b) _
                 (λb, λc, transport (D b) c ((g b (p b))⁻¹ (p' b))
                                    ≈ ((g b (q b))⁻¹ (q' b)))
                 _ _
-                (snd ext' p q (λb, (g b (p b))⁻¹ (p' b))
+                (pr2 ext' p q (λb, (g b (p b))⁻¹ (p' b))
                               (λb, (g b (q b))⁻¹ (q' b)))).
     intros b c.
     refine (equiv_compose' _ (equiv_moveR_equiv_M _ _)).
@@ -102,7 +102,7 @@ definition extendable_over_postcompose (n : nat)
 : ExtendableAlong_Over n f C ext D
   → ExtendableAlong_Over n f C ext E :=
    extendable_over_postcompose' n C f ext D E
-     (λb c, BuildEquiv _ _ (g b c) _).
+     (λb c, Equiv.mk _ _ (g b c) _).
 
 /- And if the dependency is trivial, we obtain them from an ordinary [ExtendableAlong]. -/
 definition extendable_over_const
@@ -116,13 +116,13 @@ definition extendable_over_const
   1:exact star.
   split.
   - intros g g'.
-    exists ((fst ext' g').1).
-    exact (λa, transport_const ((fst ext g).2 a) _
-                                    ⬝ (fst ext' g').2 a).
+    exists ((pr1 ext' g').1).
+    exact (λa, transport_const ((pr1 ext g).2 a) _
+                                    ⬝ (pr1 ext' g').2 a).
   - intros h k h' k'.
     refine (extendable_over_postcompose' _ _ _ _ _ _ _
-              (IHn (λb, h b ≈ k b) (snd ext h k)
-                   (λb, h' b ≈ k' b) (snd ext' h' k'))).
+              (IHn (λb, h b ≈ k b) (pr2 ext h k)
+                   (λb, h' b ≈ k' b) (pr2 ext' h' k'))).
     exact (λb c, equiv_concat_l (transport_const c (h' b)) (k' b)).
 end-/
 
@@ -138,12 +138,12 @@ Fixpoint apD_extendable_eq (n : nat) {A B : Type} (C : B → Type) (f : A → B)
   - exact unit.
   - apply prod.
     + exact (Π(h : Πa, C (f a)) (b : B),
-               g b ((fst ext h).1 b) ≈ (fst ext' h (λa, g (f a) (h a))).1 b).
+               g b ((pr1 ext h).1 b) ≈ (pr1 ext' h (λa, g (f a) (h a))).1 b).
     + exact (Πh k, apD_extendable_eq
-                           n A B (λb, h b ≈ k b) f (snd ext h k)
+                           n A B (λb, h b ≈ k b) f (pr2 ext h k)
                            (λb c, c ▹ g b (h b) ≈ g b (k b))
                            (λb c, apD (g b) c)
-                           (snd ext' h k _ _)).
+                           (pr2 ext' h k _ _)).
 end-/
 
 /- Here's the [oo]-version. -/
@@ -177,26 +177,26 @@ definition ooextendable_over_homotopy
   - intros g g'.
     refine ⟨_,_⟩; simpl.
     + intros b.
-      refine (_ ⬝ (fst (snd (ext' 2) _ _
-                            (λb', r b' ((fst (ext n.+1) g).1 b'))
-                            (λb', s b' ((fst (ext n.+1) g).1 b')))
+      refine (_ ⬝ (pr1 (pr2 (ext' 2) _ _
+                            (λb', r b' ((pr1 (ext n.+1) g).1 b'))
+                            (λb', s b' ((pr1 (ext n.+1) g).1 b')))
                        (λ_, 1) _).1 b).
       × refine (transport2 (D b) (p := 1) _ _).
-        refine ((fst (snd (snd (ext 3) _ _) (λb', 1)
-                          ((fst (snd (ext 2) _ _) (λa : A, 1)).1)
+        refine ((pr1 (pr2 (pr2 (ext 3) _ _) (λb', 1)
+                          ((pr1 (pr2 (ext 2) _ _) (λa : A, 1)).1)
                 ) _).1 b); intros a.
-        symmetry; refine ((fst (snd (ext 2) _ _) (λa', 1)).2 a).
+        symmetry; refine ((pr1 (pr2 (ext 2) _ _) (λa', 1)).2 a).
       × intros a; simpl.
         refine (_ @
-          ap (transport (D (f a)) ((fst (ext n.+1) g).2 a)⁻¹) (g' a)
+          ap (transport (D (f a)) ((pr1 (ext n.+1) g).2 a)⁻¹) (g' a)
           ⬝ _);
         [ symmetry; by apply apD
         | by apply apD ].
     + intros a; simpl.
-      set (h := (fst (ext n.+1) g).1).
+      set (h := (pr1 (ext n.+1) g).1).
       match goal with
-          |- context[   (fst (snd (ext' 2) _ _ ?k1 ?k2) (λ_, 1) ?l).1 ]
-          => pose (p := (fst (snd (ext' 2) _ _  k1  k2) (λ_, 1) l).2 a);
+          |- context[   (pr1 (pr2 (ext' 2) _ _ ?k1 ?k2) (λ_, 1) ?l).1 ]
+          => pose (p := (pr1 (pr2 (ext' 2) _ _  k1  k2) (λ_, 1) l).2 a);
             simpl in p
       end.
       rewrite transport_paths_Fl in p.
@@ -207,9 +207,9 @@ definition ooextendable_over_homotopy
           |- transport ?P ?p ((ap ?f ?q ⬝ ap ?f ?r) ⬝ ?s) ≈ ?t
           => refine (ap (transport P p) ((ap_pp f q r)⁻¹ @@ (idpath s)) ⬝ _)
       end.
-      pose (p := (fst (snd (snd (ext 3) h h) (λb' : B, 1)
-                           ((fst (snd (ext 2) h h) (λa0 : A, 1)).1))
-                      (λa' : A, ((fst (snd (ext 2) h h)
+      pose (p := (pr1 (pr2 (pr2 (ext 3) h h) (λb' : B, 1)
+                           ((pr1 (pr2 (ext 2) h h) (λa0 : A, 1)).1))
+                      (λa' : A, ((pr1 (pr2 (ext 2) h h)
                                            (λa' : A, 1)).2 a')⁻¹)).2 a);
         simpl in p.
       refine (ap (transport _ _) (ap (ap _) (p @@ 1) @@ 1) ⬝ _); clear p.
@@ -231,7 +231,7 @@ definition ooextendable_over_homotopy
     refine (extendable_over_postcompose' _ _ _ _ _ _
              (λb c, equiv_cancelL (apD (r b) c) _ _) _).
     refine (IHn _ _ _ _ _
-                (λn, snd (ext' n.+1) h k
+                (λn, pr2 (ext' n.+1) h k
                               (λb, r b (h b)) (λb, s b (k b)))).
 Qed.
 
@@ -405,21 +405,21 @@ section LocalTypes
 
   definition local_rec {X} [H : IsLocal f X] {i} (g : lgen_domain f i → X)
   : lgen_codomain f i → X :=
-     (fst (ooextendable_islocal i 1%nat) g).1.
+     (pr1 (ooextendable_islocal i 1%nat) g).1.
 
   definition local_rec_beta {X} [H : IsLocal f X] {i} (g : lgen_domain f i → X) s
   : local_rec g (f i s) ≈ g s :=
-       (fst (ooextendable_islocal i 1%nat) g).2 s.
+       (pr1 (ooextendable_islocal i 1%nat) g).2 s.
 
   definition local_indpaths {X} [H : IsLocal f X] {i} {h k : lgen_codomain f i → X}
              (p : h ∘ f i == k ∘ f i)
   : h == k :=
-       (fst (snd (ooextendable_islocal i 2) h k) p).1.
+       (pr1 (pr2 (ooextendable_islocal i 2) h k) p).1.
 
   definition local_indpaths_beta {X} [H : IsLocal f X] {i} (h k : lgen_codomain f i → X)
              (p : h ∘ f i == k ∘ f i) s
   : local_indpaths p (f i s) ≈ p s :=
-       (fst (snd (ooextendable_islocal i 2) h k) p).2 s.
+       (pr1 (pr2 (ooextendable_islocal i 2) h k) p).2 s.
 
 End LocalTypes.
 

@@ -203,34 +203,34 @@ section ORecursion
   definition O_rec {P Q : Type} {Q_inO : In ∘ Q}
              (f : P → Q)
   : ∘ P → Q :=
-     (fst (extendable_to_O ∘ 1%nat) f).1.
+     (pr1 (extendable_to_O ∘ 1%nat) f).1.
 
   definition O_rec_beta {P Q : Type} {Q_inO : In ∘ Q}
              (f : P → Q) (x : P)
   : O_rec f (to ∘ P x) ≈ f x :=
-     (fst (extendable_to_O ∘ 1%nat) f).2 x.
+     (pr1 (extendable_to_O ∘ 1%nat) f).2 x.
 
   definition O_indpaths {P Q : Type} {Q_inO : In ∘ Q}
              (g h : ∘ P → Q) (p : g ∘ to ∘ P == h ∘ to ∘ P)
   : g == h :=
-     (fst (snd (extendable_to_O ∘ 2) g h) p).1.
+     (pr1 (pr2 (extendable_to_O ∘ 2) g h) p).1.
 
   definition O_indpaths_beta {P Q : Type} {Q_inO : In ∘ Q}
              (g h : ∘ P → Q) (p : g ∘ (to ∘ P) == h ∘ (to ∘ P)) (x : P)
   : O_indpaths g h p (to ∘ P x) ≈ p x :=
-     (fst (snd (extendable_to_O ∘ 2) g h) p).2 x.
+     (pr1 (pr2 (extendable_to_O ∘ 2) g h) p).2 x.
 
   definition O_ind2paths {P Q : Type} {Q_inO : In ∘ Q}
              {g h : ∘ P → Q} (p q : g == h)
              (r : p oD (to ∘ P) == q oD (to ∘ P))
   : p == q :=
-     (fst (snd (snd (extendable_to_O ∘ 3) g h) p q) r).1.
+     (pr1 (pr2 (pr2 (extendable_to_O ∘ 3) g h) p q) r).1.
 
   definition O_ind2paths_beta {P Q : Type} {Q_inO : In ∘ Q}
              {g h : ∘ P → Q} (p q : g == h)
              (r : p oD (to ∘ P) == q oD (to ∘ P)) (x : P)
   : O_ind2paths p q r (to ∘ P x) ≈ r x :=
-     (fst (snd (snd (extendable_to_O ∘ 3) g h) p q) r).2 x.
+     (pr1 (pr2 (pr2 (extendable_to_O ∘ 3) g h) p q) r).2 x.
 
   /- Clearly we can continue indefinitely as needed. -/
 
@@ -253,7 +253,7 @@ definition isequiv_o_to_O [instance] [H : Funext]
 definition equiv_o_to_O [H : Funext]
            (O : ReflectiveSubuniverse) (P Q : Type) [H : In ∘ Q]
 : (O P → Q) ≃ (P → Q) :=
-   BuildEquiv _ _ (λg : ∘ P → Q, g ∘ to ∘ P) _.
+   Equiv.mk _ _ (λg : ∘ P → Q, g ∘ to ∘ P) _.
 
 /- Properties of Reflective Subuniverses -/
 
@@ -287,7 +287,7 @@ section Reflective_Subuniverse
   end-/
 
   definition equiv_to_O (T : Type) [H : In ∘ T] : T ≃ ∘ T :=
-       BuildEquiv T (O T) (to ∘ T) _.
+       Equiv.mk T (O T) (to ∘ T) _.
 
   section Functor
 
@@ -385,7 +385,7 @@ section Reflective_Subuniverse
       
     definition equiv_O_functor {A B : Type} (f : A ≃ B)
     : ∘ A ≃ ∘ B :=
-       BuildEquiv _ _ (O_functor f) _.
+       Equiv.mk _ _ (O_functor f) _.
 
     /- Postcomposition respects [O_rec] -/
     definition O_rec_postcompose {A B C : Type} [H : In ∘ B] {C_inO : In ∘ C}
@@ -454,7 +454,7 @@ section Reflective_Subuniverse
     definition equiv_O_inverts {A B : Type} [H : In ∘ A] [H : In ∘ B]
       (f : A → B) [H : O_inverts f]
     : A ≃ B :=
-       BuildEquiv _ _ f (isequiv_O_inverts f).
+       Equiv.mk _ _ f (isequiv_O_inverts f).
 
     definition to_O_inv_natural {A B : Type} [H : In ∘ A] [H : In ∘ B]
                (f : A → B)
@@ -547,7 +547,7 @@ section Reflective_Subuniverse
     end-/
 
     /- Dependent product and arrows -/
-    /- Theorem 7.7.2 -/
+    /- definition 7.7.2 -/
     definition inO_Π[instance] {fs : Funext} (A:Type) (B:A → Type) 
     : (Πx, (In ∘ (B x)))
       → (In ∘ (Πx:A, (B x))).
@@ -574,10 +574,10 @@ section Reflective_Subuniverse
     : In ∘ (A*B).
     /-begin
       apply inO_to_O_retract with
-        (mu := λX, (@O_rec _ (A × B) A _ fst X , O_rec snd X)).
+        (mu := λX, (@O_rec _ (A × B) A _ pr1 X , O_rec pr2 X)).
       intros [a b]; apply path_prod; simpl.
-      - exact (O_rec_beta fst (a,b)). 
-      - exact (O_rec_beta snd (a,b)).
+      - exact (O_rec_beta pr1 (a,b)). 
+      - exact (O_rec_beta pr2 (a,b)).
     end-/
 
     /- We show that [OA*OB] has the same universal property as [O(A*B)] -/
@@ -629,10 +629,10 @@ section Reflective_Subuniverse
 
     definition equiv_O_prod_cmp {fs : Funext} (A B : Type)
     : ∘ (A × B) ≃ (O A × ∘ B) :=
-       BuildEquiv _ _ (O_prod_cmp A B) _.
+       Equiv.mk _ _ (O_prod_cmp A B) _.
 
     /- Dependent sums -/
-    /- Theorem 7.7.4 -/
+    /- definition 7.7.4 -/
     definition inO_sigma_from_O_ind
     : (Π(A:Type@{i}) (B: (O A) → Type@{j}) [H : Πa, In@{u a j] ∘ (B a)}
               (g : Π(a:A), (B (to ∘ A a))),
@@ -740,7 +740,7 @@ section Reflective_Subuniverse
     Context {fs : Funext}.
 
     definition O_monad_strength (A B : Type) : A × ∘ B → ∘ (A × B) :=
-         λaob, O_rec (λb a, to ∘ (A*B) (a,b)) (snd aob) (fst aob).
+         λaob, O_rec (λb a, to ∘ (A*B) (a,b)) (pr2 aob) (pr1 aob).
 
     definition O_monad_strength_natural (A A' B B' : Type) (f : A → A') (g : B → B')
     : O_functor (functor_prod f g) ∘ O_monad_strength A B ==
@@ -757,7 +757,7 @@ section Reflective_Subuniverse
       
     /- The diagrams for strength, see http://en.wikipedia.org/wiki/Strong_monad -/
     definition O_monad_strength_unitlaw1 (A : Type)
-    : O_functor (@snd unit A) ∘ O_monad_strength unit A == @snd unit (O A).
+    : O_functor (@pr2 unit A) ∘ O_monad_strength unit A == @pr2 unit (O A).
     Proof.
       intros [[] oa]; revert oa.
       apply O_indpaths; intros x; unfold O_monad_strength, O_functor, compose. simpl. 
@@ -907,23 +907,23 @@ Module Accessible_ReflectiveSubuniverses_Theory
              (i : lgen_indices (acc_gen O))
   : O_inverts ∘ (acc_gen ∘ i).
   Proof.
-    pose (ext_dom := fst (inO_iff_islocal ∘ (O (lgen_domain (acc_gen O) i))) _).
-    pose (ext_cod := fst (inO_iff_islocal ∘ (O (lgen_codomain (acc_gen O) i))) _).
+    pose (ext_dom := pr1 (inO_iff_islocal ∘ (O (lgen_domain (acc_gen O) i))) _).
+    pose (ext_cod := pr1 (inO_iff_islocal ∘ (O (lgen_codomain (acc_gen O) i))) _).
     refine (isequiv_adjointify _ _ _ _).
     - apply O_rec.
-      exact ((fst (ext_dom i 1%nat) (to ∘ _)).1).
+      exact ((pr1 (ext_dom i 1%nat) (to ∘ _)).1).
     - apply O_indpaths; intros x; simpl.
       rewrite O_rec_beta.
-      refine ((fst (snd (ext_cod i 2)
+      refine ((pr1 (pr2 (ext_cod i 2)
                         (λx, O_functor ∘ (acc_gen ∘ i)
-                                            ((fst (ext_dom i 1%nat) (to ∘ _)).1 x))
+                                            ((pr1 (ext_dom i 1%nat) (to ∘ _)).1 x))
                         _) _).1 x); intros a.
-      rewrite ((fst (ext_dom i 1%nat) (to ∘ _)).2 a).
+      rewrite ((pr1 (ext_dom i 1%nat) (to ∘ _)).2 a).
       apply to_O_natural.
     - apply O_indpaths; intros x; simpl.
       simpl rewrite (to_O_natural ∘ (acc_gen ∘ i) x).
       rewrite O_rec_beta.
-      apply ((fst (ext_dom i 1%nat) (to ∘ _)).2 x).
+      apply ((pr1 (ext_dom i 1%nat) (to ∘ _)).2 x).
   Qed.
 
 End Accessible_ReflectiveSubuniverses_Theory.

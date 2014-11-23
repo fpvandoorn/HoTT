@@ -13,7 +13,7 @@ definition lift {A} : A → Lift A := λx, x.
 definition lower {A} : Lift A → A := λx, x.
 
 definition isequiv_lift [instance] T : IsEquiv (@lift T) :=
-     @BuildIsEquiv
+     @IsEquiv.mk
        _ _
        (@lift T)
        (@lower T)
@@ -31,7 +31,7 @@ definition lift' {A : Type@{i}} : A → Lift'@{i j} A := λx, x.
 definition lower' {A : Type@{i}} : Lift'@{i j} A → A := λx, x.
 
 definition isequiv_lift' [instance] T : IsEquiv (@lift'@{i j} T) :=
-     @BuildIsEquiv
+     @IsEquiv.mk
        _ _
        (@lift' T)
        (@lower' T)

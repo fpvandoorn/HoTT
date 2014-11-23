@@ -128,7 +128,7 @@ Canonical Structure default_TruncType := λn T P, (@BuildTruncType n T P).
 /- An inhabited proposition is contractible.
    This is not an [Instance] because it causes infinite loops.
    -/
-Lemma contr_inhabited_hprop (A : Type) {H : is_hprop A} (x : A)
+definition contr_inhabited_hprop (A : Type) {H : is_hprop A} (x : A)
   : is_contr A.
 Proof.
   exists x.
@@ -145,13 +145,13 @@ definition hprop_inhabited_contr [instance] (A : Type) : (A → is_contr A) → 
 end-/
 
 /- Any two points in an hprop are connected by a path. -/
-Theorem path_ishprop {H : is_hprop A} : Πx y : A, x ≈ y.
+definition path_ishprop {H : is_hprop A} : Πx y : A, x ≈ y.
 /-begin
   apply H.
 end-/
 
 /- Conversely, this property characterizes hprops. -/
-Theorem hprop_allpath (A : Type) : (Π(x y : A), x ≈ y) → is_hprop A.
+definition hprop_allpath (A : Type) : (Π(x y : A), x ≈ y) → is_hprop A.
   intros H x y.
   pose (C := BuildContr A x (H x)).
   apply contr_paths_contr.

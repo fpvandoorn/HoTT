@@ -65,10 +65,10 @@ Ltac exp_laws_handle_transport' :=
       => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, object_of) z)
     | [ |- context[morphism_of (transport ?P ?p ?z)] ]
       => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, morphism_of) z)
-    | [ |- context[fst (transport ?P ?p ?z)] ]
-      => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, fst) z)
-    | [ |- context[snd (transport ?P ?p ?z)] ]
-      => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, snd) z)
+    | [ |- context[pr1 (transport ?P ?p ?z)] ]
+      => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, pr1) z)
+    | [ |- context[pr2 (transport ?P ?p ?z)] ]
+      => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, pr2) z)
     | [ |- context[dpr1 (transport ?P ?p ?z)] ]
       => simpl rewrite (@ap_transport _ P _ _ _ p (λ_, dpr1) z)
   end.

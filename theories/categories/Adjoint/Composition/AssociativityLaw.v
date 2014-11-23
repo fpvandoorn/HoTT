@@ -17,7 +17,7 @@ Local Open Scope morphism_scope.
 section composition_lemmas
   Local Notation AdjunctionWithFunctors C D :=
     { fg : Functor C D × Functor D C
-    | fst fg -| snd fg }.
+    | pr1 fg -| pr2 fg }.
 
   Context {H0 : Funext}.
 
@@ -39,7 +39,7 @@ section composition_lemmas
 
   Local Open Scope adjunction_scope.
 
-  Lemma associativity
+  definition associativity
   : ((_, _); (AH ∘ AG) ∘ AF) ≈ ((_, _); AH ∘ (AG ∘ AF)) :> AdjunctionWithFunctors B E.
   Proof.
     apply path_sigma_uncurried; simpl.

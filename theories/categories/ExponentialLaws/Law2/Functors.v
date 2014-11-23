@@ -9,7 +9,7 @@ Set Asymmetric Patterns.
 
 Local Open Scope functor_scope.
 
-Local Notation fst_type := Coq.Init.Datatypes.fst.
+Local Notation fst_type := Coq.Init.Datatypes.pr1.
 Local Notation snd_type := Coq.Init.Datatypes.snd.
 Local Notation pair_type := Coq.Init.Datatypes.pair.
 
@@ -31,7 +31,7 @@ section law2
   /-begin
     refine (Build_Functor
               ((C1 → D) × (C2 → D)) (C1 + C2 → D)
-              (λFG, fst FG + snd FG)%functor
+              (λFG, pr1 FG + pr2 FG)%functor
               (λ_ _ m, fst_type m + snd_type m)%natural_transformation
               _
               _);

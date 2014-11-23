@@ -16,7 +16,7 @@ Local Open Scope structure_scope.
 /- Quoting the Homotopy Type Theory Book (with slight changes for
     notational consistency): -/
 
-/- Theorem (Structure identity principle): If [X] is a category and
+/- definition (Structure identity principle): If [X] is a category and
     [(P, H)] is a standard notion of structure over [X], then the
     precategory [Str_{(P, H)}(X)] is a category. -/
 section sip
@@ -37,7 +37,7 @@ section sip
     - exact (ap (@PreCategoryOfStructures.f _ _ _ _) (@right_inverse _ _ _ _ f)).
   end-/
 
-  Lemma sip_isotoid_helper_refl (xa : StrX)
+  definition sip_isotoid_helper_refl (xa : StrX)
   : @sip_isotoid_helper xa xa (reflexivity _) ≈ reflexivity _.
   /-begin
     unfold sip_isotoid_helper, reflexivity, isomorphic_refl.
@@ -45,7 +45,7 @@ section sip
     apply path_ishprop.
   end-/
 
-  Lemma sip_helper x y (p : x ≈ y) (a : P x) (b : P y)
+  definition sip_helper x y (p : x ≈ y) (a : P x) (b : P y)
   : transport P p a ≈ b
     <-> is_structure_homomorphism P _ _ (idtoiso X p) a b *
         is_structure_homomorphism P _ _ (idtoiso X p)⁻¹ b a.
@@ -79,7 +79,7 @@ section sip
       apply PreCategoryOfStructures.h.
   end-/
 
-  Lemma sip_isotoid_refl xa
+  definition sip_isotoid_refl xa
   : @sip_isotoid xa xa (reflexivity _) ≈ reflexivity _.
   /-begin
     refine (_ ⬝ eta_path_sigma_uncurried _).
@@ -91,14 +91,14 @@ section sip
     apply sip_isotoid_helper_refl.
   end-/
 
-  Lemma path_f_idtoiso_precategory_of_structures xa yb (p : xa ≈ yb)
+  definition path_f_idtoiso_precategory_of_structures xa yb (p : xa ≈ yb)
   : PreCategoryOfStructures.f (idtoiso (precategory_of_structures P) p : morphism _ _ _)
     ≈ idtoiso X p..1.
   /-begin
     induction p; reflexivity.
   end-/
 
-  Lemma structure_identity_principle_helper
+  definition structure_identity_principle_helper
         (xa yb : StrX)
         (x : xa <~=~> yb)
   : PreCategoryOfStructures.f

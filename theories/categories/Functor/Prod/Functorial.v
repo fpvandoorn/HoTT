@@ -9,7 +9,7 @@ Set Asymmetric Patterns.
 
 Local Open Scope natural_transformation_scope.
 
-Local Notation fst_type := Coq.Init.Datatypes.fst.
+Local Notation fst_type := Coq.Init.Datatypes.pr1.
 Local Notation snd_type := Coq.Init.Datatypes.snd.
 Local Notation pair_type := Coq.Init.Datatypes.pair.
 
@@ -24,7 +24,7 @@ section functorial
   definition functor_morphism_of
              s d
              (m : morphism ((C → D) × (C → D')) s d)
-  : morphism (_ → _) (fst s × snd s)%functor (fst d × snd d)%functor :=
+  : morphism (_ → _) (pr1 s × pr2 s)%functor (pr1 d × pr2 d)%functor :=
        fst_type m × snd_type m.
 
   definition functor_composition_of

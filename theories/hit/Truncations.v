@@ -114,11 +114,11 @@ section TruncationModality
      inO_iff_isequiv_to_O n A.
 
   definition isequiv_tr [instance] A [H : is_trunc n A] : IsEquiv (@tr n A) :=
-     fst (trunc_iff_isequiv_truncation A) _.
+     pr1 (trunc_iff_isequiv_truncation A) _.
 
   definition equiv_tr (A : Type) [H : is_trunc n A]
   : A ≃ Tr n A :=
-     BuildEquiv _ _ (@tr n A) _.
+     Equiv.mk _ _ (@tr n A) _.
 
   definition untrunc_istrunc {A : Type} [H : is_trunc n A]
   : Tr n A → A :=

@@ -52,7 +52,7 @@ end-/
 
 /- Alternate characterization of hprops. -/
 
-Theorem equiv_hprop_allpath [H : Funext] (A : Type)
+definition equiv_hprop_allpath [H : Funext] (A : Type)
   : is_hprop A ≃ (Π(x y : A), x ≈ y).
 /-begin
   apply (equiv_adjointify (@path_ishprop A) (@hprop_allpath A));
@@ -68,7 +68,7 @@ Theorem equiv_hprop_allpath [H : Funext] (A : Type)
     apply path_contr.
 end-/
 
-Theorem equiv_hprop_inhabited_contr [H : Funext] {A}
+definition equiv_hprop_inhabited_contr [H : Funext] {A}
   : is_hprop A ≃ (A → is_contr A).
 /-begin
   apply (equiv_adjointify (@contr_inhabited_hprop A) (@hprop_inhabited_contr A)).
@@ -80,7 +80,7 @@ end-/
 
 /- Alternate characterizations of contractibility. -/
 
-Theorem equiv_contr_inhabited_hprop [H : Funext] {A}
+definition equiv_contr_inhabited_hprop [H : Funext] {A}
   : is_contr A ≃ A × is_hprop A.
 /-begin
   assert (f : is_contr A → A × is_hprop A).
@@ -90,10 +90,10 @@ Theorem equiv_contr_inhabited_hprop [H : Funext] {A}
   refine (@equiv_iff_hprop _ _ _ _ f g).
   apply hprop_inhabited_contr; intro p.
   apply @contr_prod.
-  exact (g p). apply (@contr_inhabited_hprop _ _ (snd p)).
+  exact (g p). apply (@contr_inhabited_hprop _ _ (pr2 p)).
 end-/
 
-Theorem equiv_contr_inhabited_allpath [H : Funext] {A}
+definition equiv_contr_inhabited_allpath [H : Funext] {A}
   : is_contr A ≃ A × Π(x y : A), x ≈ y.
 /-begin
   transitivity ( A × is_hprop A).
@@ -120,7 +120,7 @@ end-/
 /- Inhabited and uninhabited hprops -/
 
 /- If an hprop is inhabited, then it is equivalent to [unit]. -/
-Lemma if_hprop_then_equiv_Unit (hprop : Type) [H : is_hprop hprop] :  hprop → hprop ≃ unit.
+definition if_hprop_then_equiv_Unit (hprop : Type) [H : is_hprop hprop] :  hprop → hprop ≃ unit.
 /-begin
   intro p. 
   apply equiv_iff_hprop.
@@ -129,8 +129,8 @@ Lemma if_hprop_then_equiv_Unit (hprop : Type) [H : is_hprop hprop] :  hprop → 
 end-/
 
 /- If an hprop is not inhabited, then it is equivalent to [Empty]. -/
-Lemma if_not_hprop_then_equiv_Empty (hprop : Type) [H : is_hprop hprop] : ~hprop → hprop ≃ Empty.
+definition if_not_hprop_then_equiv_Empty (hprop : Type) [H : is_hprop hprop] : ~hprop → hprop ≃ Empty.
 /-begin
   intro np. 
-  exact (BuildEquiv _ _ np _).
+  exact (Equiv.mk _ _ np _).
 end-/

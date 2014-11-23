@@ -30,7 +30,7 @@ End functor_category.
 Local Notation "C → D" := (functor_category C D) : category_scope.
 
 /- [C → D] is a strict category if [D] is -/
-Lemma isstrict_functor_category [H : Funext] C [H : IsStrictCategory D]
+definition isstrict_functor_category [H : Funext] C [H : IsStrictCategory D]
 : IsStrictCategory (C → D).
 /-begin
   typeclasses eauto.

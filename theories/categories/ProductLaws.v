@@ -12,7 +12,7 @@ Local Open Scope category_scope.
 Local Open Scope functor_scope.
 
 Local Notation prod_type := Coq.Init.Datatypes.prod.
-Local Notation fst_type := Coq.Init.Datatypes.fst.
+Local Notation fst_type := Coq.Init.Datatypes.pr1.
 Local Notation snd_type := Coq.Init.Datatypes.snd.
 Local Notation pair_type := Coq.Init.Datatypes.pair.
 
@@ -39,9 +39,9 @@ Module Associativity.
     Variable C : PreCategory.
 
     definition functor : Functor (A × (B × C)) ((A × B) × C) :=
-         (fst × (fst ∘ snd)) × (snd ∘ snd).
+         (pr1 × (pr1 ∘ pr2)) × (pr2 ∘ pr2).
     definition inverse : Functor ((A × B) × C) (A × (B × C)) :=
-         (fst ∘ fst) × ((snd ∘ fst) × snd).
+         (pr1 ∘ pr1) × ((pr2 ∘ pr1) × pr2).
 
     definition law
     : functor ∘ inverse ≈ 1
@@ -61,11 +61,11 @@ Module Law0.
 
     Global Instance is_initial_category__product
     : IsInitialCategory (C × 0) :=
-         λP c, initial_category_ind P (snd c).
+         λP c, initial_category_ind P (pr2 c).
 
     Global Instance is_initial_category__product'
     : IsInitialCategory (0 × C) :=
-         λP c, initial_category_ind P (fst c).
+         λP c, initial_category_ind P (pr1 c).
 
     definition functor : Functor (C × 0) 0 := Functors.from_initial _.
     definition functor' : Functor (0 × C) 0 := Functors.from_initial _.
@@ -95,7 +95,7 @@ Module Law1.
     Variable C : PreCategory.
 
     definition functor : Functor (C × 1) C :=
-         fst.
+         pr1.
 
     definition functor' : Functor (1 × C) C :=
          snd.
@@ -124,7 +124,7 @@ Module Law1.
       try (reflexivity || exact (center _)).
 
     /- [C × 1 ≅ C] -/
-    Lemma law1
+    definition law1
     : functor ∘ inverse ≈ 1
       /\ inverse ∘ functor ≈ 1.
     Proof.
@@ -133,7 +133,7 @@ Module Law1.
     Qed.
 
     /- [1 × C ≅ C] -/
-    Lemma law1'
+    definition law1'
     : functor' ∘ inverse' ≈ 1
       /\ inverse' ∘ functor' ≈ 1.
     Proof.

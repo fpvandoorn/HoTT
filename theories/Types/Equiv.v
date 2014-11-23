@@ -31,7 +31,7 @@ section AssumeFunext
       intros s; simpl.
       /- What remains is to show that under these equivalences, the remaining datum [eisadj] reduces simply to [r == s].  Pleasingly, Coq can compute for us exactly what this means. -/
       apply equiv_inverse;
-        refine (equiv_functor_forall' (BuildEquiv _ _ f _) _);
+        refine (equiv_functor_forall' (Equiv.mk _ _ f _) _);
         intros a; simpl; unfold functor_forall.
       rewrite transport_paths_FlFr.
       /- At this point it's just naturality wrangling, potentially automatable.  It's a little unusual because what we have to prove is not just the existence of some path, but that one path-type is equivalent to another one, but we can mostly still use [rewrite]. -/
@@ -60,7 +60,7 @@ section AssumeFunext
   Qed.
 
   /- Thus, paths of equivalences are equivalent to paths of functions. -/
-  Lemma equiv_path_equiv {A B : Type} (e1 e2 : A ≃ B)
+  definition equiv_path_equiv {A B : Type} (e1 e2 : A ≃ B)
   : (e1 ≈ e2 :> (A → B)) ≃ (e1 ≈ e2 :> (A ≃ B)).
   Proof.
     equiv_via ((issig_equiv A B) ⁻¹ e1 ≈ (issig_equiv A B) ⁻¹ e2).
@@ -113,6 +113,6 @@ section AssumeFunext
 
   definition equiv_functor_equiv {A B C D} (h : A ≃ C) (k : B ≃ D)
   : (A ≃ B) ≃ (C ≃ D) :=
-     BuildEquiv _ _ (functor_equiv h k) _.  
+     Equiv.mk _ _ (functor_equiv h k) _.  
 
 End AssumeFunext.

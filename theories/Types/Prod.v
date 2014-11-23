@@ -11,24 +11,24 @@ Arguments prod_ind {A B} P f p.
 
 /- Unpacking -/
 
-/- Sometimes we would like to prove [Q u] where [u : A × B] by writing [u] as a pair [⟨fst u , snd u⟩]. This is accomplished by [unpack_prod]. We want tight control over the proof, so we just write it down even though is looks a bit scary. -/
+/- Sometimes we would like to prove [Q u] where [u : A × B] by writing [u] as a pair [⟨pr1 u , pr2 u⟩]. This is accomplished by [unpack_prod]. We want tight control over the proof, so we just write it down even though is looks a bit scary. -/
 
 definition unpack_prod {P : A × B → Type} (u : A × B) :
-  P (fst u, snd u) → P u :=
+  P (pr1 u, pr2 u) → P u :=
      idmap.
 
 Arguments unpack_prod / .
 
 /- Now we write down the reverse. -/
 definition pack_prod {P : A × B → Type} (u : A × B) :
-  P u → P (fst u, snd u) :=
+  P u → P (pr1 u, pr2 u) :=
      idmap.
 
 Arguments pack_prod / .
 
 /- Eta conversion -/
 
-definition eta_prod `(z : A × B) : (fst z, snd z) ≈ z :=
+definition eta_prod `(z : A × B) : (pr1 z, pr2 z) ≈ z :=
      1.
 
 Arguments eta_prod / .
@@ -37,17 +37,17 @@ Arguments eta_prod / .
 
 /- With this version of the function, we often have to give [z] and [z'] explicitly, so we make them explicit arguments. -/
 definition path_prod_uncurried {A B : Type} (z z' : A × B)
-  (pq : (fst z ≈ fst z') × (snd z ≈ snd z'))
+  (pq : (pr1 z ≈ pr1 z') × (pr2 z ≈ pr2 z'))
   : (z ≈ z').
 /-begin
-  change ((fst z, snd z) ≈ (fst z', snd z')).
-  case (fst pq). case (snd pq).
+  change ((pr1 z, pr2 z) ≈ (pr1 z', pr2 z')).
+  case (pr1 pq). case (pr2 pq).
   reflexivity.
 end-/
 
 /- This is the curried one you usually want to use in practice.  We define it in terms of the uncurried one, since it's the uncurried one that is proven below to be an equivalence. -/
 definition path_prod {A B : Type} (z z' : A × B) :
-  (fst z ≈ fst z') → (snd z ≈ snd z') → (z ≈ z') :=
+  (pr1 z ≈ pr1 z') → (pr2 z ≈ pr2 z') → (z ≈ z') :=
      λp q, path_prod_uncurried z z' (p,q).
 
 /- This version produces only paths between pairs, as opposed to paths between arbitrary inhabitants of product types.  But it has the advantage that the components of those pairs can more often be inferred. -/
@@ -58,41 +58,41 @@ definition path_prod' {A B : Type} {x x' : A} {y y' : B}
 /- Now we show how these things compute. -/
 
 definition ap_fst_path_prod {A B : Type} {z z' : A × B}
-  (p : fst z ≈ fst z') (q : snd z ≈ snd z') :
-  ap fst (path_prod _ _ p q) ≈ p.
+  (p : pr1 z ≈ pr1 z') (q : pr2 z ≈ pr2 z') :
+  ap pr1 (path_prod _ _ p q) ≈ p.
 /-begin
-  change z with (fst z, snd z).
-  change z' with (fst z', snd z').
+  change z with (pr1 z, pr2 z).
+  change z' with (pr1 z', pr2 z').
   destruct p, q.
   reflexivity.
 end-/
 
 definition ap_snd_path_prod {A B : Type} {z z' : A × B}
-  (p : fst z ≈ fst z') (q : snd z ≈ snd z') :
-  ap snd (path_prod _ _ p q) ≈ q.
+  (p : pr1 z ≈ pr1 z') (q : pr2 z ≈ pr2 z') :
+  ap pr2 (path_prod _ _ p q) ≈ q.
 /-begin
-  change z with (fst z, snd z).
-  change z' with (fst z', snd z').
+  change z with (pr1 z, pr2 z).
+  change z' with (pr1 z', pr2 z').
   destruct p, q.
   reflexivity.
 end-/
 
 definition eta_path_prod {A B : Type} {z z' : A × B} (p : z ≈ z') :
-  path_prod _ _(ap fst p) (ap snd p) ≈ p.
+  path_prod _ _(ap pr1 p) (ap pr2 p) ≈ p.
 /-begin
   destruct p. reflexivity.
 end-/
 
 /- Now we show how these compute with transport. -/
 
-Lemma transport_path_prod_uncurried {A B} (P : A × B → Type) {x y : A × B}
-      (H : (fst x ≈ fst y) × (snd x ≈ snd y))
+definition transport_path_prod_uncurried {A B} (P : A × B → Type) {x y : A × B}
+      (H : (pr1 x ≈ pr1 y) × (pr2 x ≈ pr2 y))
       (Px : P x)
 : transport P (path_prod_uncurried _ _ H) Px
-  ≈ transport (λx, P (x, snd y))
-              (fst H)
-              (transport (λy, P (fst x, y))
-                         (snd H)
+  ≈ transport (λx, P (x, pr2 y))
+              (pr1 H)
+              (transport (λy, P (pr1 x, y))
+                         (pr2 H)
                          Px).
 /-begin
   destruct x, y, H; simpl in *.
@@ -101,13 +101,13 @@ Lemma transport_path_prod_uncurried {A B} (P : A × B → Type) {x y : A × B}
 end-/
 
 definition transport_path_prod {A B} (P : A × B → Type) {x y : A × B}
-           (HA : fst x ≈ fst y)
-           (HB : snd x ≈ snd y)
+           (HA : pr1 x ≈ pr1 y)
+           (HB : pr2 x ≈ pr2 y)
            (Px : P x)
 : transport P (path_prod _ _ HA HB) Px
-  ≈ transport (λx, P (x, snd y))
+  ≈ transport (λx, P (x, pr2 y))
               HA
-              (transport (λy, P (fst x, y))
+              (transport (λy, P (pr1 x, y))
                          HB
                          Px) :=
      transport_path_prod_uncurried P (HA, HB) Px.
@@ -131,13 +131,13 @@ definition transport_path_prod'
 
 definition isequiv_path_prod [instance] {A B : Type} {z z' : A × B}
 : IsEquiv (path_prod_uncurried z z') | 0 :=
-     BuildIsEquiv
+     IsEquiv.mk
        _ _ _
-       (λr, (ap fst r, ap snd r))
+       (λr, (ap pr1 r, ap pr2 r))
        eta_path_prod
        (λpq, path_prod'
-                    (ap_fst_path_prod (fst pq) (snd pq))
-                    (ap_snd_path_prod (fst pq) (snd pq)))
+                    (ap_fst_path_prod (pr1 pq) (pr2 pq))
+                    (ap_snd_path_prod (pr1 pq) (pr2 pq)))
        _.
 /-begin
   destruct z as [x y], z' as [x' y'].
@@ -146,24 +146,24 @@ definition isequiv_path_prod [instance] {A B : Type} {z z' : A × B}
 end-/
 
 definition equiv_path_prod {A B : Type} (z z' : A × B)
-  : (fst z ≈ fst z') × (snd z ≈ snd z')  ≃  (z ≈ z') :=
-     BuildEquiv _ _ (path_prod_uncurried z z') _.
+  : (pr1 z ≈ pr1 z') × (pr2 z ≈ pr2 z')  ≃  (z ≈ z') :=
+     Equiv.mk _ _ (path_prod_uncurried z z') _.
 
 /- Transport -/
 
 definition transport_prod {A : Type} {P Q : A → Type} {a a' : A} (p : a ≈ a')
   (z : P a × Q a)
-  : transport (λa, P a × Q a) p z  ≈  (p ▹ (fst z), p ▹ (snd z)) :=
+  : transport (λa, P a × Q a) p z  ≈  (p ▹ (pr1 z), p ▹ (pr2 z)) :=
      match p with idpath => 1 end.
 
 /- Functorial action -/
 
 definition functor_prod {A A' B B' : Type} (f:A->A') (g:B->B')
   : A × B → A' × B' :=
-     λz, (f (fst z), g (snd z)).
+     λz, (f (pr1 z), g (pr2 z)).
 
 definition ap_functor_prod {A A' B B' : Type} (f:A->A') (g:B->B')
-  (z z' : A × B) (p : fst z ≈ fst z') (q : snd z ≈ snd z')
+  (z z' : A × B) (p : pr1 z ≈ pr1 z') (q : pr2 z ≈ pr2 z')
   : ap (functor_prod f g) (path_prod _ _ p q)
   ≈ path_prod (functor_prod f g z) (functor_prod f g z') (ap f p) (ap g q).
 /-begin
@@ -175,10 +175,10 @@ end-/
 
 definition isequiv_functor_prod [instance] [H : IsEquiv A A' f] [H : IsEquiv B B' g]
 : IsEquiv (functor_prod f g) | 1000 :=
-     BuildIsEquiv
+     IsEquiv.mk
        _ _ (functor_prod f g) (functor_prod f⁻¹ g⁻¹)
-       (λz, path_prod' (eisretr f (fst z)) (eisretr g (snd z)) ⬝ eta_prod z)
-       (λw, path_prod' (eissect f (fst w)) (eissect g (snd w)) ⬝ eta_prod w)
+       (λz, path_prod' (eisretr f (pr1 z)) (eisretr g (pr2 z)) ⬝ eta_prod z)
+       (λw, path_prod' (eissect f (pr1 w)) (eissect g (pr2 w)) ⬝ eta_prod w)
        _.
 /-begin
   intros [a b]; simpl.
@@ -222,12 +222,12 @@ end-/
 /- This is a special property of [prod], of course, not an instance of a general family of facts about types. -/
 
 definition equiv_prod_symm (A B : Type) : A × B ≃ B × A :=
-     BuildEquiv
+     Equiv.mk
        _ _ _
-       (BuildIsEquiv
+       (IsEquiv.mk
           (A*B) (B*A)
-          (λab, (snd ab, fst ab))
-          (λba, (snd ba, fst ba))
+          (λab, (pr2 ab, pr1 ab))
+          (λba, (pr2 ba, pr1 ba))
           (λ_, 1)
           (λ_, 1)
           (λ_, 1)).
@@ -236,12 +236,12 @@ definition equiv_prod_symm (A B : Type) : A × B ≃ B × A :=
 
 /- This, too, is a special property of [prod], of course, not an instance of a general family of facts about types. -/
 definition equiv_prod_assoc (A B C : Type) : A × (B × C) ≃ (A × B) × C :=
-     BuildEquiv
+     Equiv.mk
        _ _ _
-       (BuildIsEquiv
+       (IsEquiv.mk
           (A × (B × C)) ((A × B) × C)
-          (λabc, ((fst abc, fst (snd abc)), snd (snd abc)))
-          (λabc, (fst (fst abc), (snd (fst abc), snd abc)))
+          (λabc, ((pr1 abc, pr1 (pr2 abc)), pr2 (pr2 abc)))
+          (λabc, (pr1 (pr1 abc), (pr2 (pr1 abc), pr2 abc)))
           (λ_, 1)
           (λ_, 1)
           (λ_, 1)).
@@ -253,7 +253,7 @@ definition equiv_prod_assoc (A B C : Type) : A × (B × C) ≃ (A × B) × C :=
 /- First the positive universal property. -/
 definition isequiv_prod_ind [instance] `(P : A × B → Type)
 : IsEquiv (prod_ind P) | 0 :=
-     BuildIsEquiv
+     IsEquiv.mk
        _ _
        (prod_ind P)
        (λf x y, f (x, y))
@@ -263,7 +263,7 @@ definition isequiv_prod_ind [instance] `(P : A × B → Type)
 
 definition equiv_prod_ind `(P : A × B → Type)
   : (Π(a : A) (b : B), P (a, b)) ≃ (Πp : A × B, P p) :=
-     BuildEquiv _ _ (prod_ind P) _.
+     Equiv.mk _ _ (prod_ind P) _.
 
 /- The non-dependent version, which is a special case, is the currying equivalence. -/
 definition equiv_uncurry (A B C : Type)
@@ -273,7 +273,7 @@ definition equiv_uncurry (A B C : Type)
 /- Now the negative universal property. -/
 definition prod_coind_uncurried {A : X → Type} {B : X → Type}
   : (Πx, A x) × (Πx, B x) → (Πx, A x × B x) :=
-     λfg x, (fst fg x, snd fg x).
+     λfg x, (pr1 fg x, pr2 fg x).
 
 definition prod_coind `(f : Πx:X, A x) `(g : Πx:X, B x)
   : Πx, A x × B x :=
@@ -281,17 +281,17 @@ definition prod_coind `(f : Πx:X, A x) `(g : Πx:X, B x)
 
 definition isequiv_prod_coind [instance] `(A : X → Type) (B : X → Type)
 : IsEquiv (@prod_coind_uncurried X A B) | 0 :=
-     BuildIsEquiv
+     IsEquiv.mk
        _ _
        (@prod_coind_uncurried X A B)
-       (λh, (λx, fst (h x), λx, snd (h x)))
+       (λh, (λx, pr1 (h x), λx, pr2 (h x)))
        (λ_, 1)
        (λ_, 1)
        (λ_, 1).
 
 definition equiv_prod_coind `(A : X → Type) (B : X → Type)
   : ((Πx, A x) × (Πx, B x)) ≃ (Πx, A x × B x) :=
-     BuildEquiv _ _ (@prod_coind_uncurried X A B) _.
+     Equiv.mk _ _ (@prod_coind_uncurried X A B) _.
 
 /- Products preserve truncation -/
 

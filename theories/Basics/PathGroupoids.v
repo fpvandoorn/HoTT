@@ -694,13 +694,13 @@ definition concat_AT {A : Type} (P : A → Type) {x y : A} {p q : x ≈ y}
      match r with idpath => (concat_p1 _ ⬝ (concat_1p _)⁻¹) end.
 
 /- TODO: What should this be called? -/
-Lemma ap_transport {A} {P Q : A → Type} {x y : A} (p : x ≈ y) (f : Πx, P x → Q x) (z : P x) :
+definition ap_transport {A} {P Q : A → Type} {x y : A} (p : x ≈ y) (f : Πx, P x → Q x) (z : P x) :
   f y (p ▹ z) ≈ (p ▹ (f x z)).
 /-begin
   by induction p.
 end-/
 
-Lemma ap_transportD {A : Type}
+definition ap_transportD {A : Type}
       (B : A → Type) (C1 C2 : Πa : A, B a → Type)
       (f : Πa b, C1 a b → C2 a b)
       {x1 x2 : A} (p : x1 ≈ x2) (y : B x1) (z : C1 x1 y)
@@ -710,7 +710,7 @@ Lemma ap_transportD {A : Type}
   by induction p.
 end-/
 
-Lemma ap_transportD2 {A : Type}
+definition ap_transportD2 {A : Type}
       (B C : A → Type) (D1 D2 : Πa, B a → C a → Type)
       (f : Πa b c, D1 a b c → D2 a b c)
       {x1 x2 : A} (p : x1 ≈ x2) (y : B x1) (z : C x1) (w : D1 x1 y z)
@@ -721,7 +721,7 @@ Lemma ap_transportD2 {A : Type}
 end-/
 
 /- TODO: What should this be called? -/
-Lemma ap_transport_pV {X} (Y : X → Type) {x1 x2 : X} (p : x1 ≈ x2)
+definition ap_transport_pV {X} (Y : X → Type) {x1 x2 : X} (p : x1 ≈ x2)
       {y1 y2 : Y x2} (q : y1 ≈ y2)
 : ap (transport Y p) (ap (transport Y p⁻¹) q) =
   transport_pV Y p y1 ⬝ q ⬝ (transport_pV Y p y2)⁻¹.
@@ -755,14 +755,14 @@ definition transport2_const {A B : Type} {x1 x2 : A} {p q : x1 ≈ x2}
      match r with idpath => (concat_1p _)⁻¹ end.
 
 /- Transporting in a pulled back fibration. -/
-Lemma transport_compose {A B} {x y : A} (P : B → Type) (f : A → B)
+definition transport_compose {A B} {x y : A} (P : B → Type) (f : A → B)
   (p : x ≈ y) (z : P (f x))
   : transport (λx, P (f x)) p z  ≈  transport P (ap f p) z.
 /-begin
   destruct p; reflexivity.
 end-/
 
-Lemma transport_precompose {A B C} (f : A → B) (g g' : B → C) (p : g ≈ g')
+definition transport_precompose {A B C} (f : A → B) (g g' : B → C) (p : g ≈ g')
 : transport (λh : B → C, g ∘ f ≈ h ∘ f) p 1 =
   ap (λh, h ∘ f) p.
 /-begin
@@ -788,7 +788,7 @@ Ltac transport_to_ap :=
 /- The behavior of [ap] and [apD]. -/
 
 /- In a constant fibration, [apD] reduces to [ap], modulo [transport_const]. -/
-Lemma apD_const {A B} {x y : A} (f : A → B) (p: x ≈ y) :
+definition apD_const {A B} {x y : A} (f : A → B) (p: x ≈ y) :
   apD f p ≈ transport_const p (f x) ⬝ ap f p.
 /-begin
   destruct p; reflexivity.

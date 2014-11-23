@@ -56,7 +56,7 @@ Require Grothendieck.
 Require CategoryOfSections.
 /- The Dependent Product -/
 Require DependentProduct.
-/- The Yoneda Lemma -/
+/- The Yoneda definition -/
 Require Yoneda.
 /- The Structure Identity Principle -/
 Require Structure.

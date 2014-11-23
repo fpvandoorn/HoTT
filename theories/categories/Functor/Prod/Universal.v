@@ -8,7 +8,7 @@ Set Implicit Arguments.
 Generalizable All Variables.
 Set Asymmetric Patterns.
 
-Local Notation fst_type := Coq.Init.Datatypes.fst.
+Local Notation fst_type := Coq.Init.Datatypes.pr1.
 Local Notation snd_type := Coq.Init.Datatypes.snd.
 Local Notation pair_type := Coq.Init.Datatypes.pair.
 Local Notation prod_type := Coq.Init.Datatypes.prod.
@@ -29,24 +29,24 @@ section universal
     Variable a : Functor C A.
     Variable b : Functor C B.
 
-    /- [fst ∘ (a × b) ≈ a] -/
-    Lemma compose_fst_prod : fst ∘ (a × b) ≈ a.
+    /- [pr1 ∘ (a × b) ≈ a] -/
+    definition compose_fst_prod : pr1 ∘ (a × b) ≈ a.
     /-begin
       path_functor; trivial.
     end-/
 
-    /- [snd ∘ (a × b) ≈ b] -/
-    Lemma compose_snd_prod : snd ∘ (a × b) ≈ b.
+    /- [pr2 ∘ (a × b) ≈ b] -/
+    definition compose_snd_prod : pr2 ∘ (a × b) ≈ b.
     /-begin
       path_functor; trivial.
     end-/
 
     section unique
       Variable F : Functor C (A × B).
-      Hypothesis H1 : fst ∘ F ≈ a.
-      Hypothesis H2 : snd ∘ F ≈ b.
+      Hypothesis H1 : pr1 ∘ F ≈ a.
+      Hypothesis H2 : pr2 ∘ F ≈ b.
 
-      Lemma unique_helper c
+      definition unique_helper c
       : (a × b) c ≈ F c.
       /-begin
         pose proof (ap (λF, object_of F c) H1).
@@ -56,7 +56,7 @@ section universal
         apply eta_prod.
       end-/
 
-      Lemma unique_helper2
+      definition unique_helper2
       : transport
           (λGO : C → prod_type A B,
              Πs d : C,
@@ -87,7 +87,7 @@ section universal
         reflexivity.
       Qed.
 
-      Lemma unique
+      definition unique
       : a × b ≈ F.
       Proof.
         path_functor.
@@ -102,8 +102,8 @@ section universal
     Global Instance contr_prod_type
            [H : IsHSet (Functor C A), IsHSet (Functor C B)]
     : is_contr { F : Functor C (A × B)
-            | fst ∘ F ≈ a
-              /\ snd ∘ F ≈ b } :=
+            | pr1 ∘ F ≈ a
+              /\ pr2 ∘ F ≈ b } :=
          let x := {| center := (a × b;
                                 (compose_fst_prod,
                                  compose_snd_prod)) |}
@@ -119,8 +119,8 @@ section universal
 
   /- Classification of path space of functors to a product precategory -/
   definition path_prod (F G : Functor C (A × B))
-             (H1 : fst ∘ F ≈ fst ∘ G)
-             (H2 : snd ∘ F ≈ snd ∘ G)
+             (H1 : pr1 ∘ F ≈ pr1 ∘ G)
+             (H2 : pr2 ∘ F ≈ pr2 ∘ G)
   : F ≈ G.
   Proof.
     etransitivity; [ symmetry | ];

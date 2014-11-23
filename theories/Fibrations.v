@@ -23,7 +23,7 @@ definition equiv_hfiber_homotopic
            {A B : Type} (f g : A → B) (h : f == g) (b : B)
 : hfiber f b ≃ hfiber g b.
 /-begin
-  refine (BuildEquiv _ _ (λfx, (fx.1 ; (h fx.1)⁻¹ ⬝ fx.2)) _).
+  refine (Equiv.mk _ _ (λfx, (fx.1 ; (h fx.1)⁻¹ ⬝ fx.2)) _).
   refine (isequiv_adjointify _ (λgx, (gx.1 ; (h gx.1) ⬝ gx.2)) _ _);
     intros [a p]; simpl.
   - apply ap, concat_V_pp.
@@ -35,7 +35,7 @@ end-/
 definition equiv_fibration_replacement  {B C} (f:C ->B):
   C ≃ Σy:B, hfiber f y.
 /-begin
-  refine (BuildEquiv _ _ _ (BuildIsEquiv
+  refine (Equiv.mk _ _ _ (IsEquiv.mk
                C Σy:B, Σx:C, f x ≈ y
                (λc, (f c; ⟨c, idpath⟩))
                (λc, c.2.1)
@@ -49,7 +49,7 @@ end-/
 definition hfiber_fibration {X} (x : X) (P:X->Type):
     P x ≃ @hfiber (sigT P) X dpr1 x.
 /-begin
-  refine (BuildEquiv _ _ _ (BuildIsEquiv
+  refine (Equiv.mk _ _ _ (IsEquiv.mk
                (P x) Σz : sigT P, z.1 ≈ x 
                (λPx, (⟨x, Px⟩; idpath))
                (λPx, transport P Px.2 Px.1.2)
@@ -131,7 +131,7 @@ definition hfiber_functor_sigma {A B} (P : A → Type) (Q : B → Type)
   apply equiv_moveL_transport_V.
 end-/
 
-/- Theorem 4.7.6 -/
+/- definition 4.7.6 -/
 definition hfiber_functor_sigma_idmap {A} (P Q : A → Type)
            (g : Πa, P a → Q a)
            (b : A) (v : Q b)

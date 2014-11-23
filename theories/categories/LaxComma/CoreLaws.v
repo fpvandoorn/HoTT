@@ -99,7 +99,7 @@ Module Import LaxCommaCategory.
 
     /- Ugh. The following code constructs the type of the helper lemma:
 <<
-      Lemma associativity x1 x2 x3 x4
+      definition associativity x1 x2 x3 x4
             (m1 : morphism x1 x2) (m2 : morphism x2 x3) (m3 : morphism x3 x4)
       : compose (compose m3 m2) m1 ≈ compose m3 (compose m2 m1).
       /-begin
@@ -155,7 +155,7 @@ Module Import LaxCommaCategory.
         intro.
 >> -/
 
-    Lemma associativity_helper
+    definition associativity_helper
           {x x0 : PreCategory} {x1 : Functor x0 x}
           {x2 x3 : PreCategory} {x4 : Functor x3 x2} {x5 x6 : PreCategory}
           {x7 : Functor x6 x5} {x8 x9 : PreCategory} {x10 : Functor x9 x8}
@@ -201,7 +201,7 @@ Module Import LaxCommaCategory.
       Time t. /- 18.647s -/
     Qed.
 
-    Lemma associativity x1 x2 x3 x4
+    definition associativity x1 x2 x3 x4
           (m1 : morphism x1 x2) (m2 : morphism x2 x3) (m3 : morphism x3 x4)
     : compose (compose m3 m2) m1 ≈ compose m3 (compose m2 m1).
     Proof.
@@ -219,7 +219,7 @@ Module Import LaxCommaCategory.
 
     /- Ugh.  To construct the type of this lemma, the code is:
 <<
-Lemma left_identity (s d : object) (m : morphism s d)
+definition left_identity (s d : object) (m : morphism s d)
       : compose (identity _) m ≈ m.
       /-begin
         refine (@path_morphism' _ _
@@ -273,7 +273,7 @@ Lemma left_identity (s d : object) (m : morphism s d)
         intro.
 >> -/
 
-    Lemma left_identity_helper
+    definition left_identity_helper
           {x x0 : PreCategory} {x1 : Functor x0 x}
           {x2 x3 : PreCategory} {x4 : Functor x3 x2} {x5 x6 : Functor x3 x0}
           {x7 : Functor x2 x} {x8 : NaturalTransformation (x7 ∘ x4) (x1 ∘ x6)}
@@ -298,7 +298,7 @@ Lemma left_identity (s d : object) (m : morphism s d)
       Time t. /- 3.959 s -/
     Qed.
 
-    Lemma left_identity (s d : object) (m : morphism s d)
+    definition left_identity (s d : object) (m : morphism s d)
     : compose (identity _) m ≈ m.
     Proof.
       refine (@path_morphism' _ A B S T _ _
@@ -314,7 +314,7 @@ Lemma left_identity (s d : object) (m : morphism s d)
 
     /- To generate the type of this helper lemma, we used:
 <<
-      Lemma right_identity (s d : object) (m : morphism s d)
+      definition right_identity (s d : object) (m : morphism s d)
       : compose m (identity _) ≈ m.
       /-begin
         refine (@path_morphism' _ _
@@ -368,7 +368,7 @@ Lemma left_identity (s d : object) (m : morphism s d)
         intro.
 >> -/
 
-    Lemma right_identity_helper
+    definition right_identity_helper
           {x x0 : PreCategory} {x1 : Functor x0 x}
           {x2 x3 : PreCategory} {x4 : Functor x3 x2} {x5 x6 : Functor x3 x0}
           {x7 : Functor x2 x} {x8 : NaturalTransformation (x7 ∘ x4) (x1 ∘ x6)}
@@ -394,7 +394,7 @@ Lemma left_identity (s d : object) (m : morphism s d)
       Time t. /- 3.26 s -/
     Qed.
 
-    Lemma right_identity (s d : object) (m : morphism s d)
+    definition right_identity (s d : object) (m : morphism s d)
     : compose m (identity _) ≈ m.
     Proof.
       refine (@path_morphism' _ A B S T _ _

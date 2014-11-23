@@ -40,7 +40,7 @@ section identity
         reflexivity
       ).
 
-  Lemma identity_associativity
+  definition identity_associativity
         (w x y z : PreCategory) (f : Functor w x)
         (g : Functor x y) (h : Functor y z)
   : associator_1 h g f ∘ (1 oR f ∘ 1) =
@@ -49,7 +49,7 @@ section identity
     t.
   end-/
 
-  Lemma identity_left_identity
+  definition identity_left_identity
         (x y : PreCategory) (f : Functor x y)
   : 1 oR f ∘ 1 =
     (left_identity_natural_transformation_2 f)
@@ -58,7 +58,7 @@ section identity
     t.
   end-/
 
-  Lemma identity_right_identity
+  definition identity_right_identity
         (x y : PreCategory) (f : Functor x y)
   : f oL 1 ∘ 1 =
     (right_identity_natural_transformation_2 f)

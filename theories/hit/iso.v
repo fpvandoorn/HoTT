@@ -12,7 +12,7 @@ section iso
   Variables X Y : hSet.
   Variable f : X → Y.
 
-  Lemma atmost1P_isinj (injf : isinj f)
+  definition atmost1P_isinj (injf : isinj f)
   : Πy : Y, atmost1P (λx, f x ≈ y).
   /-begin
     unfold isinj, atmost1P in *.

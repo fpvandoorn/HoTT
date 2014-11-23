@@ -33,7 +33,7 @@ Local Ltac path_forall_beta_t :=
   reflexivity.
 
 /- The basic idea is expressed in the type of this lemma. -/
-Lemma path_forall_1_beta [H : Funext] A B x P f g e Px
+definition path_forall_1_beta [H : Funext] A B x P f g e Px
 : @transport (Πa : A, B a) (λf, P (f x)) f g (@path_Π_ _ _ _ _ e) Px
   ≈ @transport (B x) P (f x) (g x) (e x) Px.
 /-begin
@@ -41,7 +41,7 @@ Lemma path_forall_1_beta [H : Funext] A B x P f g e Px
 end-/
 
 /- The powerful recursive case -/
-Lemma path_forall_recr_beta' [H : Funext] A B x0 P f g e Px
+definition path_forall_recr_beta' [H : Funext] A B x0 P f g e Px
 : @transport (Πa : A, B a)
              (λf, P f (f x0))
              f
@@ -49,7 +49,7 @@ Lemma path_forall_recr_beta' [H : Funext] A B x0 P f g e Px
              (@path_Π_ _ _ _ _ e)
              Px
   ≈ @transport ((Πa, B a) × B x0)%type
-               (λx, P (fst x) (snd x))
+               (λx, P (pr1 x) (pr2 x))
                (f, f x0)
                (g, g x0)
                (path_prod' (@path_Π_ _ _ _ _ e) (e x0))
@@ -59,7 +59,7 @@ Lemma path_forall_recr_beta' [H : Funext] A B x0 P f g e Px
 end-/
 
 /- Rewrite the recursive case after clean-up -/
-Lemma path_forall_recr_beta [H : Funext] A B x0 P f g e Px
+definition path_forall_recr_beta [H : Funext] A B x0 P f g e Px
 : @transport (Πa : A, B a)
              (λf, P f (f x0))
              f
@@ -136,9 +136,9 @@ Ltac transport_path_forall_hammer :=
     ).
 
 /- An example showing that it works -/
-Lemma path_forall_2_beta' [H : Funext] A B x0 x1 P f g e Px
+definition path_forall_2_beta' [H : Funext] A B x0 x1 P f g e Px
 : @transport (Πa : A, B a) (λf, P (f x0) (f x1)) f g (@path_Π_ _ _ _ _ e) Px
-  ≈ @transport (B x0 × B x1)%type (λx, P (fst x) (snd x)) (f x0, f x1) (g x0, g x1) (path_prod' (e x0) (e x1)) Px.
+  ≈ @transport (B x0 × B x1)%type (λx, P (pr1 x) (pr2 x)) (f x0, f x1) (g x0, g x1) (path_prod' (e x0) (e x1)) Px.
 Proof.
   transport_path_forall_hammer.
   repeat match goal with
@@ -148,7 +148,7 @@ Proof.
   reflexivity.
 Qed.
 
-Lemma path_forall_2_beta [H : Funext] A B x0 x1 P f g e Px
+definition path_forall_2_beta [H : Funext] A B x0 x1 P f g e Px
 : @transport (Πa : A, B a) (λf, P (f x0) (f x1)) f g (@path_Π_ _ _ _ _ e) Px
   ≈ transport (λy : B x1, P (g x0) y) (e x1)
      (transport (λy : B x0, P y (f x1)) (e x0) Px).

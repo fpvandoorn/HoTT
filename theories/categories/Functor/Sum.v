@@ -78,7 +78,7 @@ section swap_functor
     ≈ c :=
        match c with type_inl _ => idpath | type_inr _ => idpath end.
 
-  Lemma swap_involutive [H : Funext] C D
+  definition swap_involutive [H : Funext] C D
   : swap C D ∘ swap D C ≈ 1.
   Proof.
     path_functor.

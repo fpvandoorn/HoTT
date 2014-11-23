@@ -42,8 +42,8 @@ section comma
              (ST : object ((A → C)⁻¹op × (B → C)))
   : Cat / !(⟨A × B, PAB⟩ : Cat).
   /-begin
-    exists (Datatypes.fst ST / Datatypes.snd ST; P_comma _ _) (center _).
-    exact (comma_category_projection (Datatypes.fst ST) (Datatypes.snd ST)).
+    exists (Datatypes.pr1 ST / Datatypes.snd ST; P_comma _ _) (center _).
+    exact (comma_category_projection (Datatypes.pr1 ST) (Datatypes.snd ST)).
   end-/
 
   definition comma_category_projection_functor_morphism_of
@@ -91,7 +91,7 @@ section comma
     rewrite ?CommaCategory.ap_a_path_object', ?CommaCategory.ap_b_path_object';
     try reflexivity.
 
-  Lemma comma_category_projection_functor_identity_of x
+  definition comma_category_projection_functor_identity_of x
   : comma_category_projection_functor_morphism_of (Category.Core.identity x)
     ≈ 1.
   /-begin
@@ -101,7 +101,7 @@ section comma
     comma_laws_t.
   Qed.
 
-  Lemma comma_category_projection_functor_composition_of s d d' m m'
+  definition comma_category_projection_functor_composition_of s d d' m m'
   : comma_category_projection_functor_morphism_of
       (@Category.Core.compose _ s d d' m' m)
     ≈ (comma_category_projection_functor_morphism_of m')

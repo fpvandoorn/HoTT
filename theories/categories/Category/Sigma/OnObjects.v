@@ -61,7 +61,7 @@ section sigT_obj
 
   Local Open Scope functor_scope.
 
-  Lemma sigT_obj_eq [H : Funext]
+  definition sigT_obj_eq [H : Funext]
   : sigT_functor_obj ∘ sigT_functor_obj_inv ≈ 1
     /\ sigT_functor_obj_inv ∘ sigT_functor_obj ≈ 1.
   Proof.

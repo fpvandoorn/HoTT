@@ -42,7 +42,7 @@ section faithfull_precomposition_essential_surjective
 
   Local Arguments Overture.compose / .
 
-  Lemma isfaithful_precomposition_essentially_surjective_helper
+  definition isfaithful_precomposition_essentially_surjective_helper
         (F G : Functor B C)
         (T U : NaturalTransformation F G)
         (a : A) (b : B)

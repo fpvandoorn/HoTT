@@ -13,9 +13,9 @@ section Join
 
   Context (A B : Type).
 
-  definition join := pushout (@fst A B) (@snd A B).
+  definition join := pushout (@pr1 A B) (@pr2 A B).
 
-  definition joinpp := @pp (A*B) A B fst snd.
+  definition joinpp := @pp (A*B) A B pr1 snd.
 
   /- Joining with a contractible type produces a contractible type -/
   definition contr_join [instance] [H : is_contr A] : is_contr join.

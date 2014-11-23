@@ -23,12 +23,12 @@ section functor
   definition functor_uncurried
   : object ((cat⁻¹op × cat) → cat) :=
        Eval cbv zeta in
-        let object_of := (λCD, (((fst CD).1 → (snd CD).1);
-                                     has_functor_categories (fst CD) (snd CD)))
+        let object_of := (λCD, (((pr1 CD).1 → (pr2 CD).1);
+                                     has_functor_categories (pr1 CD) (pr2 CD)))
         in Build_Functor
              (cat⁻¹op × cat) cat
              object_of
-             (λCD C'D' FG, pointwise (fst FG) (snd FG))
+             (λCD C'D' FG, pointwise (pr1 FG) (pr2 FG))
              (λ_ _ _ _ _, Functor.Pointwise.Properties.composition_of _ _ _ _)
              (λ_, Functor.Pointwise.Properties.identity_of _ _).
 

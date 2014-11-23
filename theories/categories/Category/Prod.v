@@ -18,10 +18,10 @@ section prod
   definition prod : PreCategory.
     refine (@Build_PreCategory
               (C × D)%type
-              (λs d, (morphism C (fst s) (fst d)
-                           × morphism D (snd s) (snd d))%type)
-              (λx, (identity (fst x), identity (snd x)))
-              (λs d d' m2 m1, (fst m2 ∘ fst m1, snd m2 ∘ snd m1))
+              (λs d, (morphism C (pr1 s) (pr1 d)
+                           × morphism D (pr2 s) (pr2 d))%type)
+              (λx, (identity (pr1 x), identity (pr2 x)))
+              (λs d d' m2 m1, (pr1 m2 ∘ pr1 m1, pr2 m2 ∘ pr2 m1))
               _
               _
               _

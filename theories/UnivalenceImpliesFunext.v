@@ -16,7 +16,7 @@ section UnivalenceImpliesFunext
 
   /- Should this go somewhere else? -/
 
-  Theorem univalence_isequiv_postcompose {H0 : IsEquiv A B w} C : IsEquiv (@compose C A B w).
+  definition univalence_isequiv_postcompose {H0 : IsEquiv A B w} C : IsEquiv (@compose C A B w).
   /-begin
     unfold Univalence_type in *.
     refine (isequiv_adjointify
@@ -25,7 +25,7 @@ section UnivalenceImpliesFunext
               _
               _);
     intro;
-    pose (BuildEquiv _ _ w _) as w';
+    pose (Equiv.mk _ _ w _) as w';
     change H0 with (@equiv_isequiv _ _ w');
     change w with (@equiv_fun _ _ w');
     clearbody w'; clear H0 w;
@@ -40,13 +40,13 @@ section UnivalenceImpliesFunext
   /- We are ready to prove functional extensionality, starting with the naive non-dependent version. -/
 
   Local Instance isequiv_src_compose A B
-  : @IsEquiv (A → Σxy : B × B, fst xy ≈ snd xy)
+  : @IsEquiv (A → Σxy : B × B, pr1 xy ≈ pr2 xy)
              (A → B)
-             (compose (fst ∘ dpr1)).
+             (compose (pr1 ∘ dpr1)).
   /-begin
     apply @univalence_isequiv_postcompose.
     refine (isequiv_adjointify
-              (fst ∘ dpr1) (λx, ((x, x); idpath))
+              (pr1 ∘ dpr1) (λx, ((x, x); idpath))
               (λ_, idpath)
               _);
       let p := fresh in
@@ -57,13 +57,13 @@ section UnivalenceImpliesFunext
 
 
   Local Instance isequiv_tgt_compose A B
-  : @IsEquiv (A → Σxy : B × B, fst xy ≈ snd xy)
+  : @IsEquiv (A → Σxy : B × B, pr1 xy ≈ pr2 xy)
              (A → B)
-             (compose (snd ∘ dpr1)).
+             (compose (pr2 ∘ dpr1)).
   /-begin
     apply @univalence_isequiv_postcompose.
     refine (isequiv_adjointify
-              (snd ∘ dpr1) (λx, ((x, x); idpath))
+              (pr2 ∘ dpr1) (λx, ((x, x); idpath))
               (λ_, idpath)
               _);
       let p := fresh in
@@ -72,16 +72,16 @@ section UnivalenceImpliesFunext
         reflexivity.
   end-/
 
-  Theorem Univalence_implies_FunextNondep (A B : Type)
+  definition Univalence_implies_FunextNondep (A B : Type)
   : Πf g : A → B, f == g → f ≈ g.
   /-begin
     intros f g p.
     /- Consider the following maps. -/
-    pose (d := λx : A, existT (λxy, fst xy ≈ snd xy) (f x, f x) (idpath (f x))).
-    pose (e := λx : A, existT (λxy, fst xy ≈ snd xy) (f x, g x) (p x)).
+    pose (d := λx : A, existT (λxy, pr1 xy ≈ pr2 xy) (f x, f x) (idpath (f x))).
+    pose (e := λx : A, existT (λxy, pr1 xy ≈ pr2 xy) (f x, g x) (p x)).
     /- If we compose [d] and [e] with [free_path_target], we get [f] and [g], respectively. So, if we had a path from [d] to [e], we would get one from [f] to [g]. -/
-    change f with ((snd ∘ dpr1) ∘ d).
-    change g with ((snd ∘ dpr1) ∘ e).
+    change f with ((pr2 ∘ dpr1) ∘ d).
+    change g with ((pr2 ∘ dpr1) ∘ e).
     apply ap.
     /- Since composition with [src] is an equivalence, we can freely compose with [src]. -/
     pose (λA B x y, @equiv_inv _ _ _ (@isequiv_ap _ _ _ (@isequiv_src_compose A B) x y)) as H'.
@@ -94,7 +94,7 @@ section UnivalenceImpliesWeakFunext
   Context {ua1 : Univalence_type, ua2 : Univalence_type}.
   /- Now we use this to prove weak funext, which as we know implies (with dependent eta) also the strong dependent funext. -/
 
-  Theorem Univalence_implies_WeakFunext : WeakFunext.
+  definition Univalence_implies_WeakFunext : WeakFunext.
   Proof.
     intros A P allcontr.
     /- We are going to replace [P] with something simpler. -/

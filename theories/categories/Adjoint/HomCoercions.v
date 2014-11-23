@@ -48,7 +48,7 @@ section AdjunctionEquivalences
            Eval simpl in
             G _1 g ∘ A (c, d) f ≈ A (c, d') (g ∘ f).
 
-      Lemma adjunction_naturality : adjunction_naturalityT.
+      definition adjunction_naturality : adjunction_naturalityT.
       /-begin
         pose proof (ap10 (commutes A (c, d) (c, d') (1, g))⁻¹ f) as H'; simpl in *.
         rewrite ?identity_of, ?left_identity, ?right_identity in H'.
@@ -65,7 +65,7 @@ section AdjunctionEquivalences
            Eval simpl in
             A (c', d) f ∘ g ≈ A (c, d) (f ∘ F _1 g).
 
-      Lemma adjunction_naturality' : adjunction_naturalityT'.
+      definition adjunction_naturality' : adjunction_naturalityT'.
       Proof.
         pose proof (ap10 (commutes A (c', d) (c, d) (g, 1))⁻¹ f) as H'; simpl in *.
         rewrite ?identity_of, ?left_identity, ?right_identity in H'.
@@ -106,7 +106,7 @@ section AdjunctionEquivalences
      [η c ≈ ϕ(1_{F c})]
      *)
 
-  Lemma adjunction_unit__of__adjunction_hom_helper (A : AdjunctionHom F G)
+  definition adjunction_unit__of__adjunction_hom_helper (A : AdjunctionHom F G)
         (c : C) (d : D) (f : morphism C c (G d))
   : is_hprop Σg : morphism D (F c) d, G _1 g ∘ A (c, F c) 1 ≈ f.
   Proof.
@@ -122,7 +122,7 @@ section AdjunctionEquivalences
     reflexivity.
   Qed.
 
-  Lemma adjunction_unit__of__adjunction_hom__mate_of__commutes
+  definition adjunction_unit__of__adjunction_hom__mate_of__commutes
         (A : AdjunctionHom F G) (s d : C) (m : morphism C s d)
   : A (d, F d) 1 ∘ m ≈ G _1 (F _1 m) ∘ A (s, F s) 1.
   Proof.
@@ -162,7 +162,7 @@ section isequiv
 
   Variable T : AdjunctionUnit F G.
 
-  Lemma equiv_hom_set_adjunction
+  definition equiv_hom_set_adjunction
         (c : C) (d : D)
   : morphism C c (G d) ≃ morphism D (F c) d.
   /-begin
@@ -196,7 +196,7 @@ section AdjunctionEquivalences'
 
   Local Open Scope morphism_scope.
 
-  Lemma adjunction_hom__of__adjunction_unit__commutes
+  definition adjunction_hom__of__adjunction_unit__commutes
         (T : AdjunctionUnit F G)
         sc sd dc dd
         (mc : morphism C dc sc) (md : morphism D sd dd)
@@ -220,7 +220,7 @@ section AdjunctionEquivalences'
              @isiso_isequiv
                _ _ _ _
                (equiv_isequiv
-                  (equiv_inverse (equiv_hom_set_adjunction T (fst cd) (snd cd))))).
+                  (equiv_inverse (equiv_hom_set_adjunction T (pr1 cd) (pr2 cd))))).
     Grab Existential Variables.
     simpl.
     intros.

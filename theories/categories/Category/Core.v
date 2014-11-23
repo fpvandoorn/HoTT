@@ -119,7 +119,7 @@ section identity_unique
   Variable C : PreCategory.
 
   /- The identity morphism is unique. -/
-  Lemma identity_unique (id0 id1 : Πx, morphism C x x)
+  definition identity_unique (id0 id1 : Πx, morphism C x x)
         (id1_left : Πs d (m : morphism C s d), id1 _ ∘ m ≈ m)
         (id0_right : Πs d (m : morphism C s d), m ∘ id0 _ ≈ m)
   : id0 == id1.

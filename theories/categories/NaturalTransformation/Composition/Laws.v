@@ -16,7 +16,7 @@ section natural_transformation_identity
   Variable D : PreCategory.
 
   /- left identity : [1 ∘ T ≈ T] -/
-  Lemma left_identity (F F' : Functor C D)
+  definition left_identity (F F' : Functor C D)
         (T : NaturalTransformation F F')
   : 1 ∘ T ≈ T.
   Proof.
@@ -24,7 +24,7 @@ section natural_transformation_identity
   Qed.
 
   /- right identity : [T ∘ 1 ≈ T] -/
-  Lemma right_identity (F F' : Functor C D)
+  definition right_identity (F F' : Functor C D)
         (T : NaturalTransformation F F')
   : T ∘ 1 ≈ T.
   Proof.
@@ -64,7 +64,7 @@ section whisker
     Variable T' : NaturalTransformation G G'.
     Variable T : NaturalTransformation F F'.
 
-    Lemma exchange_whisker
+    definition exchange_whisker
     : (G' oL T) ∘ (T' oR F) ≈ (T' oR F') ∘ (G oL T).
     Proof.
       path_natural_transformation; simpl.
@@ -81,14 +81,14 @@ section whisker
     Variable T' : NaturalTransformation F G.
 
     /- left whisker composition : [F ∘ᴸ (T ∘ T') ≈ (F ∘ᴸ T) ∘ (F ∘ᴸ T')] -/
-    Lemma composition_of_whisker_l E (I : Functor D E)
+    definition composition_of_whisker_l E (I : Functor D E)
     : I oL (T ∘ T') ≈ (I oL T) ∘ (I oL T').
     Proof.
       path_natural_transformation; apply composition_of.
     Qed.
 
     /- right whisker composition : [(T ∘ T') ∘ᴿ F ≈ (T ∘ᴿ F) ∘ (T' ∘ᴿ F)] -/
-    Lemma composition_of_whisker_r B (I : Functor B C)
+    definition composition_of_whisker_r B (I : Functor B C)
     : (T ∘ T') oR I ≈ (T oR I) ∘ (T' oR I).
     Proof.
       path_natural_transformation; apply idpath.
@@ -158,7 +158,7 @@ section functor_identity
     : NaturalTransformation F (1 ∘ F) :=
          Eval simpl in generalized_identity F (1 ∘ F) idpath idpath.
 
-    Theorem left_identity_isomorphism
+    definition left_identity_isomorphism
     : left_identity_natural_transformation_1 ∘ left_identity_natural_transformation_2 ≈ 1
       /\ left_identity_natural_transformation_2 ∘ left_identity_natural_transformation_1 ≈ 1.
     Proof.
@@ -175,7 +175,7 @@ section functor_identity
     definition right_identity_natural_transformation_2 : NaturalTransformation F (F ∘ 1) :=
          Eval simpl in generalized_identity F (F ∘ 1) idpath idpath.
 
-    Theorem right_identity_isomorphism
+    definition right_identity_isomorphism
     : right_identity_natural_transformation_1 ∘ right_identity_natural_transformation_2 ≈ 1
       /\ right_identity_natural_transformation_2 ∘ right_identity_natural_transformation_1 ≈ 1.
     Proof.

@@ -35,7 +35,7 @@ end-/
 definition isequiv_fcontr `(f : A → B)
   : (Πb:B, is_contr Σa : A, f a ≈ b) → IsEquiv f.
 /-begin
-  intros ?. refine (BuildIsEquiv _ _ _
+  intros ?. refine (IsEquiv.mk _ _ _
     (λb, (center Σa : A, f a ≈ b).1)
     (λb, (center Σa : A, f a ≈ b).2)
     (λa, (@contr Σx : A, f x ≈ f a _ ⟨a,1⟩)..1)
@@ -228,8 +228,8 @@ definition isequiv_pathsplit (n : nat) {f : A → B}
 : PathSplit n.+2 f → IsEquiv f.
 /-begin
   intros [g k].
-  pose (h := λx y p, (fst (k x y) p).1).
-  pose (hs := λx y, (λp, (fst (k x y) p).2)
+  pose (h := λx y p, (pr1 (k x y) p).1).
+  pose (hs := λx y, (λp, (pr1 (k x y) p).2)
                          : Sect (h x y) (ap f)).
   clearbody hs; clearbody h; clear k.
   apply isequiv_fcontr; intros b.
@@ -274,7 +274,7 @@ definition equiv_pathsplit_isequiv (n : nat) `(f : A → B)
 end-/
 
 /- Path-splitness transfers across commutative squares of equivalences. -/
-Lemma equiv_functor_pathsplit (n : nat) {A B C D}
+definition equiv_functor_pathsplit (n : nat) {A B C D}
       (f : A → B) (g : C → D) (h : A ≃ C) (k : B ≃ D)
       (p : g ∘ h == k ∘ f)
 : PathSplit n f ≃ PathSplit n g.

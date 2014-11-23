@@ -8,7 +8,7 @@ Set Implicit Arguments.
 Generalizable All Variables.
 Set Asymmetric Patterns.
 
-Local Notation fst_type := fst.
+Local Notation fst_type := pr1.
 Local Notation snd_type := snd.
 Local Notation pair_type := pair.
 
@@ -20,17 +20,17 @@ section proj
   Context {C : PreCategory}.
   Context {D : PreCategory}.
 
-  definition fst : Functor (C × D) C :=
+  definition pr1 : Functor (C × D) C :=
        Build_Functor (C × D) C
-                     (@fst _ _)
-                     (λ_ _, @fst _ _)
+                     (@pr1 _ _)
+                     (λ_ _, @pr1 _ _)
                      (λ_ _ _ _ _, idpath)
                      (λ_, idpath).
 
-  definition snd : Functor (C × D) D :=
+  definition pr2 : Functor (C × D) D :=
        Build_Functor (C × D) D
-                     (@snd _ _)
-                     (λ_ _, @snd _ _)
+                     (@pr2 _ _)
+                     (λ_ _, @pr2 _ _)
                      (λ_ _ _ _ _, idpath)
                      (λ_, idpath).
 End proj.
@@ -66,7 +66,7 @@ section pair
   Local Open Scope functor_scope.
 
   definition pair : Functor (C × C') (D × D') :=
-       (F ∘ fst) × (F' ∘ snd).
+       (F ∘ pr1) × (F' ∘ pr2).
 End pair.
 
 Local Notation "( x , y , .. , z )" := (pair .. (pair x y) .. z) : functor_scope.

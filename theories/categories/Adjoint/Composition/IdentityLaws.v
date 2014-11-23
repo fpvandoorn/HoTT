@@ -17,7 +17,7 @@ Local Open Scope morphism_scope.
 section identity_lemmas
   Local Notation AdjunctionWithFunctors C D :=
     { fg : Functor C D × Functor D C
-    | fst fg -| snd fg }.
+    | pr1 fg -| pr2 fg }.
 
   Context [H : Funext].
 
@@ -31,7 +31,7 @@ section identity_lemmas
 
   Local Open Scope adjunction_scope.
 
-  Lemma left_identity
+  definition left_identity
   : ((_, _); 1 ∘ A) ≈ ((_, _); A) :> AdjunctionWithFunctors C D.
   Proof.
     apply path_sigma_uncurried; simpl.
@@ -41,7 +41,7 @@ section identity_lemmas
     Adjoint.Composition.LawsTactic.law_t.
   Qed.
 
-  Lemma right_identity
+  definition right_identity
   : ((_, _); A ∘ 1) ≈ ((_, _); A) :> AdjunctionWithFunctors C D.
   Proof.
     apply path_sigma_uncurried; simpl.

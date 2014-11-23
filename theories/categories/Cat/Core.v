@@ -52,7 +52,7 @@ section objects
   Context [H : ΠC, is_hprop (P C)].
   Context {HF : ΠC D, P C → P D → IsHSet (Functor C D)}.
 
-  Lemma is_terminal_object__is_terminal_category
+  definition is_terminal_object__is_terminal_category
         `(IsTerminalCategory one)
         (HT : P one)
   : IsTerminalObject (sub_pre_cat P HF) ⟨one, HT⟩.
@@ -60,7 +60,7 @@ section objects
     typeclasses eauto.
   end-/
 
-  Lemma is_initial_object__is_initial_category
+  definition is_initial_object__is_initial_category
         `(IsInitialCategory zero)
         (HI : P zero)
   : IsInitialObject (sub_pre_cat P HF) ⟨zero, HI⟩.

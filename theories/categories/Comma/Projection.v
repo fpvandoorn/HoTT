@@ -43,13 +43,13 @@ section slice_category
   Local Arguments path_prod_uncurried / .
 
   definition arrow_category_projection : Functor (arrow_category A) A :=
-       Eval simpl in fst ∘ comma_category_projection _ 1.
+       Eval simpl in pr1 ∘ comma_category_projection _ 1.
 
   definition slice_category_over_projection (a : A) : Functor (A / a) A :=
-       Eval simpl in fst ∘ comma_category_projection 1 _.
+       Eval simpl in pr1 ∘ comma_category_projection 1 _.
 
   definition coslice_category_over_projection (a : A) : Functor (a \ A) A :=
-       Eval simpl in snd ∘ comma_category_projection _ 1.
+       Eval simpl in pr2 ∘ comma_category_projection _ 1.
 
   section slice_coslice
     Variable C : PreCategory.
@@ -57,9 +57,9 @@ section slice_category
     Variable S : Functor A C.
 
     definition slice_category_projection : Functor (S / a) A :=
-         Eval simpl in fst ∘ comma_category_projection S !a.
+         Eval simpl in pr1 ∘ comma_category_projection S !a.
 
     definition coslice_category_projection : Functor (a / S) A :=
-         Eval simpl in snd ∘ comma_category_projection !a S.
+         Eval simpl in pr2 ∘ comma_category_projection !a S.
   End slice_coslice.
 End slice_category.

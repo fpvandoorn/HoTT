@@ -85,7 +85,7 @@ end-/
 definition isequiv_path_sum [instance] {A B : Type} {z z' : A + B}
 : IsEquiv (path_sum z z') | 0.
 /-begin
-  refine (BuildIsEquiv _ _
+  refine (IsEquiv.mk _ _
                        (path_sum z z')
                        (@path_sum_inv _ _ z z')
                        (@eisretr_path_sum A B z z')
@@ -97,7 +97,7 @@ definition isequiv_path_sum [instance] {A B : Type} {z z' : A + B}
 end-/
 
 definition equiv_path_sum {A B : Type} (z z' : A + B) :=
-     BuildEquiv _ _ _ (@isequiv_path_sum A B z z').
+     Equiv.mk _ _ _ (@isequiv_path_sum A B z z').
 
 /- Transport -/
 
@@ -129,7 +129,7 @@ end-/
 
 definition equiv_functor_sum [H : IsEquiv A A' f] [H : IsEquiv B B' g]
 : A + B ≃ A' + B' :=
-     BuildEquiv _ _ (functor_sum f g) _.
+     Equiv.mk _ _ (functor_sum f g) _.
 
 definition equiv_functor_sum' {A A' B B' : Type} (f : A ≃ A') (g : B ≃ B')
 : A + B ≃ A' + B' :=
@@ -162,7 +162,7 @@ end-/
 definition sum_ind_uncurried {A B} (P : A + B → Type)
            (fg : (Πa, P (inl a)) × (Πb, P (inr b)))
 : Πs, P s :=
-     @sum_ind A B P (fst fg) (snd fg).
+     @sum_ind A B P (pr1 fg) (pr2 fg).
 
 /- First the positive universal property.
    Doing this sort of thing without adjointifying will require very careful use of funext. -/
@@ -179,7 +179,7 @@ definition isequiv_sum_ind [instance] [H : Funext] `(P : A + B → Type)
 end-/
 
 definition equiv_sum_ind [H : Funext] `(P : A + B → Type) :=
-     BuildEquiv _ _ _ (isequiv_sum_ind P).
+     Equiv.mk _ _ _ (isequiv_sum_ind P).
 
 /- The non-dependent version, which is a special case, is the sum-distributive equivalence. -/
 definition equiv_sum_distributive [H : Funext] (A B C : Type)

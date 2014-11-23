@@ -104,7 +104,7 @@ section idtoiso
       abstract (path_natural_transformation; case T; simpl; auto with morphism).
   end-/
 
-  Lemma eta_idtoiso
+  definition eta_idtoiso
         (F G : object (C → D))
         (T : F ≈ G)
   : Morphisms.idtoiso _ T ≈ idtoiso T.

@@ -20,7 +20,7 @@ section path_natural_transformation
   Local Open Scope equiv_scope.
 
   /- Equivalence between record and sigma versions of natural transformation -/
-  Lemma equiv_sig_natural_transformation
+  definition equiv_sig_natural_transformation
   : { CO : Πx, morphism D (F x) (G x)
     | Πs d (m : morphism C s d),
         CO d ∘ F _1 m ≈ G _1 m ∘ CO s }
@@ -48,7 +48,7 @@ section path_natural_transformation
     Variables T U : NaturalTransformation F G.
 
     /- Equality of natural transformations is implied by equality of components -/
-    Lemma path'_natural_transformation
+    definition path'_natural_transformation
     : components_of T ≈ components_of U
       → T ≈ U.
     Proof.
@@ -59,7 +59,7 @@ section path_natural_transformation
         refine (center _).
     Qed.
 
-    Lemma path_natural_transformation
+    definition path_natural_transformation
     : components_of T == components_of U
       → T ≈ U.
     Proof.
@@ -72,21 +72,21 @@ section path_natural_transformation
     : T ≈ U → components_of T == components_of U :=
          (λH _, match H with idpath => idpath end).
 
-    Lemma eisretr_path_natural_transformation
+    definition eisretr_path_natural_transformation
     : Sect path_natural_transformation path_inv.
     Proof.
       repeat intro.
       refine (center _).
     Qed.
 
-    Lemma eissect_path_natural_transformation
+    definition eissect_path_natural_transformation
     : Sect path_inv path_natural_transformation.
     Proof.
       repeat intro.
       refine (center _).
     Qed.
 
-    Lemma eisadj_path_natural_transformation
+    definition eisadj_path_natural_transformation
     : Πx,
         @eisretr_path_natural_transformation (path_inv x)
         ≈ ap path_inv (eissect_path_natural_transformation x).
@@ -96,7 +96,7 @@ section path_natural_transformation
     Qed.
 
     /- Equality of natural transformations is equivalent to equality of components -/
-    Lemma equiv_path_natural_transformation
+    definition equiv_path_natural_transformation
     : T ≈ U ≃ (components_of T == components_of U).
     Proof.
       econstructor. econstructor. exact eisadj_path_natural_transformation.

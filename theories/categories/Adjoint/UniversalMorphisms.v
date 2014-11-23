@@ -88,7 +88,7 @@ section adjunction_from_universal
        IsInitialMorphism_property_morphism (@HM Y0) _ (etaY1 ∘ f))
         (only parsing).
 
-    Lemma identity_of Y : mor_of Y Y 1 ≈ 1.
+    definition identity_of Y : mor_of Y Y 1 ≈ 1.
     /-begin
       simpl.
       erewrite IsInitialMorphism_property_morphism_unique; [ reflexivity | ].
@@ -96,7 +96,7 @@ section adjunction_from_universal
       reflexivity.
     Qed.
 
-    Lemma composition_of x y z g f
+    definition composition_of x y z g f
     : mor_of _ _ (f ∘ g) ≈ mor_of y z f ∘ mor_of x y g.
     Proof.
       simpl.

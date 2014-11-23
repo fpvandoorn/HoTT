@@ -30,7 +30,7 @@ section path_adjunction
         | ΠX : D, (G _1 (eps X) ∘ eta (G X))%morphism ≈ 1%morphism }}}.
 
   /- Equivalence between record and nested sigma for unit+counit adjunctions -/
-  Lemma equiv_sig_adjunction
+  definition equiv_sig_adjunction
   : adjunction_sigT ≃ (F -| G).
   /-begin
     issig (@Build_AdjunctionUnitCounit _ _ F G)
@@ -48,7 +48,7 @@ section path_adjunction
   Qed.
 
   /- Equality of adjunctions follows from equality of unit+counit -/
-  Lemma path_adjunction' (A A' : F -| G)
+  definition path_adjunction' (A A' : F -| G)
   : unit A ≈ unit A'
     → counit A ≈ counit A'
     → A ≈ A'.
@@ -61,7 +61,7 @@ section path_adjunction
   Qed.
 
   /- Equality of adjunctions follows from equality of action of unit+counit on objects -/
-  Lemma path_adjunction (A A' : F -| G)
+  definition path_adjunction (A A' : F -| G)
   : components_of (unit A) == components_of (unit A')
     → components_of (counit A) == components_of (counit A')
     → A ≈ A'.

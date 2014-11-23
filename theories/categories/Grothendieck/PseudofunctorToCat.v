@@ -179,7 +179,7 @@ intros a b c d [f f'] [g g'] [h h']; simpl.
     intro C.
 >> -/
 
-  Lemma pseudofunctor_to_cat_assoc_helper
+  definition pseudofunctor_to_cat_assoc_helper
   : Π{x x0 : C} {x2 : Category.Core.morphism C x x0} {x1 : C}
            {x5 : Category.Core.morphism C x0 x1} {x4 : C} {x7 : Category.Core.morphism C x1 x4}
            {p p0 : PreCategory} {f : Category.Core.morphism C x x4 → Functor p0 p}
@@ -207,7 +207,7 @@ intros a b c d [f f'] [g g'] [h h']; simpl.
     assoc_fin_tac.
   Qed.
 
-  Lemma pseudofunctor_to_cat_left_identity_helper
+  definition pseudofunctor_to_cat_left_identity_helper
   : Π{x1 x2 : C} {f : Category.Core.morphism C x2 x1} {p p0 : PreCategory}
            {f0 : Category.Core.morphism C x2 x1 → Functor p0 p} {f1 : Functor p p}
            {x0 : Category.Core.morphism (_ → _) (f0 (1 ∘ f)) (f1 ∘ f0 f)%functor}
@@ -227,7 +227,7 @@ intros a b c d [f f'] [g g'] [h h']; simpl.
     helper_t idtac.
   Qed.
 
-  Lemma pseudofunctor_to_cat_right_identity_helper
+  definition pseudofunctor_to_cat_right_identity_helper
   : Π{x1 x2 : C} {f : Category.Core.morphism C x2 x1} {p p0 : PreCategory}
            {f0 : Category.Core.morphism C x2 x1 → Functor p0 p} {f1 : Functor p0 p0}
            {x0 : Category.Core.morphism (_ → _) (f0 (f ∘ 1)) (f0 f ∘ f1)%functor}

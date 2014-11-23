@@ -20,16 +20,16 @@ section Law3
   Variable C2 : PreCategory.
   Variable D : PreCategory.
 
-  Lemma helper (c : Functor D C1 × Functor D C2)
-  : ((fst ∘ (Datatypes.fst c × Datatypes.snd c))%functor,
-     (snd ∘ (Datatypes.fst c × Datatypes.snd c))%functor)%core ≈ c.
+  definition helper (c : Functor D C1 × Functor D C2)
+  : ((pr1 ∘ (Datatypes.pr1 c × Datatypes.snd c))%functor,
+     (pr2 ∘ (Datatypes.pr1 c × Datatypes.snd c))%functor)%core ≈ c.
   /-begin
     apply path_prod;
     [ apply compose_fst_prod
     | apply compose_snd_prod ].
   end-/
 
-  Lemma Law
+  definition Law
   : functor C1 C2 D ∘ inverse C1 C2 D ≈ 1
     /\ inverse C1 C2 D ∘ functor C1 C2 D ≈ 1.
   Proof.

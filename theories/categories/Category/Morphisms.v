@@ -54,7 +54,7 @@ section iso_contr
     Variable m : morphism C s d.
 
     /- The inverse of a morphism is unique -/
-    Lemma inverse_unique (m_inv0 m_inv1 : morphism C d s)
+    definition inverse_unique (m_inv0 m_inv1 : morphism C d s)
           (left_inverse_0 : m_inv0 ∘ m ≈ identity _)
           (right_inverse_1 : m ∘ m_inv1 ≈ identity _)
     : m_inv0 ≈ m_inv1.
@@ -72,7 +72,7 @@ section iso_contr
         | m ∘ inverse ≈ identity _ } } (only parsing).
 
     /- Equivalence between the record and sigma versions of [IsIsomorphism] -/
-    Lemma issig_isisomorphism
+    definition issig_isisomorphism
     : IsIsomorphism_sig_T ≃ IsIsomorphism m.
     Proof.
       issig (@Build_IsIsomorphism _ _ _ m)
@@ -104,7 +104,7 @@ section iso_contr
     | IsIsomorphism m } (only parsing).
 
   /- Equivalence between record and sigma versions of [Isomorphic] -/
-  Lemma issig_isomorphic
+  definition issig_isomorphic
   : Isomorphic_sig_T ≃ Isomorphic s d.
   Proof.
     issig (@Build_Isomorphic C s d)
@@ -362,7 +362,7 @@ section iso_lemmas
     path_induction; simpl; autorewrite with morphism; reflexivity.
 
   /- [transport]ing across an equality of morphisms is the same as conjugating with [idtoiso] -/
-  Lemma idtoiso_of_transport (C D : PreCategory) s d
+  definition idtoiso_of_transport (C D : PreCategory) s d
         (m1 m2 : morphism C s d)
         (p : m1 ≈ m2)
         (s' d' : morphism C s d → D) u
@@ -371,54 +371,54 @@ section iso_lemmas
   Proof. idtoiso_t. Qed.
 
   /- [idtoiso] respects inverse -/
-  Lemma idtoiso_inv (C : PreCategory) (s d : C) (p : s ≈ d)
+  definition idtoiso_inv (C : PreCategory) (s d : C) (p : s ≈ d)
   : (idtoiso _ p)⁻¹ ≈ idtoiso _ (p⁻¹)%path.
   Proof.
     path_induction; reflexivity.
   end-/
 
   /- [idtoiso] respects composition -/
-  Lemma idtoiso_comp (C : PreCategory) (s d d' : C)
+  definition idtoiso_comp (C : PreCategory) (s d d' : C)
         (m1 : d ≈ d') (m2 : s ≈ d)
   : idtoiso _ m1 ∘ idtoiso _ m2 ≈ idtoiso _ (m2 ⬝ m1)%path.
   /-begin idtoiso_t. Qed.
 
   /- These are useful when tactics are too slow and [rewrite] doesn't
       work. -/
-  Lemma idtoiso_comp3 (C : PreCategory) (s d d' d'' : C)
+  definition idtoiso_comp3 (C : PreCategory) (s d d' d'' : C)
         (m0 : d' ≈ d'') (m1 : d ≈ d') (m2 : s ≈ d)
   : idtoiso _ m0 ∘ (idtoiso _ m1 ∘ idtoiso _ m2) ≈ idtoiso _ ((m2 ⬝ m1) ⬝ m0)%path.
   Proof. idtoiso_t. Qed.
 
-  Lemma idtoiso_comp3' (C : PreCategory) (s d d' d'' : C)
+  definition idtoiso_comp3' (C : PreCategory) (s d d' d'' : C)
         (m0 : d' ≈ d'') (m1 : d ≈ d') (m2 : s ≈ d)
   : (idtoiso _ m0 ∘ idtoiso _ m1) ∘ idtoiso _ m2 ≈ idtoiso _ (m2 ⬝ (m1 ⬝ m0))%path.
   Proof. idtoiso_t. Qed.
 
-  Lemma idtoiso_comp4 (C : PreCategory) (s d d' d'' d''' : C)
+  definition idtoiso_comp4 (C : PreCategory) (s d d' d'' d''' : C)
         (m0 : d'' ≈ d''') (m1 : d' ≈ d'') (m2 : d ≈ d') (m3 : s ≈ d)
   : idtoiso _ m0 ∘ (idtoiso _ m1 ∘ (idtoiso _ m2 ∘ idtoiso _ m3)) ≈ idtoiso _ (((m3 ⬝ m2) ⬝ m1) ⬝ m0)%path.
   Proof. idtoiso_t. Qed.
 
-  Lemma idtoiso_comp4' (C : PreCategory) (s d d' d'' d''' : C)
+  definition idtoiso_comp4' (C : PreCategory) (s d d' d'' d''' : C)
         (m0 : d'' ≈ d''') (m1 : d' ≈ d'') (m2 : d ≈ d') (m3 : s ≈ d)
   : ((idtoiso _ m0 ∘ idtoiso _ m1) ∘ idtoiso _ m2) ∘ idtoiso _ m3 ≈ idtoiso _ (m3 ⬝ (m2 ⬝ (m1 ⬝ m0)))%path.
   Proof. idtoiso_t. Qed.
 
-  Lemma idtoiso_comp5 (C : PreCategory) (s d d' d'' d''' d'''' : C)
+  definition idtoiso_comp5 (C : PreCategory) (s d d' d'' d''' d'''' : C)
         (m0 : d''' ≈ d'''') (m1 : d'' ≈ d''') (m2 : d' ≈ d'') (m3 : d ≈ d') (m4 : s ≈ d)
   : idtoiso _ m0 ∘ (idtoiso _ m1 ∘ (idtoiso _ m2 ∘ (idtoiso _ m3 ∘ idtoiso _ m4)))
     ≈ idtoiso _ ((((m4 ⬝ m3) ⬝ m2) ⬝ m1) ⬝ m0)%path.
   Proof. idtoiso_t. Qed.
 
-  Lemma idtoiso_comp5' (C : PreCategory) (s d d' d'' d''' d'''' : C)
+  definition idtoiso_comp5' (C : PreCategory) (s d d' d'' d''' d'''' : C)
         (m0 : d''' ≈ d'''') (m1 : d'' ≈ d''') (m2 : d' ≈ d'') (m3 : d ≈ d') (m4 : s ≈ d)
   : (((idtoiso _ m0 ∘ idtoiso _ m1) ∘ idtoiso _ m2) ∘ idtoiso _ m3) ∘ idtoiso _ m4
     ≈ idtoiso _ (m4 ⬝ (m3 ⬝ (m2 ⬝ (m1 ⬝ m0))))%path.
   Proof. idtoiso_t. Qed.
 
   /- [idtoiso] respects application of functors on morphisms and objects -/
-  Lemma idtoiso_functor (C D : PreCategory) (s d : C) (m : s ≈ d)
+  definition idtoiso_functor (C D : PreCategory) (s d : C) (m : s ≈ d)
         (F : Functor C D)
   : morphism_of F (idtoiso _ m) ≈ idtoiso _ (ap (object_of F) m).
   Proof.
@@ -628,7 +628,7 @@ section associativity_composition
   Variables x0 x1 x2 x3 x4 : C.
 
   /- This lemma is helpful for backwards reasoning. -/
-  Lemma compose4associativity_helper
+  definition compose4associativity_helper
     (a : morphism C x3 x4) (b : morphism C x2 x3)
     (c : morphism C x1 x2) (d : morphism C x0 x1)
   : a ∘ b ∘ c ∘ d ≈ (a ∘ ((b ∘ c) ∘ d)).

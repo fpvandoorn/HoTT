@@ -75,7 +75,7 @@ section Equiv
   Context {A : Type} (R : relation A) {sR: is_mere_relation _ R}
           {Htrans : Transitive R} {Hsymm : Symmetric R}.
 
-  Lemma quotient_path2 : Π{x y : quotient R} (p q : x=y), p=q.
+  definition quotient_path2 : Π{x y : quotient R} (p q : x=y), p=q.
   /-begin
     apply @set_path2. apply _.
   end-/
@@ -90,12 +90,12 @@ section Equiv
 
   Context {Hrefl : Reflexive R}.
 
-  Lemma in_class_pr : Πx y, (in_class (class_of R x) y : Type) ≈ R x y.
+  definition in_class_pr : Πx y, (in_class (class_of R x) y : Type) ≈ R x y.
   /-begin
     reflexivity.
   end-/
 
-  Lemma quotient_ind_prop (P : quotient R → hProp):
+  definition quotient_ind_prop (P : quotient R → hProp):
     Πdclass : Πx, P (class_of R x),
     Πq, P q.
   /-begin
@@ -103,7 +103,7 @@ section Equiv
     intros. apply path_ishprop.
   end-/
 
-  Lemma class_of_repr : Πq x, in_class q x → q ≈ class_of R x.
+  definition class_of_repr : Πq x, in_class q x → q ≈ class_of R x.
   /-begin
     apply (quotient_ind R
                         (λq : quotient R, Πx, in_class q x → q ≈ class_of _ x)
@@ -114,7 +114,7 @@ section Equiv
     apply quotient_path2.
   end-/
 
-  Lemma classes_eq_related : Πx y,
+  definition classes_eq_related : Πx y,
                                class_of R x ≈ class_of R y → R x y.
   /-begin
     intros x y H'.
@@ -125,7 +125,7 @@ section Equiv
   end-/
 
   /- Thm 10.1.8 -/
-  Theorem sets_exact : Πx y, (class_of R x ≈ class_of R y) ≃ R x y.
+  definition sets_exact : Πx y, (class_of R x ≈ class_of R y) ≃ R x y.
     intros ??. apply equiv_iff_hprop.
     apply classes_eq_related.
     apply related_classes_eq.
@@ -173,7 +173,7 @@ section Equiv
   end-/
 
   /- From Ch6 -/
-  Theorem quotient_surjective: IsSurjection (class_of R).
+  definition quotient_surjective: IsSurjection (class_of R).
   /-begin
     apply BuildIsSurjection.
     apply (quotient_ind_prop (λy, merely (hfiber (class_of R) y))); try exact _.
@@ -193,7 +193,7 @@ section Equiv
     apply (quotient_rec _ H').
   Defined.
 
-  Theorem quotient_ump (B:hSet): (quotient R → B) ≃
+  definition quotient_ump (B:hSet): (quotient R → B) ≃
                                                    (sigT (λf : A-> B, (Πa a0:A, R a a0 → f a =f a0))).
   /-begin
     refine (equiv_adjointify (quotient_ump' B) (quotient_ump'' B) _ _).
@@ -232,7 +232,7 @@ section Kernel
   Context (R : relation A) {sR : is_mere_relation _ R}.
   Context (is_ker : Πx y, f x ≈ f y ≃ R x y).
 
-  Theorem quotient_kernel_factor
+  definition quotient_kernel_factor
   : exists (C : Type) (e : A → C) (m : C → B),
       IsHSet C × IsSurjection e × IsEmbedding m × (f ≈ m ∘ e).
   /-begin

@@ -12,7 +12,7 @@ Generalizable Variables A B f.
 
 definition isequiv_path [instance] {A B : Type} (p : A ≈ B)
   : IsEquiv (transport (λX:Type, X) p) | 0 :=
-     BuildIsEquiv _ _ _ (transport (λX:Type, X) p⁻¹)
+     IsEquiv.mk _ _ _ (transport (λX:Type, X) p⁻¹)
   (transport_pV idmap p)
   (transport_Vp idmap p)
   (λa, match p in _ ≈ C return
@@ -22,7 +22,7 @@ definition isequiv_path [instance] {A B : Type} (p : A ≈ B)
                 transport2 idmap (concat_pV p) a) with idpath => 1 end).
 
 definition equiv_path (A B : Type) (p : A ≈ B) : A ≃ B :=
-     BuildEquiv _ _ (transport (λX:Type, X) p) _.
+     Equiv.mk _ _ (transport (λX:Type, X) p) _.
 
 definition equiv_path_V [H : Funext] (A B : Type) (p : A ≈ B) :
   equiv_path B A (p⁻¹) ≈ equiv_inverse (equiv_path A B p).
@@ -42,7 +42,7 @@ definition path_universe_uncurried {A B : Type} (f : A ≃ B) : A ≈ B :=
      (equiv_path A B)⁻¹ f.
 
 definition path_universe {A B : Type} (f : A → B) {feq : IsEquiv f} : (A ≈ B) :=
-     path_universe_uncurried (BuildEquiv _ _ f feq).
+     path_universe_uncurried (Equiv.mk _ _ f feq).
 
 definition eta_path_universe {A B : Type} (p : A ≈ B)
   : path_universe (equiv_path A B p) ≈ p :=
@@ -53,7 +53,7 @@ definition isequiv_path_universe {A B : Type}
     _.
 
 definition equiv_path_universe (A B : Type) : (A ≃ B) ≃ (A ≈ B) :=
-     BuildEquiv _ _ (@path_universe_uncurried A B) isequiv_path_universe.
+     Equiv.mk _ _ (@path_universe_uncurried A B) isequiv_path_universe.
 
 definition path_universe_V_uncurried [H : Funext] {A B : Type} (f : A ≃ B)
   : path_universe_uncurried (equiv_inverse f) ≈ (path_universe_uncurried f)⁻¹.
@@ -68,7 +68,7 @@ end-/
 
 definition path_universe_V [H : Funext] `(f : A → B) [H : IsEquiv A B f]
   : path_universe (f⁻¹) ≈ (path_universe f)⁻¹ :=
-     path_universe_V_uncurried (BuildEquiv A B f _).
+     path_universe_V_uncurried (Equiv.mk A B f _).
 
 /- Transport -/
 
@@ -84,8 +84,8 @@ end-/
 definition transport_path_universe
            {A B : Type} (f : A → B) {feq : IsEquiv f} (z : A)
   : transport (λX:Type, X) (path_universe f) z ≈ f z :=
-     transport_path_universe_uncurried (BuildEquiv A B f feq) z.
-/- Alternatively, [ap10 (ap equiv_fun (eisretr (equiv_path A B) (BuildEquiv _ _ f feq))) z]. -/
+     transport_path_universe_uncurried (Equiv.mk A B f feq) z.
+/- Alternatively, [ap10 (ap equiv_fun (eisretr (equiv_path A B) (Equiv.mk _ _ f feq))) z]. -/
 
 definition transport_path_universe_equiv_path
            {A B : Type} (p : A ≈ B) (z : A)
@@ -115,7 +115,7 @@ end-/
 definition transport_path_universe_V [H : Funext]
            {A B : Type} (f : A → B) {feq : IsEquiv f} (z : B)
   : transport (λX:Type, X) (path_universe f)⁻¹ z ≈ f⁻¹ z :=
-     transport_path_universe_V_uncurried (BuildEquiv _ _ f feq) z.
+     transport_path_universe_V_uncurried (Equiv.mk _ _ f feq) z.
 /- Alternatively, [(transport2 idmap (path_universe_V f) z)⁻¹ ⬝ (transport_path_universe (f⁻¹) z)]. -/
 
 definition transport_path_universe_V_equiv_path [H : Funext]
@@ -149,13 +149,13 @@ definition transport_path_universe_Vp [H : Funext]
   ⬝ transport_path_universe_V f (f z)
   ⬝ eissect f z
   ≈ transport_Vp idmap (path_universe f) z :=
-   transport_path_universe_Vp_uncurried (BuildEquiv A B f feq) z.
+   transport_path_universe_Vp_uncurried (Equiv.mk A B f feq) z.
 
 
 /- Equivalence induction -/
 
 /- Paulin-Mohring style -/
-Theorem equiv_induction {U : Type} (P : ΠV, U ≃ V → Type) :
+definition equiv_induction {U : Type} (P : ΠV, U ≃ V → Type) :
   (P U (equiv_idmap U)) → (ΠV (w : U ≃ V), P V w).
 /-begin
   intros H0 V w.
@@ -169,7 +169,7 @@ definition equiv_induction_comp {U : Type} (P : ΠV, U ≃ V → Type)
      (equiv_ind_comp (P U) _ 1).
 
 /- Martin-Lof style -/
-Theorem equiv_induction' (P : ΠU V, U ≃ V → Type) :
+definition equiv_induction' (P : ΠU V, U ≃ V → Type) :
   (ΠT, P T T (equiv_idmap T)) → (ΠU V (w : U ≃ V), P U V w).
 /-begin
   intros H0 U V w.

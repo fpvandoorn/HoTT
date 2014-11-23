@@ -73,7 +73,7 @@ Module Import CommaCategory.
        | { b : B
          | morphism C (S a) (T b) }}).
 
-    Lemma issig_object
+    definition issig_object
     : object_sig_T ≃ object.
     /-begin
       issig (@Build_object)
@@ -91,7 +91,7 @@ Module Import CommaCategory.
       typeclasses eauto.
     Qed.
 
-    Lemma path_object' (x y : object)
+    definition path_object' (x y : object)
     : Π(Ha : x.(a) ≈ y.(a))
              (Hb : x.(b) ≈ y.(b)),
         transport (λX, morphism C (S X) _)
@@ -106,7 +106,7 @@ Module Import CommaCategory.
       intros; path_induction; reflexivity.
     end-/
 
-    Lemma ap_a_path_object' x y Ha Hb Hf
+    definition ap_a_path_object' x y Ha Hb Hf
     : ap (@a) (@path_object' x y Ha Hb Hf) ≈ Ha.
     /-begin
       destruct x, y; simpl in *.
@@ -114,7 +114,7 @@ Module Import CommaCategory.
       reflexivity.
     Qed.
 
-    Lemma ap_b_path_object' x y Ha Hb Hf
+    definition ap_b_path_object' x y Ha Hb Hf
     : ap (@b) (@path_object' x y Ha Hb Hf) ≈ Hb.
     Proof.
       destruct x, y; simpl in *.
@@ -152,7 +152,7 @@ Module Import CommaCategory.
          | { _ : T _1 h ∘ abf.(f) ≈ a'b'f'.(f) ∘ S _1 g
            | a'b'f'.(f) ∘ S _1 g ≈ T _1 h ∘ abf.(f) }}}).
 
-    Lemma issig_morphism' abf a'b'f'
+    definition issig_morphism' abf a'b'f'
     : (morphism_sig_T' abf a'b'f')
         ≃ morphism abf a'b'f'.
     Proof.
@@ -163,7 +163,7 @@ Module Import CommaCategory.
             (@p_sym abf a'b'f').
     end-/
 
-    Lemma issig_morphism_helper {T0} [H : IsHSet T0] (a b : T0) (pf : a ≈ b)
+    definition issig_morphism_helper {T0} [H : IsHSet T0] (a b : T0) (pf : a ≈ b)
     : is_contr (b ≈ a).
     /-begin
       destruct pf.
@@ -172,7 +172,7 @@ Module Import CommaCategory.
     Qed.
 
 
-    Lemma issig_morphism abf a'b'f'
+    definition issig_morphism abf a'b'f'
     : (morphism_sig_T abf a'b'f')
         ≃ morphism abf a'b'f'.
     Proof.
@@ -197,7 +197,7 @@ Module Import CommaCategory.
       typeclasses eauto.
     Qed.
 
-    Lemma path_morphism abf a'b'f'
+    definition path_morphism abf a'b'f'
           (gh g'h' : morphism abf a'b'f')
     : gh.(g) ≈ g'h'.(g)
       → gh.(h) ≈ g'h'.(h)

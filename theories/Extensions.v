@@ -175,7 +175,7 @@ section Extensions
              {A B : Type} (C D : B → Type) (f : A → B)
              (g : Πb, C b → D b) [H : Πb, IsEquiv (g b)]
   : ExtendableAlong n f C → ExtendableAlong n f D :=
-       extendable_postcompose' n C D f (λb, BuildEquiv _ _ (g b) _).
+       extendable_postcompose' n C D f (λb, Equiv.mk _ _ (g b) _).
 
   /- Composition of the maps we extend along.  This also does not require funext. -/
   definition extendable_compose (n : nat)
@@ -184,13 +184,13 @@ section Extensions
   /-begin
     revert P; simple_induction n n IHn; intros P extg extf; [ exact star | split ].
     - intros h.
-      exists ((fst extg (fst extf h).1).1); intros a.
-      refine ((fst extg (fst extf h).1).2 (f a) ⬝ _).
-      exact ((fst extf h).2 a).
+      exists ((pr1 extg (pr1 extf h).1).1); intros a.
+      refine ((pr1 extg (pr1 extf h).1).2 (f a) ⬝ _).
+      exact ((pr1 extf h).2 a).
     - intros h k.
       apply IHn.
-      + exact (snd extg h k).
-      + exact (snd extf (h oD g) (k oD g)).
+      + exact (pr2 extg h k).
+      + exact (pr2 extf (h oD g) (k oD g)).
   end-/
 
   /- And cancellation -/
@@ -200,15 +200,15 @@ section Extensions
   /-begin
     revert P; simple_induction n n IHn; intros P extg extgf; [ exact star | split ].
     - intros h.
-      exists ((fst extgf h).1 oD g); intros a.
-      exact ((fst extgf h).2 a).
+      exists ((pr1 extgf h).1 oD g); intros a.
+      exact ((pr1 extgf h).2 a).
     - intros h k.
-      pose (h' := (fst extg h).1).
-      pose (k' := (fst extg k).1).
+      pose (h' := (pr1 extg h).1).
+      pose (k' := (pr1 extg k).1).
       refine (extendable_postcompose' n (λb, h' (g b) ≈ k' (g b)) (λb, h b ≈ k b) f _ _).
       + intros b.
-        exact (equiv_concat_lr ((fst extg h).2 b)⁻¹ ((fst extg k).2 b)).
-      + apply (IHn (λc, h' c ≈ k' c) (snd extg h' k') (snd extgf h' k')).
+        exact (equiv_concat_lr ((pr1 extg h).2 b)⁻¹ ((pr1 extg k).2 b)).
+      + apply (IHn (λc, h' c ≈ k' c) (pr2 extg h' k') (pr2 extgf h' k')).
   end-/
 
   definition cancelR_extendable (n : nat)
@@ -217,13 +217,13 @@ section Extensions
   /-begin
     revert P; simple_induction n n IHn; intros P extf extgf; [ exact star | split ].
     - intros h.
-      exists ((fst extgf (h oD f)).1); intros b.
-      refine ((fst (snd extf ((fst extgf (h oD f)).1 oD g) h) _).1 b); intros a.
-      apply ((fst extgf (h oD f)).2).
+      exists ((pr1 extgf (h oD f)).1); intros b.
+      refine ((pr1 (pr2 extf ((pr1 extgf (h oD f)).1 oD g) h) _).1 b); intros a.
+      apply ((pr1 extgf (h oD f)).2).
     - intros h k.
       apply IHn.
-      + apply (snd extf (h oD g) (k oD g)).
-      + apply (snd extgf h k).
+      + apply (pr2 extf (h oD g) (k oD g)).
+      + apply (pr2 extgf h k).
   end-/
 
   /- And transfer across homotopies -/
@@ -233,12 +233,12 @@ section Extensions
   /-begin
     revert C; simple_induction n n IHn; intros C extf; [ exact star | split ].
     - intros h.
-      exists ((fst extf (λa, (p a)⁻¹ ▹ h a)).1); intros a.
-      refine ((apD ((fst extf (λa, (p a)⁻¹ ▹ h a)).1) (p a))⁻¹ ⬝ _).
+      exists ((pr1 extf (λa, (p a)⁻¹ ▹ h a)).1); intros a.
+      refine ((apD ((pr1 extf (λa, (p a)⁻¹ ▹ h a)).1) (p a))⁻¹ ⬝ _).
       apply moveR_transport_p.
-      exact ((fst extf (λa, (p a)⁻¹ ▹ h a)).2 a).
+      exact ((pr1 extf (λa, (p a)⁻¹ ▹ h a)).2 a).
     - intros h k.
-      apply IHn, (snd extf h k).
+      apply IHn, (pr2 extf h k).
   end-/
 
   /- We can extend along equivalences -/
@@ -280,7 +280,7 @@ section Extensions
     revert C h k; simple_induction n n IHn;
       intros C h k ext; [exact star | split].
     - intros p.
-      exact (fst (snd ext h k) p).
+      exact (pr1 (pr2 ext h k) p).
     - intros p q.
       apply IHn, ext.
   end-/
@@ -379,10 +379,10 @@ section Extensions
     intros orth n; revert C orth.
     induction n as [|n IHn]; intros C orth; [exact star | split].
     - intros g.
-      exists (λb, (fst (orth b 1%nat) (λx, x.2 ▹ g x.1)).1 star).
+      exists (λb, (pr1 (orth b 1%nat) (λx, x.2 ▹ g x.1)).1 star).
       intros a.
       rewrite (path_unit star (const star a)).
-      exact ((fst (orth (f a) 1%nat) _).2 ⟨a , 1⟩).
+      exact ((pr1 (orth (f a) 1%nat) _).2 ⟨a , 1⟩).
     - intros h k.
       apply IHn; intros b.
       apply ooextendable_homotopy, orth.

@@ -28,7 +28,7 @@ section Factorization
       inclass2 : class2 _ _ factor2
     }.
 
-  Lemma issig_Factorization :
+  definition issig_Factorization :
     { I : Type & { g : A → I & { h : I → B & { p : h ∘ g == f &
       Σgin1 : class1 _ _ g, class2 _ _ h }}}}
       ≃ Factorization.
@@ -62,7 +62,7 @@ section Factorization
     - exact (λa, concat_1p _).
   end-/
 
-  /- The converse, however, is more work. In the proof of Theorem 7.6.6, the book glosses over this theorem with the phrase "by univalence and the characterization of paths and transport in Sigma-types, function types, and path types".  Which is arguably fair informally, because it's "obvious", but it turns out to be a good deal of work to keep track of all the transport lemmas and apply naturality in the right places. -/
+  /- The converse, however, is more work. In the proof of definition 7.6.6, the book glosses over this theorem with the phrase "by univalence and the characterization of paths and transport in Sigma-types, function types, and path types".  Which is arguably fair informally, because it's "obvious", but it turns out to be a good deal of work to keep track of all the transport lemmas and apply naturality in the right places. -/
   section PathFactorization
     Context [H : Univalence] {fact fact' : Factorization}
             (pf : @PathFactorization fact fact').
@@ -235,7 +235,7 @@ section FactSys
        @Build_PathFactorization (@class1 factsys) (@class2 factsys) X Y.
 
   /- The type of factorizations is, as promised, contractible. -/
-  Theorem contr_factor {X Y} (f : X → Y)
+  definition contr_factor {X Y} (f : X → Y)
   : is_contr (Factorization (@class1 factsys) (@class2 factsys) f).
   Proof.
     apply contr_inhabited_hprop.

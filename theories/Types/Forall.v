@@ -38,7 +38,7 @@ definition path_forall_1 {P : A → Type} (f : Πx, P x)
 
 definition equiv_apD10 [H : Funext] {A : Type} (P : A → Type) f g
 : (f ≈ g) ≃ (f == g) :=
-     BuildEquiv _ _ (@apD10 A P f g) _.
+     Equiv.mk _ _ (@apD10 A P f g) _.
 
 definition isequiv_path_Π[instance] {P : A → Type} (f g : Πx, P x)
   : IsEquiv (path_Πf g) | 0 :=
@@ -46,7 +46,7 @@ definition isequiv_path_Π[instance] {P : A → Type} (f g : Πx, P x)
 
 definition equiv_path_Π`{P : A → Type} (f g : Πx, P x)
   : (f == g)  ≃  (f ≈ g) :=
-     BuildEquiv _ _ (path_Πf g) _.
+     Equiv.mk _ _ (path_Πf g) _.
 
 /- Transport -/
 
@@ -149,7 +149,7 @@ definition equiv_functor_Π`{P : A → Type} {Q : B → Type}
   (g : Πb, P (f b) → Q b)
   [H : Πb, @IsEquiv (P (f b)) (Q b) (g b)]
   : (Πa, P a) ≃ (Πb, Q b) :=
-     BuildEquiv _ _ (functor_Πf g) _.
+     Equiv.mk _ _ (functor_Πf g) _.
 
 definition equiv_functor_forall' {P : A → Type} {Q : B → Type}
   (f : B ≃ A) (g : Πb, P (f b) ≃ Q b)
@@ -203,6 +203,6 @@ end-/
 
 definition equiv_flip `(P : A → B → Type)
   : (Πa b, P a b) ≃ (Πb a, P a b) :=
-     BuildEquiv _ _ (@flip _ _ P) _.
+     Equiv.mk _ _ (@flip _ _ P) _.
 
 End AssumeFunext.

@@ -100,7 +100,7 @@ section equivalences
       Variable F : Functor C D.
       Variable G : Functor D C.
 
-      Lemma counit_natural_transformation__of__adjunction_unit_helper
+      definition counit_natural_transformation__of__adjunction_unit_helper
             (A : AdjunctionUnit F G)
             s d (m : morphism D s d)
             (eta := A.1)

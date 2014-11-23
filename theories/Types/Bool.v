@@ -64,8 +64,8 @@ section BoolForall
 
   Let g (u : P ff × P tt) (b : bool) : P b :=
     match b with
-      | ff => fst u
-      | tt => snd u
+      | ff => pr1 u
+      | tt => pr2 u
     end.
 
   definition equiv_bool_forall_prod [H : Funext] :
@@ -84,7 +84,7 @@ End BoolForall.
 /- The nonidentity equivalence is negation (the flip). -/
 definition isequiv_negb [instance] : IsEquiv negb.
 /-begin
-  refine (@BuildIsEquiv
+  refine (@IsEquiv.mk
             _ _
             negb negb
             (λb, if b as b return negb (negb b) ≈ b then idpath else idpath)
@@ -94,10 +94,10 @@ definition isequiv_negb [instance] : IsEquiv negb.
 end-/
 
 definition equiv_negb : bool ≃ bool :=
-     BuildEquiv bool Bool negb _.
+     Equiv.mk bool Bool negb _.
 
 /- Any equivalence [bool ≃ bool] sends [tt] and [ff] to different things. -/
-Lemma eval_bool_isequiv (f : bool → bool) [H : IsEquiv bool Bool f]
+definition eval_bool_isequiv (f : bool → bool) [H : IsEquiv bool Bool f]
 : f ff ≈ negb (f tt).
 /-begin
   pose proof (eissect f tt).
@@ -117,7 +117,7 @@ section EquivBoolEquiv
                                               then (equiv_idmap bool)
                                               else equiv_negb.
 
-  Lemma equiv_bool_equiv_bool_bool [H : Funext] : bool ≃ (bool ≃ bool).
+  definition equiv_bool_equiv_bool_bool [H : Funext] : bool ≃ (bool ≃ bool).
   /-begin
     refine (equiv_adjointify g f _ _);
     unfold f, g; clear f g;

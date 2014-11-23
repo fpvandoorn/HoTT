@@ -179,13 +179,13 @@ Module PreCategoryOfStructures.
 
     Local Notation object := { x : X | P x }.
 
-    (*Lemma issig_object
+    (*definition issig_object
     : { x : X | P x } ≃ object.
     /-begin
       issig Build_object x a.
     end-/
 
-    Lemma path_object
+    definition path_object
     : Πxa yb (H : x xa ≈ x yb),
         transport P H (a xa) ≈ a yb
         → xa ≈ yb.
@@ -197,7 +197,7 @@ Module PreCategoryOfStructures.
       { f : Category.Core.morphism X xa.1 yb.1;
         h : is_structure_homomorphism _ _ _ f xa.2 yb.2 }.
 
-    Lemma issig_morphism (xa yb : object)
+    definition issig_morphism (xa yb : object)
     : { f : Category.Core.morphism X xa.1 yb.1
       | is_structure_homomorphism _ _ _ f xa.2 yb.2 }
         ≃ morphism xa yb.
@@ -205,7 +205,7 @@ Module PreCategoryOfStructures.
       issig (@Build_morphism xa yb) (@f xa yb) (@h xa yb).
     end-/
 
-    Lemma path_morphism
+    definition path_morphism
     : Πxa yb (fh gi : morphism xa yb),
         f fh ≈ f gi → fh ≈ gi.
     /-begin

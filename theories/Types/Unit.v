@@ -28,7 +28,7 @@ definition eta_path_unit {z z' : unit} (p : z ≈ z') :
 end-/
 
 definition isequiv_path_unit [instance] (z z' : unit) : IsEquiv (path_unit_uncurried z z') | 0.
-  refine (BuildIsEquiv _ _ (path_unit_uncurried z z') (λ_, star)
+  refine (IsEquiv.mk _ _ (path_unit_uncurried z z') (λ_, star)
     (λp:z=z',
       match p in (_ ≈ z') return (path_unit_uncurried z z' star ≈ p) with
         | idpath => match z as z return (path_unit_uncurried z z star ≈ 1) with
@@ -40,7 +40,7 @@ definition isequiv_path_unit [instance] (z z' : unit) : IsEquiv (path_unit_uncur
 Defined.
 
 definition equiv_path_unit (z z' : unit) : unit ≃ (z ≈ z') :=
-     BuildEquiv _ _ (path_unit_uncurried z z') _.
+     Equiv.mk _ _ (path_unit_uncurried z z') _.
 
 /- Transport -/
 
@@ -85,7 +85,7 @@ end-/
 
 definition equiv_unit_coind [H : Funext] (A : Type)
   : unit ≃ (A → unit) :=
-     BuildEquiv _ _ (@unit_coind A) _.
+     Equiv.mk _ _ (@unit_coind A) _.
 
 /- Truncation -/
 
@@ -101,9 +101,9 @@ definition contr_unit [instance] : is_contr unit | 0 := let x := {|
 /- A contractible type is equivalent to [unit]. -/
 definition equiv_contr_unit [H : is_contr A] : A ≃ unit.
 /-begin
-  refine (BuildEquiv _ _
+  refine (Equiv.mk _ _
     (λ(_ : A), star)
-    (BuildIsEquiv _ _ _
+    (IsEquiv.mk _ _ _
       (λ(_ : unit), center A)
       (λt : unit, match t with star => 1 end)
       (λx : A, contr x) _)).

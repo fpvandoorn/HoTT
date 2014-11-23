@@ -20,12 +20,12 @@ section hom_functor
     (BuildhSet
        (morphism
           C
-          (fst (c'c : object (C⁻¹op × C)))
-          (snd (c'c : object (C⁻¹op × C))))).
+          (pr1 (c'c : object (C⁻¹op × C)))
+          (pr2 (c'c : object (C⁻¹op × C))))).
 
   Let hom_functor_morphism_of s's d'd (hf : morphism (C⁻¹op × C) s's d'd)
   : morphism set_cat (obj_of s's) (obj_of d'd) :=
-       λg, snd hf ∘ g ∘ fst hf.
+       λg, pr2 hf ∘ g ∘ pr1 hf.
 
   definition hom_functor : Functor (C⁻¹op × C) set_cat.
     refine (Build_Functor (C⁻¹op × C) set_cat

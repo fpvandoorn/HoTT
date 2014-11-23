@@ -68,7 +68,7 @@ Module Import LaxCommaCategoryParts.
        | { b : B
          | Functor (S a) (T b) }}).
 
-    Lemma issig_object
+    definition issig_object
     : object_sig_T ≃ object.
     /-begin
       issig (@Build_object)
@@ -86,7 +86,7 @@ Module Import LaxCommaCategoryParts.
       typeclasses eauto.
     Qed.
 
-    Lemma path_object (x y : object)
+    definition path_object (x y : object)
     : Π(Ha : x.(a) ≈ y.(a))
              (Hb : x.(b) ≈ y.(b)),
         match Ha in _ ≈ X, Hb in _ ≈ Y return Functor (S X) (T Y) with
@@ -100,13 +100,13 @@ Module Import LaxCommaCategoryParts.
 
     definition path_object_uncurried x y
                (H : { HaHb : (x.(a) ≈ y.(a)) × (x.(b) ≈ y.(b))
-                    | match fst HaHb in _ ≈ X, snd HaHb in _ ≈ Y return Functor (S X) (T Y) with
+                    | match pr1 HaHb in _ ≈ X, pr2 HaHb in _ ≈ Y return Functor (S X) (T Y) with
                         | idpath, idpath => x.(f)
                       end ≈ y.(f) })
     : x ≈ y :=
-         @path_object x y (fst H.1) (snd H.1) H.2.
+         @path_object x y (pr1 H.1) (pr2 H.1) H.2.
 
-    Lemma ap_a_path_object x y Ha Hb Hf
+    definition ap_a_path_object x y Ha Hb Hf
     : ap (@a) (@path_object x y Ha Hb Hf) ≈ Ha.
     /-begin
       destruct x, y; simpl in *.
@@ -114,7 +114,7 @@ Module Import LaxCommaCategoryParts.
       reflexivity.
     Qed.
 
-    Lemma ap_b_path_object x y Ha Hb Hf
+    definition ap_b_path_object x y Ha Hb Hf
     : ap (@b) (@path_object x y Ha Hb Hf) ≈ Hb.
     Proof.
       destruct x, y; simpl in *.
@@ -138,7 +138,7 @@ Module Import LaxCommaCategoryParts.
          | NaturalTransformation (p_morphism_of T h ∘ abf.(f))
                                  (a'b'f'.(f) ∘ p_morphism_of S g) }}).
 
-    Lemma issig_morphism abf a'b'f'
+    definition issig_morphism abf a'b'f'
     : (morphism_sig_T abf a'b'f')
         ≃ morphism abf a'b'f'.
     Proof.
@@ -162,7 +162,7 @@ Module Import LaxCommaCategoryParts.
       typeclasses eauto.
     Qed.
 
-    Lemma path_morphism abf a'b'f'
+    definition path_morphism abf a'b'f'
           (gh g'h' : morphism abf a'b'f')
     : forall
         (Hg : gh.(g) ≈ g'h'.(g))
@@ -184,7 +184,7 @@ Module Import LaxCommaCategoryParts.
 
     definition path_morphism_uncurried abf a'b'f' gh g'h'
                (H : { HgHh : (gh.(g) ≈ g'h'.(g)) × (gh.(h) ≈ g'h'.(h))
-                    | match fst HgHh in _ ≈ g, snd HgHh in _ ≈ h
+                    | match pr1 HgHh in _ ≈ g, pr2 HgHh in _ ≈ h
                             return NaturalTransformation
                                      (p_morphism_of T h ∘ abf.(f))
                                      (a'b'f'.(f) ∘ p_morphism_of S g)
@@ -192,9 +192,9 @@ Module Import LaxCommaCategoryParts.
                         | idpath, idpath => gh.(p)
                       end ≈ g'h'.(p) })
     : gh ≈ g'h' :=
-         @path_morphism abf a'b'f' gh g'h' (fst H.1) (snd H.1) H.2.
+         @path_morphism abf a'b'f' gh g'h' (pr1 H.1) (pr2 H.1) H.2.
 
-    Lemma path_morphism'_helper abf a'b'f'
+    definition path_morphism'_helper abf a'b'f'
           (gh g'h' : morphism abf a'b'f')
     : forall
         (Hg : gh.(g) ≈ g'h'.(g))
@@ -233,12 +233,12 @@ Module Import LaxCommaCategoryParts.
 
     definition path_morphism'_uncurried abf a'b'f' gh g'h'
                (H : { HgHh : (gh.(g) ≈ g'h'.(g)) × (gh.(h) ≈ g'h'.(h))
-                    | ((_ oL (Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ S _ _) (fst HgHh)) : Category.Core.morphism _ _ _))
+                    | ((_ oL (Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ S _ _) (pr1 HgHh)) : Category.Core.morphism _ _ _))
                          ∘ (gh.(p))
-                         ∘ ((Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ T _ _) (snd HgHh)) : Category.Core.morphism _ _ _)⁻¹ oR _)
+                         ∘ ((Category.Morphisms.idtoiso (_ → _) (ap (@p_morphism_of _ _ T _ _) (pr2 HgHh)) : Category.Core.morphism _ _ _)⁻¹ oR _)
                        ≈ g'h'.(p))%natural_transformation })
     : gh ≈ g'h' :=
-         @path_morphism' abf a'b'f' gh g'h' (fst H.1) (snd H.1) H.2.
+         @path_morphism' abf a'b'f' gh g'h' (pr1 H.1) (pr2 H.1) H.2.
 
     definition compose s d d'
                (gh : morphism d d') (g'h' : morphism s d)

@@ -34,7 +34,7 @@ section FunctorSectionCategory
     { section_of_functor_morphism : Functor D C
     | R ∘ section_of_functor_morphism ≈ 1 }.
 
-  Lemma section_of_functor_sig
+  definition section_of_functor_sig
   : section_of_functor_sigT ≃ SectionOfFunctor.
   /-begin
     issig Build_SectionOfFunctor

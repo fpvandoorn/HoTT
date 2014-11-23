@@ -19,7 +19,7 @@ Context {FF : Functorish F}.
 Proposition isequiv_fmap {A B} (f : A → B) [H : IsEquiv _ _ f]
   : IsEquiv (fmap F f).
 /-begin
-  refine (equiv_induction (λA' e, IsEquiv (fmap F e)) _ _ (BuildEquiv _ _ f _)).
+  refine (equiv_induction (λA' e, IsEquiv (fmap F e)) _ _ (Equiv.mk _ _ f _)).
   refine (transport _ (fmap_idmap F)⁻¹ _);
     try apply isequiv_idmap. /- This line may not be needed in a new enough coq. -/
 end-/
@@ -29,7 +29,7 @@ Proposition fmap_agrees_with_univalence {A B} (f : A → B) [H : IsEquiv _ _ f]
 /-begin
   refine (equiv_induction
     (λA' e, fmap F e ≈ equiv_path _ _ (ap F (path_universe e)))
-    _ _ (BuildEquiv _ _ f _)).
+    _ _ (Equiv.mk _ _ f _)).
   transitivity (idmap : F A → F A).
     apply fmap_idmap.
   change (equiv_idmap A) with (equiv_path A A 1).

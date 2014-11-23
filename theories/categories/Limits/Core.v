@@ -48,7 +48,7 @@ section diagonal_functor
        diagonal_functor ∘ ExponentialLaws.Law1.Functors.inverse _.
 
   section convert
-    Lemma diagonal_functor_diagonal_functor' X
+    definition diagonal_functor_diagonal_functor' X
     : diagonal_functor X ≈ diagonal_functor' (X (center _)).
     Proof.
       path_functor.
@@ -67,7 +67,7 @@ section diagonal_functor_lemmas
   Variable D : PreCategory.
   Variable D' : PreCategory.
 
-  Lemma compose_diagonal_functor x (F : Functor D' D)
+  definition compose_diagonal_functor x (F : Functor D' D)
   : diagonal_functor C D x ∘ F ≈ diagonal_functor _ _ x.
   Proof.
     path_functor.

@@ -29,7 +29,7 @@ section path_functor
       (only parsing).
 
   /- Equivalence between the record and sigma-type versions of a functor -/
-  Lemma equiv_sig_functor
+  definition equiv_sig_functor
   : functor_sig_T ≃ Functor C D.
   /-begin
     issig (@Build_Functor C D) (@object_of C D) (@morphism_of C D) (@composition_of C D) (@identity_of C D).
@@ -75,7 +75,7 @@ section path_functor
   end-/
 
   /- Said proof respects [object_of] -/
-  Lemma path_functor_uncurried_fst F G HO HM
+  definition path_functor_uncurried_fst F G HO HM
   : ap object_of (@path_functor_uncurried F G ⟨HO, HM⟩) ≈ HO.
   /-begin
     destruct F, G; simpl in *.
@@ -83,7 +83,7 @@ section path_functor
   Qed.
 
   /- Said proof respects [idpath] -/
-  Lemma path_functor_uncurried_idpath F
+  definition path_functor_uncurried_idpath F
   : @path_functor_uncurried F F ⟨idpath, idpath⟩ ≈ idpath.
   Proof.
     destruct F; simpl in *.
@@ -137,7 +137,7 @@ section path_functor
 
   definition equiv_path_functor_uncurried (F G : Functor C D)
   : path_functor'_T F G ≃ F ≈ G :=
-       BuildEquiv _ _ (@path_functor_uncurried F G) _.
+       Equiv.mk _ _ (@path_functor_uncurried F G) _.
 
   Local Open Scope function_scope.
 

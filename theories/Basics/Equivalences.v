@@ -15,16 +15,16 @@ Generalizable Variables A B C f g.
 
 /- The identity map is an equivalence. -/
 definition isequiv_idmap [instance] (A : Type) : IsEquiv idmap | 0 :=
-  BuildIsEquiv A A idmap idmap (λ_, 1) (λ_, 1) (λ_, 1).
+  IsEquiv.mk A A idmap idmap (λ_, 1) (λ_, 1) (λ_, 1).
 
-definition equiv_idmap (A : Type) : A ≃ A := BuildEquiv A A idmap _.
+definition equiv_idmap (A : Type) : A ≃ A := Equiv.mk A A idmap _.
 
 definition reflexive_equiv [instance] : Reflexive Equiv | 0 := equiv_idmap.
 
 /- The composition of equivalences is an equivalence. -/
 definition isequiv_compose [instance] [H : IsEquiv A B f] [H : IsEquiv B C g]
   : IsEquiv (compose g f) | 1000 :=
-     BuildIsEquiv A C (compose g f)
+     IsEquiv.mk A C (compose g f)
     (compose f⁻¹ g⁻¹)
     (λc, ap g (eisretr f (g⁻¹ c)) ⬝ eisretr g c)
     (λa, ap (f⁻¹) (eissect g (f a)) ⬝ eissect f a)
@@ -49,7 +49,7 @@ definition isequiv_compose'
 definition equiv_compose {A B C : Type} (g : B → C) (f : A → B)
   [H : IsEquiv B C g] [H : IsEquiv A B f]
   : A ≃ C :=
-     BuildEquiv A C (compose g f) _.
+     Equiv.mk A C (compose g f) _.
 
 definition equiv_compose' {A B C : Type} (g : B ≃ C) (f : A ≃ B)
   : A ≃ C :=
@@ -83,10 +83,10 @@ section IsEquivHomotopic
 
   /- This should not be an instance; it can cause the unifier to spin forever searching for functions to be hoomotpic to. -/
   definition isequiv_homotopic : IsEquiv g :=
-       BuildIsEquiv _ _ g (f ⁻¹) sect retr adj.
+       IsEquiv.mk _ _ g (f ⁻¹) sect retr adj.
 
   definition equiv_homotopic : A ≃ B :=
-       BuildEquiv _ _ g isequiv_homotopic.
+       Equiv.mk _ _ g isequiv_homotopic.
 
 End IsEquivHomotopic.
 
@@ -97,7 +97,7 @@ section EquivInverse
   Context {A B : Type} (f : A → B) {feq : IsEquiv f}.
   Open Scope long_path_scope.
 
-  Theorem other_adj (b : B) : eissect f (f⁻¹ b) ≈ ap f⁻¹ (eisretr f b).
+  definition other_adj (b : B) : eissect f (f⁻¹ b) ≈ ap f⁻¹ (eisretr f b).
   Proof.
     /- First we set up the mess. -/
     rewrite <- (concat_1p (eissect _ _)).
@@ -129,14 +129,14 @@ section EquivInverse
   Qed.
 
   definition isequiv_inverse [instance] : IsEquiv f⁻¹ | 10000 :=
-       BuildIsEquiv B A f⁻¹ f (eissect f) (eisretr f) other_adj.
+       IsEquiv.mk B A f⁻¹ f (eissect f) (eisretr f) other_adj.
 End EquivInverse.
 
 /- If the goal is [IsEquiv _⁻¹], then use [isequiv_inverse]; otherwise, don't pretend worry about if the goal is an evar and we want to add a [⁻¹]. -/
 Hint Extern 0 (IsEquiv _⁻¹) => apply @isequiv_inverse : typeclass_instances.
 
 /- [Equiv A B] is a symmetric relation. -/
-Theorem equiv_inverse {A B : Type} : (A ≃ B) → (B ≃ A).
+definition equiv_inverse {A B : Type} : (A ≃ B) → (B ≃ A).
 Proof.
   intro e.
   exists (e⁻¹).
@@ -155,7 +155,7 @@ definition cancelR_isequiv {A B C} (f : A → B) {g : B → C}
 definition cancelR_equiv {A B C} (f : A → B) {g : B → C}
   [H : IsEquiv A B f] [H : IsEquiv A C (g ∘ f)]
   : B ≃ C :=
-     BuildEquiv B C g (cancelR_isequiv f).
+     Equiv.mk B C g (cancelR_isequiv f).
 
 /- If [g \o f] and [g] are equivalences, so is [f]. -/
 definition cancelL_isequiv {A B C} (g : B → C) {f : A → B}
@@ -167,7 +167,7 @@ definition cancelL_isequiv {A B C} (g : B → C) {f : A → B}
 definition cancelL_equiv {A B C} (g : B → C) {f : A → B}
   [H : IsEquiv B C g] [H : IsEquiv A C (g ∘ f)]
   : A ≃ B :=
-     BuildEquiv _ _ f (cancelL_isequiv g).
+     Equiv.mk _ _ f (cancelL_isequiv g).
 
 /- Combining these with [isequiv_compose], we see that equivalences can be transported across commutative squares. -/
 definition isequiv_commsq {A B C D}
@@ -196,11 +196,11 @@ section EquivTransport
   Context {A : Type} (P : A → Type) (x y : A) (p : x ≈ y).
 
   definition isequiv_transport [instance] : IsEquiv (transport P p) | 0 :=
-       BuildIsEquiv (P x) (P y) (transport P p) (transport P p⁻¹)
+       IsEquiv.mk (P x) (P y) (transport P p) (transport P p⁻¹)
     (transport_pV P p) (transport_Vp P p) (transport_pVp P p).
 
   definition equiv_transport : P x ≃ P y :=
-       BuildEquiv _ _ (transport P p) _.
+       Equiv.mk _ _ (transport P p) _.
 
 End EquivTransport.
 
@@ -233,10 +233,10 @@ section Adjointify
 
   /- We don't make this a typeclass instance, because we want to control when we are applying it. -/
   definition isequiv_adjointify : IsEquiv f :=
-       BuildIsEquiv A B f g isretr issect' is_adjoint'.
+       IsEquiv.mk A B f g isretr issect' is_adjoint'.
 
   definition equiv_adjointify : A ≃ B :=
-       BuildEquiv A B f isequiv_adjointify.
+       Equiv.mk A B f isequiv_adjointify.
 
 End Adjointify.
 
@@ -258,7 +258,7 @@ definition moveL_equiv_V [H : IsEquiv A B f] (x : B) (y : A) (p : f y ≈ x)
      (eissect f y)⁻¹ ⬝ ap (f⁻¹) p.
 
 /- Equivalence preserves contractibility (which of course is trivial under univalence). -/
-Lemma contr_equiv A {B} (f : A → B) [H : IsEquiv A B f] [H : is_contr A]
+definition contr_equiv A {B} (f : A → B) [H : IsEquiv A B f] [H : is_contr A]
   : is_contr B.
 Proof.
   exists (f (center A)).
@@ -273,7 +273,7 @@ definition contr_equiv' A {B} `(f : A ≃ B) [H : is_contr A]
 
 /- Any two contractible types are equivalent. -/
 /- TODO: the name [equiv_contr_contr] is not great in conjunction with the existing, unrelated [contr_equiv_contr].  Consider alternative names? -/
-Lemma equiv_contr_contr {A B : Type} [H : is_contr A] [H : is_contr B]
+definition equiv_contr_contr {A B : Type} [H : is_contr A] [H : is_contr B]
   : (A ≃ B).
 Proof.
   apply equiv_adjointify with (λ_, center B) (λ_, center A);
@@ -293,11 +293,11 @@ definition isequiv_precompose [instance] [H : Funext] {A B C : Type}
 definition equiv_precompose [H : Funext] {A B C : Type}
   (f : A → B) [H : IsEquiv A B f]
   : (B → C) ≃ (A → C) :=
-     BuildEquiv _ _ (λg, @compose A B C g f) _.
+     Equiv.mk _ _ (λg, @compose A B C g f) _.
 
 definition equiv_precompose' [H : Funext] {A B C : Type} (f : A ≃ B)
   : (B → C) ≃ (A → C) :=
-     BuildEquiv _ _ (λg, @compose A B C g f) _.
+     Equiv.mk _ _ (λg, @compose A B C g f) _.
 
 definition isequiv_postcompose [instance] [H : Funext] {A B C : Type}
   (f : B → C) [H : IsEquiv B C f]
@@ -310,11 +310,11 @@ definition isequiv_postcompose [instance] [H : Funext] {A B C : Type}
 definition equiv_postcompose [H : Funext] {A B C : Type}
   (f : B → C) [H : IsEquiv B C f]
   : (A → B) ≃ (A → C) :=
-     BuildEquiv _ _ (λg, @compose A B C f g) _.
+     Equiv.mk _ _ (λg, @compose A B C f g) _.
 
 definition equiv_postcompose' [H : Funext] {A B C : Type} (f : B ≃ C)
   : (A → B) ≃ (A → C) :=
-     BuildEquiv _ _ (λg, @compose A B C f g) _.
+     Equiv.mk _ _ (λg, @compose A B C f g) _.
 
 /- Conversely, if pre- or post-composing with a function is always an equivalence, then that function is also an equivalence.  It's convenient to know that we only need to assume the equivalence when the other type is the domain or the codomain. -/
 

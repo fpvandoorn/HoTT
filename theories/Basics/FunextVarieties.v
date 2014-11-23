@@ -90,7 +90,7 @@ section Homotopies
 End Homotopies.
 
 /- Now the proof is fairly easy; we can just use the same induction principle on both sides. -/
-Theorem WeakFunext_implies_Funext : WeakFunext → Funext_type.
+definition WeakFunext_implies_Funext : WeakFunext → Funext_type.
 /-begin
   intros wf; hnf; intros A B f g.
   refine (isequiv_adjointify (@apD10 A B f g)
@@ -107,7 +107,7 @@ definition NaiveFunext_implies_Funext : NaiveFunext → Funext_type :=
 
 /- Functional extensionality is downward closed -/
 /- If universe [U_i] is functionally extensional, then so are universes [U_j] for [j ≤ i]. -/
-Lemma Funext_downward_closed {H : Funext_type} : Funext_type.
+definition Funext_downward_closed {H : Funext_type} : Funext_type.
 /-begin
   apply @NaiveFunext_implies_Funext.
   apply Funext_implies_NaiveFunext in H.

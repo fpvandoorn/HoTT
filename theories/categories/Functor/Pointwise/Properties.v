@@ -44,7 +44,7 @@ section parts
     Variable C : PreCategory.
     Variable D : PreCategory.
 
-    Lemma identity_of_helper_helper (x : Functor C D)
+    definition identity_of_helper_helper (x : Functor C D)
     : 1 ∘ x ∘ 1 ≈ x.
     /-begin
       path_functor.
@@ -54,14 +54,14 @@ section parts
     : ap object_of (identity_of_helper_helper x) ≈ idpath :=
          path_functor_uncurried_fst _ _ _.
 
-    Lemma identity_of_helper
+    definition identity_of_helper
     : (λx : Functor C D, 1 ∘ x ∘ 1) ≈ idmap.
     /-begin
       apply path_forall; intro x.
       apply identity_of_helper_helper.
     end-/
 
-    Lemma identity_of
+    definition identity_of
     : pointwise (identity C) (identity D) ≈ identity _.
     /-begin
       path_functor.
@@ -87,7 +87,7 @@ section parts
     Variable F : Functor C C'.
     Variable G' : Functor D' D''.
 
-    Lemma composition_of_helper_helper (x : Functor C'' D)
+    definition composition_of_helper_helper (x : Functor C'' D)
     : G' ∘ G ∘ x ∘ (F' ∘ F) ≈ G' ∘ (G ∘ x ∘ F') ∘ F.
     /-begin
       path_functor.
@@ -97,14 +97,14 @@ section parts
     : ap object_of (composition_of_helper_helper x) ≈ idpath :=
          path_functor_uncurried_fst _ _ _.
 
-    Lemma composition_of_helper
+    definition composition_of_helper
     : (λx, G' ∘ G ∘ x ∘ (F' ∘ F)) ≈ (λx, G' ∘ (G ∘ x ∘ F') ∘ F).
     /-begin
       apply path_forall; intro x.
       apply composition_of_helper_helper.
     end-/
 
-    Lemma composition_of
+    definition composition_of
     : pointwise (F' ∘ F) (G' ∘ G) ≈ pointwise F G' ∘ pointwise F' G.
     /-begin
       path_functor.

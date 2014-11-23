@@ -43,8 +43,8 @@ section law4
       intro F; hnf in F |- *.
       refine (Build_Functor
                 (C1 × C2) D
-                (λc1c2, F (fst c1c2) (snd c1c2))
-                (λs d m, F (fst d) _1 (snd m) ∘ (F _1 (fst m)) (snd s))
+                (λc1c2, F (pr1 c1c2) (pr2 c1c2))
+                (λs d m, F (pr1 d) _1 (pr2 m) ∘ (F _1 (pr1 m)) (pr2 s))
                 _
                 _);
         abstract do_exponential4.
@@ -60,7 +60,7 @@ section law4
       refine (Build_NaturalTransformation
                 (functor_object_of s)
                 (functor_object_of d)
-                (λc, m (fst c) (snd c))
+                (λc, m (pr1 c) (pr2 c))
                 _);
         abstract (
             repeat match goal with

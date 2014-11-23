@@ -38,7 +38,7 @@ section Extensions
 (Mnemonic for the indexing: think of the base case, where k=n; then we know we can eliminate, so the space of extensions is contractible.)
 
 This lemma is most useful via corollaries like the wedge-inclusion, the wiggly wedge, and their n-ary generalizations. -/
-Lemma istrunc_extension_along_conn {m n : trunc_index}
+definition istrunc_extension_along_conn {m n : trunc_index}
   {A B : Type} (f : A → B) [H : IsConnMap n _ _ f]
   (P : B → Type) {HP : Πb:B, is_trunc (m -2+ n) (P b)}
   (d : Πa:A, P (f a))
