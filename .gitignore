@@ -74,3 +74,27 @@ etc/dpdgraph-0.4alpha/dpd_parse.ml
 etc/dpdgraph-0.4alpha/dpd_parse.mli
 etc/dpdgraph-0.4alpha/version.annot
 etc/dpdgraph-0.4alpha/version.ml
+# ignore files created by the lean compiler
+*~
+.lean_trace
+*.produced.out
+*.md.lua
+*.md.lean
+*.olean
+*.clean
+*.ilean
+*.d
+a.out
+build
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+Makefile
+*.cmake
+CMakeFiles/
+.projectile
+.coveralls.yml
+.lean_options
+doc/html
+make.deps
