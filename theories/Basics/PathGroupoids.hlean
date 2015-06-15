@@ -31,18 +31,18 @@ Local Open Scope path_scope.
 
    - [concat_1p] means [1 × p]
    - [concat_Vp] means [p⁻¹ × p]
-   - [concat_p_pp] means [p × (q × r)]
-   - [concat_pp_p] means [(p × q) × r]
-   - [concat_V_pp] means [p⁻¹ × (p × q)]
+   - [concat_p_con] means [p × (q × r)]
+   - [concat_con_p] means [(p × q) × r]
+   - [concat_V_con] means [p⁻¹ × (p × q)]
    - [concat_pV_p] means [(q × p⁻¹) × p] or [(p × p⁻¹) × q], but probably the former because for the latter you could just use [concat_pV].
 
    Laws about inverse of something are of the form [inv_XXX], and those about [ap] are of the form [ap_XXX], and so on. For example:
 
-   - [inv_pp] is about [(p ⬝ q)⁻¹]
+   - [inv_con] is about [(p ⬝ q)⁻¹]
    - [inv_V] is about [(p⁻¹)⁻¹]
    - [inv_A] is about [(ap f p)⁻¹]
    - [ap_V] is about [ap f (p⁻¹)]
-   - [ap_pp] is about [ap f (p ⬝ q)]
+   - [ap_con] is about [ap f (p ⬝ q)]
    - [ap_idmap] is about [ap idmap p]
    - [ap_1] is about [ap f 1]
    - [ap02_p2p] is about [ap02 f (p @@ q)]
@@ -79,14 +79,14 @@ definition concat_1p {A : Type} {x y : A} (p : x = y) :
   match p with refl => 1 end.
 
 /- Concatenation is associative. -/
-definition concat_p_pp {A : Type} {x y z t : A} (p : x = y) (q : y = z) (r : z = t) :
+definition concat_p_con {A : Type} {x y z t : A} (p : x = y) (q : y = z) (r : z = t) :
   p ⬝ (q ⬝ r) = (p ⬝ q) ⬝ r :=
   match r with refl =>
     match q with refl =>
       match p with refl => 1
       end end end.
 
-definition concat_pp_p {A : Type} {x y z t : A} (p : x = y) (q : y = z) (r : z = t) :
+definition concat_con_p {A : Type} {x y z t : A} (p : x = y) (q : y = z) (r : z = t) :
   (p ⬝ q) ⬝ r = p ⬝ (q ⬝ r) :=
   match r with refl =>
     match q with refl =>
@@ -107,7 +107,7 @@ definition concat_Vp {A : Type} {x y : A} (p : x = y) :
 
 /- Several auxiliary theorems about canceling inverses across associativity.  These are somewhat redundant, following from earlier theorems.  -/
 
-definition concat_V_pp {A : Type} {x y z : A} (p : x = y) (q : y = z) :
+definition concat_V_con {A : Type} {x y z : A} (p : x = y) (q : y = z) :
   p⁻¹ ⬝ (p ⬝ q) = q :=
     
   match q with refl =>
@@ -121,7 +121,7 @@ definition concat_p_Vp {A : Type} {x y z : A} (p : x = y) (q : x = z) :
     match p with refl => 1 end
   end.
 
-definition concat_pp_V {A : Type} {x y z : A} (p : x = y) (q : y = z) :
+definition concat_con_V {A : Type} {x y z : A} (p : x = y) (q : y = z) :
   (p ⬝ q) ⬝ q⁻¹ = p :=
     
   match q with refl =>
@@ -138,7 +138,7 @@ definition concat_pV_p {A : Type} {x y z : A} (p : x = z) (q : y = z) :
   end) p.
 
 /- Inverse distributes over concatenation -/
-definition inv_pp {A : Type} {x y z : A} (p : x = y) (q : y = z) :
+definition inv_con {A : Type} {x y z : A} (p : x = y) (q : y = z) :
   (p ⬝ q)⁻¹ = q⁻¹ ⬝ p⁻¹ :=
     
   match q with refl =>
@@ -287,10 +287,10 @@ end-/
 
 /- In general, the path we want to move might be arbitrarily deeply nested at the beginning of a long concatenation.  Thus, instead of defining functions such as [moveL_Mp_p], we define a tactical that can repeatedly rewrite with associativity to expose it. -/
 Ltac with_rassoc tac :=
-  repeat rewrite concat_pp_p;
+  repeat rewrite concat_con_p;
   tac;
   /- After moving, we reassociate to the left (the canonical direction for paths). -/
-  repeat rewrite concat_p_pp.
+  repeat rewrite concat_p_con.
 
 Ltac rewrite_moveL_Mp_p := with_rassoc ltac:(apply moveL_Mp).
 Ltac rewrite_moveL_Vp_p := with_rassoc ltac:(apply moveL_Vp).
@@ -345,7 +345,7 @@ definition apD_1 {A B} (x : A) (f : Πx : A, B x) :
   1.
 
 /- Functions commute with concatenation. -/
-definition ap_pp {A B : Type} (f : A → B) {x y z : A} (p : x = y) (q : y = z) :
+definition ap_con {A B : Type} (f : A → B) {x y z : A} (p : x = y) (q : y = z) :
   ap f (p ⬝ q) = (ap f p) ⬝ (ap f q) :=
     
   match q with
@@ -353,18 +353,18 @@ definition ap_pp {A B : Type} (f : A → B) {x y z : A} (p : x = y) (q : y = z) 
     match p with refl => 1 end
   end.
 
-definition ap_p_pp {A B : Type} (f : A → B) {w : B} {x y z : A}
+definition ap_p_con {A B : Type} (f : A → B) {w : B} {x y z : A}
   (r : w = f x) (p : x = y) (q : y = z) :
   r ⬝ (ap f (p ⬝ q)) = (r ⬝ ap f p) ⬝ (ap f q).
 /-begin
-  destruct p, q. simpl. exact (concat_p_pp r 1 1).
+  destruct p, q. simpl. exact (concat_p_con r 1 1).
 end-/
 
-definition ap_pp_p {A B : Type} (f : A → B) {x y z : A} {w : B}
+definition ap_con_p {A B : Type} (f : A → B) {x y z : A} {w : B}
   (p : x = y) (q : y = z) (r : f z = w) :
   (ap f (p ⬝ q)) ⬝ r = (ap f p) ⬝ (ap f q ⬝ r).
 /-begin
-  destruct p, q. simpl. exact (concat_pp_p 1 1 r).
+  destruct p, q. simpl. exact (concat_con_p 1 1 r).
 end-/
 
 /- Functions commute with path inverses. -/
@@ -426,7 +426,7 @@ definition concat_pA1 {A : Type} {f : A → A} (p : Πx, x = f x) {x y : A} (q :
   end.
 
 /- Naturality with other paths hanging around. -/
-definition concat_pA_pp {A B : Type} {f g : A → B} (p : Πx, f x = g x)
+definition concat_pA_con {A B : Type} {f g : A → B} (p : Πx, f x = g x)
   {x y : A} (q : x = y)
   {w z : B} (r : w = f x) (s : g y = z)
   :
@@ -448,7 +448,7 @@ definition concat_pA_p {A B : Type} {f g : A → B} (p : Πx, f x = g x)
   reflexivity.
 end-/
 
-definition concat_A_pp {A B : Type} {f g : A → B} (p : Πx, f x = g x)
+definition concat_A_con {A B : Type} {f g : A → B} (p : Πx, f x = g x)
   {x y : A} (q : x = y)
   {z : B} (s : g y = z)
   :
@@ -459,7 +459,7 @@ definition concat_A_pp {A B : Type} {f g : A → B} (p : Πx, f x = g x)
   reflexivity.
 end-/
 
-definition concat_pA1_pp {A : Type} {f : A → A} (p : Πx, f x = x)
+definition concat_pA1_con {A : Type} {f : A → A} (p : Πx, f x = x)
   {x y : A} (q : x = y)
   {w z : A} (r : w = f x) (s : y = z)
   :
@@ -470,7 +470,7 @@ definition concat_pA1_pp {A : Type} {f : A → A} (p : Πx, f x = x)
   reflexivity.
 end-/
 
-definition concat_pp_A1p {A : Type} {g : A → A} (p : Πx, x = g x)
+definition concat_con_A1p {A : Type} {g : A → A} (p : Πx, x = g x)
   {x y : A} (q : x = y)
   {w z : A} (r : w = x) (s : g y = z)
   :
@@ -492,7 +492,7 @@ definition concat_pA1_p {A : Type} {f : A → A} (p : Πx, f x = x)
   reflexivity.
 end-/
 
-definition concat_A1_pp {A : Type} {f : A → A} (p : Πx, f x = x)
+definition concat_A1_con {A : Type} {f : A → A} (p : Πx, f x = x)
   {x y : A} (q : x = y)
   {z : A} (s : y = z)
   :
@@ -503,7 +503,7 @@ definition concat_A1_pp {A : Type} {f : A → A} (p : Πx, f x = x)
   reflexivity.
 end-/
 
-definition concat_pp_A1 {A : Type} {g : A → A} (p : Πx, x = g x)
+definition concat_con_A1 {A : Type} {g : A → A} (p : Πx, x = g x)
   {x y : A} (q : x = y)
   {w : A} (r : w = x)
   :
@@ -533,7 +533,7 @@ definition apD10_1 {A} {B:A->Type} (f : Πx, B x) (x:A)
   : apD10 (refl f) x = 1 :=
    1.
 
-definition apD10_pp {A} {B:A->Type} {f f' f'' : Πx, B x}
+definition apD10_con {A} {B:A->Type} {f f' f'' : Πx, B x}
   (h:f=f') (h':f'=f'') (x:A)
 : apD10 (h ⬝ h') x = apD10 h x ⬝ apD10 h' x.
 /-begin
@@ -547,9 +547,9 @@ definition apD10_V {A} {B:A->Type} {f g : Πx, B x} (h:f=g) (x:A)
 definition ap10_1 {A B} {f:A->B} (x:A) : ap10 (refl f) x = 1 :=
      1.
 
-definition ap10_pp {A B} {f f' f'':A->B} (h:f=f') (h':f'=f'') (x:A)
+definition ap10_con {A B} {f f' f'':A->B} (h:f=f') (h':f'=f'') (x:A)
   : ap10 (h ⬝ h') x = ap10 h x ⬝ ap10 h' x :=
-   apD10_pp h h' x.
+   apD10_con h h' x.
 
 definition ap10_V {A B} {f g : A->B} (h : f = g) (x:A)
   : ap10 (h⁻¹) x = (ap10 h x)⁻¹ :=
@@ -582,7 +582,7 @@ definition transport_1 {A : Type} (P : A → Type) {x : A} (u : P x)
   : 1 ▹ u = u :=
    1.
 
-definition transport_pp {A : Type} (P : A → Type) {x y z : A} (p : x = y) (q : y = z) (u : P x) :
+definition transport_con {A : Type} (P : A → Type) {x y z : A} (p : x = y) (q : y = z) (u : P x) :
   p ⬝ q ▹ u = q ▹ p ▹ u :=
   match q with refl =>
     match p with refl => 1 end
@@ -590,22 +590,22 @@ definition transport_pp {A : Type} (P : A → Type) {x y z : A} (p : x = y) (q :
 
 definition transport_pV {A : Type} (P : A → Type) {x y : A} (p : x = y) (z : P y)
   : p ▹ p⁻¹ ▹ z = z :=
-     (transport_pp P p⁻¹ p z)⁻¹
+     (transport_con P p⁻¹ p z)⁻¹
   ⬝ ap (λr, transport P r z) (concat_Vp p).
 
 definition transport_Vp {A : Type} (P : A → Type) {x y : A} (p : x = y) (z : P x)
   : p⁻¹ ▹ p ▹ z = z :=
-     (transport_pp P p p⁻¹ z)⁻¹
+     (transport_con P p p⁻¹ z)⁻¹
   ⬝ ap (λr, transport P r z) (concat_pV p).
 
 /- In the future, we may expect to need some higher coherence for transport:
   for instance, that transport acting on the associator is trivial. -/
-definition transport_p_pp {A : Type} (P : A → Type)
+definition transport_p_con {A : Type} (P : A → Type)
   {x y z w : A} (p : x = y) (q : y = z) (r : z = w)
   (u : P x)
-  : ap (λe, e ▹ u) (concat_p_pp p q r)
-    ⬝ (transport_pp P (p@q) r u) ⬝ ap (transport P r) (transport_pp P p q u)
-  = (transport_pp P p (q@r) u) ⬝ (transport_pp P q r (p#u))
+  : ap (λe, e ▹ u) (concat_p_con p q r)
+    ⬝ (transport_con P (p@q) r u) ⬝ ap (transport P r) (transport_con P p q u)
+  = (transport_con P p (q@r) u) ⬝ (transport_con P q r (p#u))
   :> ((p ⬝ (q ⬝ r)) ▹ u = r ▹ q ▹ p ▹ u) .
 /-begin
   destruct p, q, r.  simpl.  exact 1.
@@ -822,15 +822,15 @@ definition whiskerR {A : Type} {x y z : A} {p q : x = y}
 
 definition cancelL {A} {x y z : A} (p : x = y) (q r : y = z)
 : (p ⬝ q = p ⬝ r) → (q = r) :=
-   λh, (concat_V_pp p q)⁻¹ ⬝ whiskerL p⁻¹ h ⬝ (concat_V_pp p r).
+   λh, (concat_V_con p q)⁻¹ ⬝ whiskerL p⁻¹ h ⬝ (concat_V_con p r).
 
 definition cancelR {A} {x y z : A} (p q : x = y) (r : y = z)
 : (p ⬝ r = q ⬝ r) → (p = q) :=
-   λh, (concat_pp_V p r)⁻¹ ⬝ whiskerR h r⁻¹ ⬝ (concat_pp_V q r).
+   λh, (concat_con_V p r)⁻¹ ⬝ whiskerR h r⁻¹ ⬝ (concat_con_V q r).
 
 /- Whiskering and identity paths. -/
 
-definition whiskerR_p1 {A : Type} {x y : A} {p q : x = y} (h : p = q) :
+definition whisker_right_p1 {A : Type} {x y : A} {p q : x = y} (h : p = q) :
   (concat_p1 p) ⁻¹ ⬝ whiskerR h 1 ⬝ concat_p1 q = h :=
     
   match h with refl =>
@@ -838,17 +838,17 @@ definition whiskerR_p1 {A : Type} {x y : A} {p q : x = y} (h : p = q) :
       1
     end end.
 
-definition whiskerR_1p {A : Type} {x y z : A} (p : x = y) (q : y = z) :
+definition whisker_right_1p {A : Type} {x y z : A} (p : x = y) (q : y = z) :
   whiskerR 1 q = 1 :> (p ⬝ q = p ⬝ q) :=
     
   match q with refl => 1 end.
 
-definition whiskerL_p1 {A : Type} {x y z : A} (p : x = y) (q : y = z) :
+definition whisker_left_p1 {A : Type} {x y z : A} (p : x = y) (q : y = z) :
   whiskerL p 1 = 1 :> (p ⬝ q = p ⬝ q) :=
     
   match q with refl => 1 end.
 
-definition whiskerL_1p {A : Type} {x y : A} {p q : x = y} (h : p = q) :
+definition whisker_left_1p {A : Type} {x y : A} {p q : x = y} (h : p = q) :
   (concat_1p p) ⁻¹ ⬝ whiskerL 1 h ⬝ concat_1p q = h :=
     
   match h with refl =>
@@ -869,14 +869,14 @@ definition concat2_1p {A : Type} {x y : A} {p q : x = y} (h : p = q) :
 /- Whiskering and composition -/
 
 /- The naming scheme for these is a little unclear; should [pp] refer to concatenation of the 2-paths being whiskered or of the paths we are whiskering by? -/
-definition whiskerL_pp {A} {x y z : A} (p : x = y) {q q' q'' : y = z}
+definition whisker_left_con {A} {x y z : A} (p : x = y) {q q' q'' : y = z}
            (r : q = q') (s : q' = q'')
 : whiskerL p (r ⬝ s) = whiskerL p r ⬝ whiskerL p s.
 /-begin
   destruct p, r, s; reflexivity.
 end-/
 
-definition whiskerR_pp {A} {x y z : A} {p p' p'' : x = y} (q : y = z)
+definition whisker_right_con {A} {x y z : A} {p p' p'' : x = y} (q : y = z)
            (r : p = p') (s : p' = p'')
 : whiskerR (r ⬝ s) q = whiskerR r q ⬝ whiskerR s q.
 /-begin
@@ -884,15 +884,15 @@ definition whiskerR_pp {A} {x y z : A} {p p' p'' : x = y} (q : y = z)
 end-/
 
 /- For now, I've put an [L] or [R] to mark when we're referring to the whiskering paths. -/
-definition whiskerL_VpL {A} {x y z : A} (p : x = y)
+definition whisker_left_VpL {A} {x y z : A} (p : x = y)
            {q q' : y = z} (r : q = q')
-: (concat_V_pp p q)⁻¹ ⬝ whiskerL p⁻¹ (whiskerL p r) ⬝ concat_V_pp p q'
+: (concat_V_con p q)⁻¹ ⬝ whiskerL p⁻¹ (whiskerL p r) ⬝ concat_V_con p q'
   = r.
 /-begin
   destruct p, r, q. reflexivity.
 end-/
 
-definition whiskerL_pVL {A} {x y z : A} (p : y = x)
+definition whisker_left_pVL {A} {x y z : A} (p : y = x)
            {q q' : y = z} (r : q = q')
 : (concat_p_Vp p q)⁻¹ ⬝ whiskerL p (whiskerL p⁻¹ r) ⬝ concat_p_Vp p q'
   = r.
@@ -900,15 +900,15 @@ definition whiskerL_pVL {A} {x y z : A} (p : y = x)
   destruct p, r, q. reflexivity.
 end-/
 
-definition whiskerR_pVR {A} {x y z : A} {p p' : x = y}
+definition whisker_right_pVR {A} {x y z : A} {p p' : x = y}
            (r : p = p') (q : y = z)
-: (concat_pp_V p q)⁻¹ ⬝ whiskerR (whiskerR r q) q⁻¹ ⬝ concat_pp_V p' q
+: (concat_con_V p q)⁻¹ ⬝ whiskerR (whiskerR r q) q⁻¹ ⬝ concat_con_V p' q
   = r.
 /-begin
   destruct p, r, q. reflexivity.
 end-/
 
-definition whiskerR_VpR {A} {x y z : A} {p p' : x = y}
+definition whisker_right_VpR {A} {x y z : A} {p p' : x = y}
            (r : p = p') (q : z = y)
 : (concat_pV_p p q)⁻¹ ⬝ whiskerR (whiskerR r q⁻¹) q ⬝ concat_pV_p p' q
   = r.
@@ -943,17 +943,17 @@ definition concat_whisker {A} {x y z : A} (p p' : x = y) (q q' : y = z) (a : p =
 
 /- The "pentagonator": the 3-cell witnessing the associativity pentagon. -/
 definition pentagon {A : Type} {v w x y z : A} (p : v = w) (q : w = x) (r : x = y) (s : y = z)
-  : whiskerL p (concat_p_pp q r s)
-      ⬝ concat_p_pp p (q@r) s
-      ⬝ whiskerR (concat_p_pp p q r) s
-  = concat_p_pp p q (r@s) ⬝ concat_p_pp (p@q) r s.
+  : whiskerL p (concat_p_con q r s)
+      ⬝ concat_p_con p (q@r) s
+      ⬝ whiskerR (concat_p_con p q r) s
+  = concat_p_con p q (r@s) ⬝ concat_p_con (p@q) r s.
 /-begin
   case p, q, r, s.  reflexivity.
 end-/
 
 /- The 3-cell witnessing the left unit triangle. -/
 definition triangulator {A : Type} {x y z : A} (p : x = y) (q : y = z)
-  : concat_p_pp p 1 q ⬝ whiskerR (concat_p1 p) q
+  : concat_p_con p 1 q ⬝ whiskerR (concat_p1 p) q
   = whiskerL p (concat_1p q).
 /-begin
   case p, q.  reflexivity.
@@ -961,29 +961,29 @@ end-/
 
 /- The Eckmann-Hilton argument -/
 definition eckmann_hilton {A : Type} {x:A} (p q : 1 = 1 :> (x = x)) : p ⬝ q = q ⬝ p :=
-  (whiskerR_p1 p @@ whiskerL_1p q)⁻¹
+  (whisker_right_p1 p @@ whisker_left_1p q)⁻¹
   ⬝ (concat_p1 _ @@ concat_p1 _)
   ⬝ (concat_1p _ @@ concat_1p _)
   ⬝ (concat_whisker _ _ _ _ p q)
   ⬝ (concat_1p _ @@ concat_1p _)⁻¹
   ⬝ (concat_p1 _ @@ concat_p1 _)⁻¹
-  ⬝ (whiskerL_1p q @@ whiskerR_p1 p).
+  ⬝ (whisker_left_1p q @@ whisker_right_p1 p).
 
 /- The action of functions on 2-dimensional paths -/
 
 definition ap02 {A B : Type} (f:A->B) {x y:A} {p q:x=y} (r:p=q) : ap f p = ap f q :=
      match r with refl => 1 end.
 
-definition ap02_pp {A B} (f:A->B) {x y:A} {p p' p'':x=y} (r:p=p') (r':p'=p'')
+definition ap02_con {A B} (f:A->B) {x y:A} {p p' p'':x=y} (r:p=p') (r':p'=p'')
   : ap02 f (r ⬝ r') = ap02 f r ⬝ ap02 f r'.
 /-begin
   case r, r'; reflexivity.
 end-/
 
 definition ap02_p2p {A B} (f:A->B) {x y z:A} {p p':x=y} {q q':y=z} (r:p=p') (s:q=q')
-  : ap02 f (r @@ s) =   ap_pp f p q
+  : ap02 f (r @@ s) =   ap_con f p q
                       ⬝ (ap02 f r  @@  ap02 f s)
-                      ⬝ (ap_pp f p' q')⁻¹.
+                      ⬝ (ap_con f p' q')⁻¹.
 /-begin
   case r, s, p, q. reflexivity.
 end-/
@@ -994,12 +994,12 @@ definition apD02 {A : Type} {B : A → Type} {x y : A} {p q : x = y}
      match r with refl => (concat_1p _)⁻¹ end.
 
 /- And now for a lemma whose statement is much longer than its proof. -/
-definition apD02_pp {A} (B : A → Type) (f : Πx:A, B x) {x y : A}
+definition apD02_con {A} (B : A → Type) (f : Πx:A, B x) {x y : A}
   {p1 p2 p3 : x = y} (r1 : p1 = p2) (r2 : p2 = p3)
   : apD02 f (r1 ⬝ r2)
   = apD02 f r1
   ⬝ whiskerL (transport2 B r1 (f x)) (apD02 f r2)
-  ⬝ concat_p_pp _ _ _
+  ⬝ concat_p_con _ _ _
   ⬝ (whiskerR (transport2_p2p B r1 r2 (f x))⁻¹ (apD f p3)).
 /-begin
   destruct r1, r2. destruct p1. reflexivity.
@@ -1021,8 +1021,8 @@ end-/
 Notation concatR := (λp q, concat q p).
 
 Hint Resolve
-  concat_1p concat_p1 concat_p_pp
-  inv_pp inv_V
+  concat_1p concat_p1 concat_p_con
+  inv_con inv_V
  : path_hints.
 
 /- First try at a paths db
@@ -1030,14 +1030,14 @@ We want the RHS of the equation to become strictly simpler -/
 Hint Rewrite
 @concat_p1
 @concat_1p
-@concat_p_pp /- there is a choice here !-/
+@concat_p_con /- there is a choice here !-/
 @concat_pV
 @concat_Vp
-@concat_V_pp
+@concat_V_con
 @concat_p_Vp
-@concat_pp_V
+@concat_con_V
 @concat_pV_p
-(*@inv_pp*) /- I am not sure about this one -/
+(*@inv_con*) /- I am not sure about this one -/
 @inv_V
 @moveR_Mp
 @moveR_pM
@@ -1048,8 +1048,8 @@ Hint Rewrite
 @moveR_M1
 @moveR_1M
 @ap_1
-/- @ap_pp
-@ap_p_pp ?-/
+/- @ap_con
+@ap_p_con ?-/
 @inverse_ap
 @ap_idmap
 /- @ap_compose
