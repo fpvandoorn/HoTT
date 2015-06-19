@@ -9,7 +9,7 @@ Note: some spaces might be wrong at the end or beginning of the following regexe
 --------------
 Instructions to apply a single regular expression to multiple files:
 open emacs
-M-x find_dired
+M-x find-dired
 fill in directory (e.g. ~/projects/HoTT/theories) (this includes subdirectories)
 fill out which files (e.g. -name "*.v" for Coq files)
 In the *Find* buffer, mark which files you want to search
